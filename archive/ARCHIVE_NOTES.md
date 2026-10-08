@@ -1,8 +1,19 @@
 # Archive notes
 
-`archive/` holds the material exactly as received, byte for byte. Nothing here
-is executed, nothing here has been path-corrected, and nothing here should be
-edited. It exists so that every ported stage can be diffed against its source.
+`archive/` holds the material as received. Nothing here is executed, nothing
+here has been path-corrected, and nothing here should be edited. It exists so
+that every ported stage can be diffed against its source.
+
+**One deliberate change: line endings.** Every file as received had CRLF
+terminators — they came off a Windows machine. `.gitattributes` normalises the
+whole repository to LF. The content is otherwise untouched, and the
+normalisation is what makes the audit diffs readable: against a CRLF original,
+an LF port shows *every* line as changed and the five real differences are
+invisible. The original CRLF copies remain in
+`SUZ2026/NE_NRVM_all_scripts_raw/` and
+`SUZ2026/NE_NRVM_FINAL_repository_update_v3/` if a byte-exact comparison is
+ever needed; `archive/final_package_v3_original/04_METADATA/package_md5.tsv`
+holds that package's own MD5 manifest.
 
 ## What is here
 

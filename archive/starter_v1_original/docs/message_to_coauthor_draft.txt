@@ -1,0 +1,28 @@
+Subject: NE-NRVM manuscript reproducibility package and next steps
+
+Hi,
+
+I organized a starter package so you can begin preparing the runtime environment and reviewing the reproducibility structure.
+
+The important point is that the raw script archive is not meant to be run directly yet. It contains the real analysis history, including older attempts, Windows/Linux paths, and some branches that are no longer part of the manuscript. The goal is to preserve those original scripts as an archive, then extract the final logic into a clean Linux-first pipeline.
+
+Current decisions for the final pipeline:
+- The final reference genome is Ensembl `Rattus_norvegicus.GRCr8.dna.primary_assembly`.
+- The final GTF is `Rattus_norvegicus.mRatBN7.2.115.gtf`.
+- Older references appearing in scripts were tests and should not be used in the final workflow.
+- circRNA scripts and old Figure 8 scripts should be archived, but excluded from the final manuscript pipeline because the current article has 7 main figures.
+- miRge3.0 was run using `-db mirbase`; I will correct the manuscript Methods text accordingly if this is confirmed as the final run.
+- TFLink All was used for the TF analysis, but the file is too large to send here. I will provide the exact server path/download source and checksum.
+
+I am sending:
+1. the raw script archive,
+2. preliminary sample sheets for long RNA-seq and miRNA-seq,
+3. a reference manifest,
+4. a software/tool inventory,
+5. an R package inventory extracted from the scripts,
+6. a preliminary script inventory indicating which scripts are likely final, historical, or archive,
+7. a checksum script to generate md5/file-size information for the FASTQ files.
+
+The FASTQ files are not in GitHub. They are on the server and also backed up on a hard drive. I will fill the FASTQ manifest with exact file paths, file sizes, and md5 checksums so you can test the pipeline against the same files.
+
+The immediate goal is not to fully run the entire pipeline yet, but to build the conda/docker environment and decide how to modularize the workflow.

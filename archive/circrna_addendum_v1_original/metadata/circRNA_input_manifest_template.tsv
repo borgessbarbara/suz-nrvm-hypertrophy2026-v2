@@ -1,0 +1,16 @@
+input_role	expected_filename_or_pattern	file_type	expected_location	priority	notes
+longRNA FASTQ	all paired-end RNA-seq samples	raw FASTQ	server/hard drive	required	Used for circRNA detection by CIRCexplorer3/CIRIquant
+circRNA DE table 6h	06_circRNA_sequences_de6_DE_complete_table.txt	DE complete table	results/circRNA_DE/	required	Used by cross-reference script
+circRNA DE table 24h	07_circRNA_sequences_de24_DE_complete_table.txt	DE complete table	results/circRNA_DE/	required	Used by cross-reference script
+IntaRNA circUP-miDOWN 6h	Interact_circUP_miDOWN_6h_all_modeM.csv	IntaRNA output	results/circRNA_IntaRNA/	required	All-record interaction file
+IntaRNA circDOWN-miUP 6h	Interact_circDOWN_miUP_6h_all_modeM.csv	IntaRNA output	results/circRNA_IntaRNA/	required	All-record interaction file
+IntaRNA circUP-miDOWN 24h	Interact_circUP_miDOWN_24h_all_modeM.csv	IntaRNA output	results/circRNA_IntaRNA/	required	All-record interaction file
+IntaRNA circDOWN-miUP 24h	Interact_circDOWN_miUP_24h_all_modeM.csv	IntaRNA output	results/circRNA_IntaRNA/	required	All-record interaction file
+miRNA DE table 6h	DE_miRNA_All_with_status_NE6.txt	DESeq2 miRNA output	results/miRNA_DE/	required	Used for miRNA direction validation
+miRNA DE table 24h	DE_miRNA_All_with_status_NE24.txt	DESeq2 miRNA output	results/miRNA_DE/	required	Used for miRNA direction validation
+mRNA DE full table 6h	res_NE_vs_Ctrl_6h.csv	DESeq2 mRNA output	results/mRNA_DE/	recommended	Needed to classify targets as DE coherent/nonDE/discordant
+mRNA DE full table 24h	res_NE_vs_Ctrl_24h.csv	DESeq2 mRNA output	results/mRNA_DE/	recommended	Needed to classify targets as DE coherent/nonDE/discordant
+lncRNA coherent triplets	COHERENT_lncRNA_miRNA_mRNA_triplets.csv	ceRNA output	results/ceRNA/	recommended	Used to identify cross-ncRNA convergence
+priority lncRNA triplets	PRIORITY_ceRNA_triplets_best_per_ncRNA_miRNA_mRNA.csv	ceRNA output	results/ceRNA/	optional	Used for previous priority overlap
+miRWalk targets	miRWalk_miRNA_Targets_*.csv	target prediction	results/miRWalk/	recommended	Used as target universe for selected circRNA-associated miRNAs
+gene annotation	hisat2_6_24_meta_ann.csv	annotation table	metadata/annotation/	recommended	Used to map mRNA IDs to symbols

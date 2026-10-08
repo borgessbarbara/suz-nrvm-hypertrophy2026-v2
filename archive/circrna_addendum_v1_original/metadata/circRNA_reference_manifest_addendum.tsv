@@ -1,0 +1,5 @@
+resource_type	file_name	source	version_or_notes	used_for	priority	server_path	download_url_or_source	md5_checksum
+genome_fasta	Rattus_norvegicus.GRCr8.dna.primary_assembly.fa	Ensembl	final manuscript reference; confirm exact local file	circRNA alignment/detection	required			
+gtf_annotation	Rattus_norvegicus.mRatBN7.2.115.gtf	Ensembl	final manuscript annotation; confirm exact local file	circRNA annotation and CIRCexplorer/CIRIquant	required			
+circRNA_detection_reference	rn7 reference used by CIRCexplorer3/CIRIquant	local/server	resolve if same as GRCr8/mRatBN7.2.115 or distinct rn7 resource	circRNA detection	required			
+miRBase	miRBase rat mature/hairpin files	miRBase	actual miRge database used was mirbase; confirm release/version	miRNA DE and target integration	required for miRNA branch			

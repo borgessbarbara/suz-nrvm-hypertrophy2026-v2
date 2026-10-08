@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Stage 15: BWA-MEM -> CIRI2 -> CIRI-AS circRNA sequence reconstruction.
 #
-# Ported from provenance/circRNA_upstream/CIRI_2_run_all_seba.sh.
+# Ported from archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/CIRI_2_run_all_seba.sh.
 #
 # SAMPLE COVERAGE — DELIBERATELY NOT WIDENED
 # ------------------------------------------

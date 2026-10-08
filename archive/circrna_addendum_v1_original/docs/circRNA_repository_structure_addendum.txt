@@ -1,0 +1,31 @@
+Recommended repository addendum
+
+scripts/
+  12_circRNA_identification_quantification/
+    12A_run_CIRCexplorer3.sh
+    12B_run_CIRIquant.sh
+    12C_run_CIRI_AS.sh
+    12D_merge_filter_circRNA_counts.R
+
+  13_circRNA_miRNA_IntaRNA/
+    13A_prepare_circRNA_fasta_for_IntaRNA.R
+    13B_run_IntaRNA_circRNA_miRNA.sh
+    13C_collapse_IntaRNA_circRNA_miRNA_hits.R
+
+  14_circRNA_ceRNA_cross_reference/
+    14A_circRNA_lncRNA_miRNA_mRNA_cross_reference.R
+
+  15_cross_ncRNA_networks/
+    15A_export_cytoscape_cross_ncRNA_networks.R
+    15B_plot_circRNA_summary_panels.R
+
+results/
+  circRNA_detection/
+  circRNA_DE/
+  circRNA_sequences/
+  circRNA_IntaRNA/
+  circRNA_ceRNA_cross_reference/
+  cross_ncRNA_networks/
+
+archive_original_scripts/
+  circRNA_old_versions/

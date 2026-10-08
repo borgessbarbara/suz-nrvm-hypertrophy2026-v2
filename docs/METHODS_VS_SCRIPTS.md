@@ -5,9 +5,9 @@ disagree, with the evidence for each and what the repository does about it.
 
 Sources compared:
 - `NE_NRVM_CDDIS_adapted_v14-SL.docx` — Methods and figure legends
-- `provenance/longRNA_command_notebook/bash_scripts.txt` — the raw command log
-- `provenance/circRNA_upstream/*` — the circRNA shell scripts and notebooks
-- `provenance/mirge/miRge_3.txt`, `provenance/intarna/*`
+- `archive/raw_scripts_original/bash_scripts/bash_scripts.txt` — the raw command log
+- `archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/*` — the circRNA shell scripts and notebooks
+- `archive/raw_scripts_original/miRge_scripts/miRge_3.txt` and `.../intarna_related/`
 - `archive/raw_scripts_original/`, `archive/final_package_v3_original/`
 
 Line references are to those files.

@@ -39,7 +39,7 @@ fi
 #
 # CONFIRMED against the raw command notebook. The Methods' "genome-aware
 # decoy/gentrome index" is exactly what was run -
-# provenance/longRNA_command_notebook/bash_scripts.txt:232-235:
+# archive/raw_scripts_original/bash_scripts/bash_scripts.txt:232-235:
 #
 #   salmon index -t gentrome_CNE24_H.fa    -i transcripts_CNE24_H_index    --decoys decoys.txt -p 6 -k 31
 #   salmon index -t gentrome_CNE24_ST.fa   -i transcripts_CNE24_ST_index   --decoys decoys.txt -p 6 -k 31

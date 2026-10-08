@@ -70,7 +70,7 @@ dependencies:
   - bioconductor-genefilter
   - bioconductor-vsn
   # sva/ComBat_seq is used ONLY by the historical circRNA notebooks under
-  # provenance/. Whether it belongs in the final circRNA DE branch is an OPEN
+  # archive/. Whether it belongs in the final circRNA DE branch is an OPEN
   # item (docs/OPEN_ITEMS.md); it is installed so the provenance can be
   # re-executed for comparison, not because the pipeline calls it.
   - bioconductor-sva

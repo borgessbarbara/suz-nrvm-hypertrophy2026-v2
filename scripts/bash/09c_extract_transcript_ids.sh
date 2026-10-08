@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Stage 09c: extract unique transcript IDs from each exon GTF.
 #
-# Ported from provenance/babi_preprocessing/extract_transcript_ids.sh
+# Ported from archive/babi_preprocessing_original/extract_transcript_ids.sh
 # (B. Borges). Logic is unchanged; what changed:
 #
 #   * the hard-coded GTF_DIR=/home/vmaracaja/shared-projects/SUZ_sr_2025/exons

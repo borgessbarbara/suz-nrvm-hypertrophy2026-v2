@@ -14,7 +14,7 @@
 # and six final scripts listed "name(1).csv" style browser-download duplicates
 # as FIRST-preference input candidates.
 #
-# provenance/ and archive/ are exempt - they are preserved verbatim on purpose.
+# archive/ is exempt - it is every received package, preserved verbatim on purpose.
 
 set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/../.." || exit 1
@@ -24,7 +24,7 @@ SCOPE=(scripts/R scripts/bash scripts/commands scripts/checks metadata suz_pipel
 
 echo "== hard-coded path check =="
 echo "   scope: ${SCOPE[*]}"
-echo "   exempt: provenance/ archive/ (verbatim by design)"
+echo "   exempt: archive/ (every received package, verbatim by design)"
 
 # Lines that are comments are allowed: the porter deliberately preserves the
 # original absolute paths as commented provenance.

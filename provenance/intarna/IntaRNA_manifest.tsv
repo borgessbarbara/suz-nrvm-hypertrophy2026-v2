@@ -1,9 +1,0 @@
-state	ncRNA_type	ncRNA_direction	miRNA_direction	target_fasta	query_fasta	output_csv
-6 h	circRNA	UP	DOWN	circRNA_UP_6h_all_records.fa	miRNAs_DOWN_6hr.fa	Interact_circUP_miDOWN_6h_all_modeM.csv
-6 h	circRNA	DOWN	UP	circRNA_DOWN_6h_all_records.fa	miRNAs_UP_6hr.fa	Interact_circDOWN_miUP_6h_all_modeM.csv
-24 h	circRNA	UP	DOWN	circRNA_UP_24h_all_records.fa	miRNAs_DOWN_24hr.fa	Interact_circUP_miDOWN_24h_all_modeM.csv
-24 h	circRNA	DOWN	UP	circRNA_DOWN_24h_all_records.fa	miRNAs_UP_24hr.fa	Interact_circDOWN_miUP_24h_all_modeM.csv
-6 h	lncRNA	UP	DOWN	Candidates_lncRNA_6h_UP.fa	miRNAs_DOWN_6hr.fa	Interact_LncUP_miDOWN_6h_modeM.csv
-6 h	lncRNA	DOWN	UP	Candidates_lncRNA_6h_DOWN.fa	miRNAs_UP_6hr.fa	Interact_LncDOWN_miUP_6h_modeM.csv
-24 h	lncRNA	UP	DOWN	Candidates_lncRNA_24h_UP.fa	miRNAs_DOWN_24hr.fa	Interact_LncUP_miDOWN_24h_modeM.csv
-24 h	lncRNA	DOWN	UP	Candidates_lncRNA_24h_DOWN.fa	miRNAs_UP_24hr.fa	Interact_LncDOWN_miUP_24h_modeM.csv

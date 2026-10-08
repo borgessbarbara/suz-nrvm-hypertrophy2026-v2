@@ -7,7 +7,7 @@
 # host is resolved at runtime against www.ensembl.org, or bare
 # useMart("ensembl"), which is not pinned at all.
 #
-# provenance/ and archive/ are exempt by design - they are preserved verbatim.
+# archive/ is exempt by design - it is every received package, preserved verbatim.
 
 set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/../.." || exit 1

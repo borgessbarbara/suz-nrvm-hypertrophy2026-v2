@@ -50,8 +50,8 @@ hold. Two of them have changed character; see the notes.
 ### A1. BSJ read-support threshold — prose says ≥2, code says ≥3
 
 - Methods prose: "two or more BSJ reads".
-- `provenance/circRNA_upstream/01_circexp3.Rmd:91` — `count_matrix[count_matrix$readNumber > 2,]`
-- `provenance/circRNA_upstream/02_ciriquant.Rmd:85` — `df[df$readNumber > 2,]`
+- `archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/01_circexp3.Rmd:91` — `count_matrix[count_matrix$readNumber > 2,]`
+- `archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/02_ciriquant.Rmd:85` — `df[df$readNumber > 2,]`
 
 `> 2` means **at least 3**. These are not the same rule and they give different
 inventories. `scripts/R/04b_circRNA_de_temporal.R --bsj-min` makes the choice
@@ -112,7 +112,7 @@ we cannot say with certainty *which physical library* that was.
 
 ### A5. CIRI-AS covers SQ13–SQ16 only
 
-`provenance/circRNA_upstream/CIRI_2_run_all_seba.sh:2` — `for m in {13..16}`.
+`archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/CIRI_2_run_all_seba.sh:2` — `for m in {13..16}`.
 There is no CIRI2/CIRI-AS loop for H1–H4 or SQ1–SQ8 anywhere.
 `scripts/bash/15_circrna_ciri_as.sh` therefore defaults to those four samples
 and refuses `--all` without `--yes-widen`.
@@ -199,7 +199,7 @@ counts. **The check currently passes against the historical `exons/` directory.*
 
 ### B2. Which FEELnc_codpot run was final
 
-`provenance/longRNA_command_notebook/bash_scripts.txt` records four successive
+`archive/raw_scripts_original/bash_scripts/bash_scripts.txt` records four successive
 runs on four different candidate GTFs:
 `candidate_lncRNA_NE6_NE24.gtf` → `candidate_lncRNAs_NE6_NE24_oct.gtf` →
 `cand_lncRNAs_NE6_NE24_annotated.gtf` → `cand_lncRNAs_ALLPE_annotated.gtf`.
@@ -262,7 +262,7 @@ release earlier. An annotation-release gap, not an assembly conflict.
 
 ### D1. Only the 24 h miRge command survives
 
-`provenance/mirge/miRge_3.txt` has three variants of one 24 h invocation and no
+`archive/raw_scripts_original/miRge_scripts/miRge_3.txt` has three variants of one 24 h invocation and no
 6 h command, although `miR.Counts_C6_NE6_3v3_new.csv` is a required input.
 
 ### D2. `DESmetadata_24h.csv` is missing
@@ -311,7 +311,7 @@ their output has never been compared against the manuscript figures.
 
 ## F. Known bugs in the provenance — preserved, not reproduced
 
-These are real defects in files under `provenance/`. They are kept verbatim
+These are real defects in files under `archive/`. They are kept verbatim
 because that directory is the historical record; the active stages do not
 repeat them.
 

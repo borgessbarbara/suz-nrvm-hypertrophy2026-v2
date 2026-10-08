@@ -28,7 +28,7 @@ figure map described.
 - Four new bash stages, 13–16, for the circRNA module, plus
   `envs/environment_circrna.yml`.
 - `data/frozen/` for inputs that cannot be regenerated.
-- `provenance/` for upstream scripts that are evidence, not code to run.
+- `archive/` holds every package received, verbatim; nothing else duplicates it.
 - `archive/superseded_duplicates/` dropped: the superseded scripts were already
   in `archive/raw_scripts_original/`, and duplicating them doubled the bytes for
   nothing. `archive/ARCHIVE_NOTES.md` says where each one went instead.

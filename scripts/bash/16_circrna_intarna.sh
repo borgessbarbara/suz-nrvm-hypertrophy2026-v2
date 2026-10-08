@@ -2,8 +2,8 @@
 # Stage 16: circRNA-miRNA duplex prediction with IntaRNA.
 #
 # The four circRNA-miRNA commands, exactly as recorded in
-# provenance/intarna/IntaRNA_commands_as_used.sh and
-# provenance/intarna/IntaRNA_manifest.tsv:
+# archive/final_package_v3_original/03_INTARNA_COMMANDS/IntaRNA_commands_as_used.sh and
+# archive/final_package_v3_original/03_INTARNA_COMMANDS/IntaRNA_manifest.tsv:
 #
 #   IntaRNA --mode=M -t circRNA_UP_6h_all_records.fa    -q miRNAs_DOWN_6hr.fa  --outMode=C --out Interact_circUP_miDOWN_6h_all_modeM.csv
 #   IntaRNA --mode=M -t circRNA_DOWN_6h_all_records.fa  -q miRNAs_UP_6hr.fa    --outMode=C --out Interact_circDOWN_miUP_6h_all_modeM.csv
@@ -31,7 +31,7 @@ CIRC_FASTA_DIR="${CIRC_FASTA_DIR:-results/R04b_circRNA_de_temporal}"
 MIRNA_FASTA_DIR="${MIRNA_FASTA_DIR:-results/13_mirna_mrna_integration/miRNA_FASTA_by_condition}"
 OUT_DIR="${OUT_DIR:-results/16_intarna_circrna}"
 THREADS="${THREADS:-1}"
-MANIFEST="${MANIFEST:-$REPO_ROOT/provenance/intarna/IntaRNA_manifest.tsv}"
+MANIFEST="${MANIFEST:-$REPO_ROOT/archive/final_package_v3_original/03_INTARNA_COMMANDS/IntaRNA_manifest.tsv}"
 
 usage() {
   cat <<'EOF'
@@ -43,7 +43,7 @@ Usage: 16_circrna_intarna.sh [options]
   --threads N            IntaRNA --threads (default 1; the originals did not set it)
 
 Runs the four circRNA-miRNA IntaRNA commands recorded in
-provenance/intarna/IntaRNA_manifest.tsv.
+archive/final_package_v3_original/03_INTARNA_COMMANDS/IntaRNA_manifest.tsv.
 EOF
 }
 

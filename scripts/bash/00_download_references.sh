@@ -41,7 +41,7 @@ echo "[INFO] Ensembl release: $RELEASE  (metadata/reference_release.tsv)"
 # haplotype sequence that would confuse alignment.
 #
 # This also matches what was actually run. In
-# provenance/longRNA_command_notebook/bash_scripts.txt:
+# archive/raw_scripts_original/bash_scripts/bash_scripts.txt:
 #   :27-28  "#Ensembl primary assembly with all concate" -> genome_primary_RN7.fa
 #   :46     "#Para Hisat2 rata y ensembl toplevel (NO USAR)"   <- do not use
 #   :49-50  "#Para Hisat2 rata y ensembl primary assembly" -> .../primary_assembly/Rn72

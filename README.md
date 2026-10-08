@@ -135,8 +135,9 @@ no stage reads a file a later stage produces.
 │   ├── checks/                    repository self-checks
 │   ├── commands/                  checksum helpers
 │   └── dev/                       the archive→stage porter
-├── provenance/                    upstream scripts, verbatim, never executed
-├── archive/                       everything as received, verbatim
+├── archive/                       every package Seba sent, verbatim, never executed
+│                                  (raw scripts, v3 package, starter, circRNA addendum,
+│                                   Babi preprocessing shell scripts)
 └── docs/                          OPEN_ITEMS, REFERENCE_AUDIT, METHODS_NOTES,
                                    METHODS_NOTES, MANUAL_ARTIFACTS
 ```

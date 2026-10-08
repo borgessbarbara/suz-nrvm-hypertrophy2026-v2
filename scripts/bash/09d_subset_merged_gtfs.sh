@@ -2,7 +2,7 @@
 # Stage 09d: pull full records out of the merged annotated GTF for each
 # transcript-ID list produced by stage 09c.
 #
-# Ported from provenance/babi_preprocessing/subset_merged_gtfs.sh (B. Borges).
+# Ported from archive/babi_preprocessing_original/subset_merged_gtfs.sh (B. Borges).
 # The subsetting itself is unchanged — grep -F against a pattern file of
 # literal `transcript_id "<ID>"` lines — which pulls both the transcript line
 # and its exon lines, with the full gffcompare attribute set (xloc, class_code,

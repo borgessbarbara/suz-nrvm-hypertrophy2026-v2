@@ -44,7 +44,7 @@ Five independent lines, all pointing the same way:
 
 ### 1. The final FEELnc run
 
-`provenance/longRNA_command_notebook/bash_scripts.txt`, under the heading
+`archive/raw_scripts_original/bash_scripts/bash_scripts.txt`, under the heading
 *"Para 6 y 24 hrs"* — the 6+24 h rn8 run whose output filename this pipeline
 consumes:
 

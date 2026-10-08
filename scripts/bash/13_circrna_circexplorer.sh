@@ -3,9 +3,9 @@
 #
 # Consolidates the three batch-specific scripts received from the circRNA
 # co-author into one sample-sheet-driven loop:
-#   provenance/circRNA_upstream/CIRCexp3_run_all_2023_SebaNECardio.sh    H1-H4
-#   provenance/circRNA_upstream/CIRCexp3_run_all_2023_SebaNECardio_2.sh  SQ1-SQ8
-#   provenance/circRNA_upstream/CIRCexp3_run_all_2023_SebaNECardio_3.sh  SQ13-SQ16
+#   archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/CIRCexp3_run_all_2023_SebaNECardio.sh    H1-H4
+#   archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/CIRCexp3_run_all_2023_SebaNECardio_2.sh  SQ1-SQ8
+#   archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/CIRCexp3_run_all_2023_SebaNECardio_3.sh  SQ13-SQ16
 #
 # TOOL NAMING — READ BEFORE EDITING THE METHODS TEXT
 # --------------------------------------------------

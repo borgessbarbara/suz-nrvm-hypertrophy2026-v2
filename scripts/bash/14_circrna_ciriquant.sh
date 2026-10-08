@@ -2,9 +2,9 @@
 # Stage 14: circRNA detection and quantification with CIRIquant.
 #
 # Consolidates:
-#   provenance/circRNA_upstream/CIRIquant_all_run_2023_Seba_NE_Cardio_1.sh  H1-H4
-#   provenance/circRNA_upstream/CIRIquant_all_run_2023_Seba_NE_Cardio_2.sh  SQ1-SQ8
-#   provenance/circRNA_upstream/CIRIquant_all_run_2023_Seba_NE_Cardio_3.sh  SQ13-SQ16
+#   archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/CIRIquant_all_run_2023_Seba_NE_Cardio_1.sh  H1-H4
+#   archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/CIRIquant_all_run_2023_Seba_NE_Cardio_2.sh  SQ1-SQ8
+#   archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/CIRIquant_all_run_2023_Seba_NE_Cardio_3.sh  SQ13-SQ16
 #
 # The CIRIquant invocation is preserved exactly:
 #     CIRIquant -t 30 -1 $read1 -2 $read2 --config rn8.yml -o $sample -p $sample

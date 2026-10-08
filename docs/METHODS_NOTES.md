@@ -6,7 +6,7 @@ Methods or a decision.
 
 ## 1. miRge3.0 used miRBase, not miRGeneDB
 
-`provenance/mirge/miRge_3.txt` shows `-db mirbase` on all three recorded
+`archive/raw_scripts_original/miRge_scripts/miRge_3.txt` shows `-db mirbase` on all three recorded
 invocations. Confirmed by S. Urquiza, 2 Jul 2026: *"I confirmed that the
 miRge3.0 command used `-db mirbase`, so I will later correct the manuscript
 Methods text accordingly."* The exact miRBase release is still unknown

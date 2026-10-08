@@ -21,8 +21,8 @@ Source documents, preserved verbatim under
 
 | Instruction | Status |
 |---|---|
-| Split final manuscript-aligned scripts from raw circRNA provenance | **Done.** `scripts/` holds the runnable stages; `provenance/` holds the circRNA shell scripts and notebooks verbatim, never executed. |
-| "Raw circRNA provenance scripts … should be consolidated and parameterized rather than run unchanged" | **Done.** Bash 13–16 and R04/R04b consolidate them; `provenance/` is excluded from every runner. |
+| Split final manuscript-aligned scripts from raw circRNA provenance | **Done.** `scripts/` holds the runnable stages; `archive/` holds the circRNA shell scripts and notebooks verbatim, never executed. |
+| "Raw circRNA provenance scripts … should be consolidated and parameterized rather than run unchanged" | **Done.** Bash 13-16 and R04/R04b consolidate them; `archive/` is excluded from every runner. |
 | Read the provenance audit before changing references, BSJ filters or DE logic | **Done.** All seven items are in `OPEN_ITEMS.md` §A, and each parameter is a CLI flag rather than an edit. |
 | `24_FINAL_..._cross_reference.R` already exists as `scripts/R/15_circRNA_cross_reference.R`; do not duplicate | **Superseded.** The repository was rebuilt from zero at the user's instruction, so the old R15 no longer exists. That script is now `scripts/R/22_circRNA_cross_reference.R`, ported once. No duplicate. |
 | Figures need not be pixel-identical (Affinity, Cytoscape) | **Done.** `MANUAL_ARTIFACTS.md`. |

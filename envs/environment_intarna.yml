@@ -3,7 +3,7 @@
 #
 # IntaRNA is kept in its own environment because it pulls a Boost/ViennaRNA
 # stack that conflicts with the alignment environment. The original analysis
-# did the same: provenance/intarna/command_lines.txt preserves
+# did the same: archive/raw_scripts_original/intarna_related/command_lines.txt preserves
 #     conda activate IntaRNA_lncRNA
 # which is the only record of the original environment name anywhere in the
 # material received.

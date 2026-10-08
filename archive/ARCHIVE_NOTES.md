@@ -17,19 +17,40 @@ holds that package's own MD5 manifest.
 
 ## What is here
 
+**Every package received, and nothing in this repository duplicates it.**
+
 | Directory | Contents | Received |
 |---|---|---|
 | `raw_scripts_original/` | `NE_NRVM_all_scripts_raw` — 23 R scripts, the bash command notebook, the IntaRNA history, the miRge commands | 2 Jul 2026 |
-| `final_package_v3_original/` | `NE_NRVM_FINAL_repository_update_v3` — 16 final figure scripts, the circRNA upstream provenance, the eight IntaRNA commands, the audit metadata | 18 Aug 2026 |
+| `starter_v1_original/` | `NE_NRVM_coauthor_reproducibility_starter_v1` — sample sheets, reference and software manifests, the script inventory, the draft message | 7 Jul 2026 |
+| `circrna_addendum_v1_original/` | `NE_NRVM_circRNA_repo_addendum_v1` — the cross-reference script and the circRNA manifests | 31 Jul 2026 |
+| `final_package_v3_original/` | `NE_NRVM_FINAL_repository_update_v3` — 16 final figure scripts, the circRNA upstream scripts and notebooks, the eight IntaRNA commands, the audit metadata | 18 Aug 2026 |
+| `babi_preprocessing_original/` | The three shell scripts from `SUZ2026/Babi analysis` that R01 depends on | B. Borges |
 
-Two further packages were received and are represented elsewhere rather than
-duplicated here:
+### There used to be a separate `provenance/` directory. There isn't now.
 
-- `NE_NRVM_coauthor_reproducibility_starter_v1` (7 Jul 2026) — its sample
-  sheets and manifests are the basis of `metadata/`.
-- `NE_NRVM_circRNA_repo_addendum_v1` (31 Jul 2026) — its cross-reference script
-  is ported as `scripts/R/22_circRNA_cross_reference.R`; its manifests fed
-  `metadata/circRNA_input_manifest.tsv`.
+It held the upstream evidence the code cites — the circRNA shell scripts and
+notebooks, the IntaRNA commands, the bash command notebook, the miRge
+commands, the Babi shell scripts. The idea was that `archive/` meant "the zips
+as received" and `provenance/` meant "the subset that documents how the
+upstream data was produced".
+
+That distinction was too fine to be worth it. **17 of the 20 files in
+`provenance/` were byte-identical copies of files already in `archive/`** —
+only the three Babi shell scripts were unique. It meant two places to look,
+two things to keep in sync, and the same file checksummed twice.
+
+`provenance/` is gone. Everything lives here once, organised as it arrived,
+and every reference in the code and docs points here. If a script header cites
+
+```
+archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/03_tool_comparation.Rmd:16
+```
+
+that is the only copy of that file in the repository.
+
+(The v3 package's own folder name still contains the word "provenance" — that
+is Seba's naming, preserved verbatim like everything else here.)
 
 ## Where each archived script went
 
@@ -109,18 +130,15 @@ SUZ2026/Babi analysis/nrvm_transcriptome_visualization.html          (rendered)
 
 The three shell scripts from that folder **are** in the repository, as bash
 stages 09c, 09d and 09e, because R01 is unreproducible without them. Their
-verbatim originals are in `provenance/babi_preprocessing/`.
+verbatim originals are in `archive/babi_preprocessing_original/`.
 
 The STAR half of that analysis is not carried over either: S. Urquiza confirmed
 only HISAT2 was used. That removes eight of the twelve `*_meta_*` /
 `*_feelnc_*` outputs and roughly 426 MB, and moots the unexplained STAR novel-lncRNA
 deficit (48 and 63 novel transcripts for STAR, against 2,597 and 3,786 for HISAT2).
 
-## Relationship to `provenance/`
+## Nothing is carried outside this directory
 
-`archive/` is "everything as received". `provenance/` is the subset that
-documents how upstream data was produced and that is referred to by the active
-stages — the circRNA shell scripts and notebooks, the IntaRNA command history,
-the bash command notebook, the miRge commands, and the three Babi shell
-scripts. Some files appear in both; that is intentional and costs a few hundred
-kilobytes.
+Every package Seba sent is here, once. The runnable pipeline under `scripts/`
+never reads from this directory; it only cites it in comments so a reader can
+check a claim against the original.

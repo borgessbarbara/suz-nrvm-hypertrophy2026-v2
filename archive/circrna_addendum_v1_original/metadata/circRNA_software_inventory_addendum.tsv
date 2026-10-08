@@ -1,0 +1,13 @@
+tool_or_package	version	repo_role	notes
+CIRCexplorer3	1.0.0	circRNA detection	Detects back-splicing junctions after HISAT2/STAR workflow
+CIRIquant	1.1	circRNA quantification	Quantifies BSJ reads after HISAT2 and BWA-MEM alignment
+CIRI-AS	confirm final version	circRNA sequence reconstruction	Reconstructs circRNA sequences used for downstream IntaRNA
+HISAT2	2.2.1	read alignment	Used for CIRCexplorer3 and CIRIquant preprocessing
+STAR	2.7.11b	unmapped-read alignment for BSJ detection	Used in CIRCexplorer3 branch
+BWA-MEM	confirm final version	secondary alignment for CIRIquant	Run with -T 19
+IntaRNA	3.4.1	circRNA-miRNA interaction prediction	MFE threshold <= -20 kcal/mol in downstream cross-reference
+R	confirm final version	integration and plotting	Runs cross-reference and figure scripts
+tidyverse	confirm via sessionInfo()	R data handling	Used by uploaded cross-reference script
+readr	confirm via sessionInfo()	R I/O	Used by uploaded cross-reference script
+stringr	confirm via sessionInfo()	R string handling	Used by uploaded cross-reference script
+scales	confirm via sessionInfo()	R plotting labels	Used by uploaded cross-reference script

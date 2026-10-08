@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Stage 09e: produce the lncRNA-depleted merged GTF.
 #
-# Ported from provenance/babi_preprocessing/filter_out_lncRNAs.sh (B. Borges).
+# Ported from archive/babi_preprocessing_original/filter_out_lncRNAs.sh (B. Borges).
 # This is the step that produces `filtered_merged_<id>.annotated.gtf`, which
 # R01 reads as its `other_rna_gtf` input. It takes the merged annotated GTF and
 # removes every record belonging to a transcript in the lncRNA set.

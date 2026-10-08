@@ -13,7 +13,7 @@
 #   Babi analysis/2_nrvm_transcriptome_metadata_handling.qmd:533
 #       useEnsembl(biomart = "genes", dataset = "rnorvegicus_gene_ensembl",
 #                  version = 114)
-#   provenance/circRNA_upstream/00_annotation_biomart.Rmd:42,122
+#   archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/00_annotation_biomart.Rmd:42,122
 #       useDataset("rnorvegicus_gene_ensembl", useMart("ensembl"))
 #
 # `version=` is resolved by biomaRt at runtime against www.ensembl.org, and that
@@ -191,7 +191,7 @@ check_ensembl_connection <- function(host = NULL, dataset = SUZ_ENSEMBL_DATASET)
 
 #' getBM wrapper that refuses the historical `values` without `filters` bug.
 #'
-#' provenance/circRNA_upstream/00_annotation_biomart.Rmd:47 and :129 both call
+#' archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/00_annotation_biomart.Rmd:47 and :129 both call
 #' getBM(attributes = ..., values = genes, mart = mart) with no `filters`
 #' argument. biomaRt ignores `values` in that case, so those chunks never
 #' retrieved what they appear to retrieve, and a rerun would not reproduce

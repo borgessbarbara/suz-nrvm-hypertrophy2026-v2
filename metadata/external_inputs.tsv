@@ -1,5 +1,5 @@
 filename	produced_by	status	consumed_by	notes
-miR.Counts_C6_NE6_3v3_new.csv	miRge3.0 (bash stage 11)	NOT SUPPLIED	R03	Count matrix for the 6 h small-RNA libraries. NOTE the "3v3" in the filename: the miRNA analysis is three-vs-three. No 6 h miRge command survives in provenance/mirge/miRge_3.txt - only the 24 h one.
+miR.Counts_C6_NE6_3v3_new.csv	miRge3.0 (bash stage 11)	NOT SUPPLIED	R03	Count matrix for the 6 h small-RNA libraries. NOTE the "3v3" in the filename: the miRNA analysis is three-vs-three. No 6 h miRge command survives in archive/raw_scripts_original/miRge_scripts/miRge_3.txt - only the 24 h one.
 miR.Counts_C24_NE24_3v3_new.csv	miRge3.0 (bash stage 11)	NOT SUPPLIED	R03	Count matrix for the 24 h small-RNA libraries.
 DESmetadata_24h.csv	hand-authored for miRge3.0 -dex	NOT SUPPLIED	bash 11	Referenced by the miRge command as -mdt. Absent from every package received.
 mature.fa	miRBase	NOT SUPPLIED	R14	miRBase mature sequences, used to build the miRNA FASTAs for IntaRNA. Exact release is an open item.

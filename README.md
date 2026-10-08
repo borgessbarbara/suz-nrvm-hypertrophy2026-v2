@@ -10,7 +10,8 @@ mRNA, lncRNA, miRNA and circRNA into ceRNA networks.
   `Rattus_norvegicus.GRCr8.115.gtf`, Ensembl release 115, biomaRt pinned to
   `https://sep2025.archive.ensembl.org`.
 
-> **Before treating any output as final, read [`docs/MANUSCRIPT_ALIGNMENT.md`](docs/MANUSCRIPT_ALIGNMENT.md)
+> **Start with [`docs/PENDING.md`](docs/PENDING.md) and [`docs/METHODS_VS_SCRIPTS.md`](docs/METHODS_VS_SCRIPTS.md).**
+> Before treating any output as final also read [`docs/MANUSCRIPT_ALIGNMENT.md`](docs/MANUSCRIPT_ALIGNMENT.md)
 > and [`docs/OPEN_ITEMS.md`](docs/OPEN_ITEMS.md).**
 > Two pipeline steps are reconstructions of scripts that were never supplied,
 > and several thresholds in the Methods text do not match the code.

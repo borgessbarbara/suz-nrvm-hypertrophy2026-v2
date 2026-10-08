@@ -62,9 +62,9 @@ ENSEMBL_GTF_URL="https://ftp.ensembl.org/pub/release-${RELEASE}/gtf/rattus_norve
 
 # Concatenation order when assembling from per-chromosome parts: autosomes in
 # numeric order, then X, Y, MT, then any unplaced scaffolds. Primary assembly
-# is "all toplevel regions excluding haplotypes and patches", so the
-# nonchromosomal part belongs in it when Ensembl publishes one.
-PRIMARY_PARTS="${PRIMARY_PARTS:-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 X Y MT nonchromosomal}"
+# EXCLUDES nonchromosomal by explicit decision (B. Borges, 8 Oct 2026): the
+# analysis is chromosome-scoped. Add "nonchromosomal" to PRIMARY_PARTS to include it.
+PRIMARY_PARTS="${PRIMARY_PARTS:-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 X Y MT}"
 
 url_exists() {
   curl -sS -o /dev/null -I -w '%{http_code}' --max-time 60 "$1" 2>/dev/null | grep -qE '^(200|226)$'

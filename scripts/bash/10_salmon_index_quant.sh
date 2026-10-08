@@ -37,16 +37,24 @@ fi
 
 # Build Salmon index if it doesn't exist.
 #
-# The manuscript Methods specify a "genome-aware decoy/gentrome index". That
-# means the index is built from a gentrome -- the transcript FASTA concatenated
-# with the whole genome -- plus a decoy list naming the genome sequences, so
-# that reads originating from unannotated genomic regions are absorbed by the
-# decoys instead of being mis-assigned to transcripts.
+# CONFIRMED against the raw command notebook. The Methods' "genome-aware
+# decoy/gentrome index" is exactly what was run -
+# provenance/longRNA_command_notebook/bash_scripts.txt:232-235:
+#
+#   salmon index -t gentrome_CNE24_H.fa    -i transcripts_CNE24_H_index    --decoys decoys.txt -p 6 -k 31
+#   salmon index -t gentrome_CNE24_ST.fa   -i transcripts_CNE24_ST_index   --decoys decoys.txt -p 6 -k 31
+#   salmon index -t gentrome_CNE624_8_H.fa -i transcripts_CNE624_H_index   --decoys decoys.txt -p 6 -k 31
+#   salmon index -t gentrome_CNE624_8_ST.fa -i transcripts_CN624_ST_index  --decoys decoys.txt -p 6 -k 31
+#
+# (the CNE624_8_H index is the 6+24 h HISAT2 one this pipeline reproduces),
+# and quantification at :286-288 with -l A -p 8 --validateMappings.
+# Salmon v1.10.3 is named at :280.
 #
 # An earlier version of this stage built a plain transcriptome-only index,
-# which is NOT what the Methods describe and gives different quantifications.
+# which is NOT what was run and gives different quantifications.
+# The long-form --decoys and -k 31 below match the original verbatim.
 SALMON_INDEX="$SALMON_OUTPUT/salmon_index"
-GENOME_FASTA="${GENOME_FASTA:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.toplevel.fa}"
+GENOME_FASTA="${GENOME_FASTA:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.primary_assembly.fa}"
 BUILD_DECOY="${BUILD_DECOY:-1}"
 
 if [ ! -d "$SALMON_INDEX" ]; then
@@ -72,7 +80,7 @@ if [ ! -d "$SALMON_INDEX" ]; then
 
     salmon index \
       -t "$DECOY_DIR/gentrome.fa" \
-      -d "$DECOY_DIR/decoys.txt" \
+      --decoys "$DECOY_DIR/decoys.txt" \
       -i "$SALMON_INDEX" \
       -p "$THREADS" \
       -k 31

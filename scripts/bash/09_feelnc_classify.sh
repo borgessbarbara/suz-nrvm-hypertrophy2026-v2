@@ -25,18 +25,35 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 source "$SCRIPT_DIR/_activate_env.sh" env_qc_align
 
-GTF_FILE="${GTF_FILE:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.115.gtf}"
-GENOME_FASTA="${GENOME_FASTA:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.toplevel.fa}"
+# Ensembl release from metadata/reference_release.tsv (see stage 00).
+REL_FILE="$REPO_ROOT/metadata/reference_release.tsv"
+RELEASE="${ENSEMBL_RELEASE:-}"
+[ -z "$RELEASE" ] && [ -f "$REL_FILE" ] && \
+  RELEASE="$(awk -F'\t' 'NR>1 && tolower($2) ~ /^(yes|true|1)$/ {print $1; exit}' "$REL_FILE")"
+RELEASE="${RELEASE:-115}"
+GTF_FILE="${GTF_FILE:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.${RELEASE}.gtf}"
+GENOME_FASTA="${GENOME_FASTA:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.primary_assembly.fa}"
 GFFCOMPARE_OUTPUT="${GFFCOMPARE_OUTPUT:-results/07_gffcompare}"
 FEELNC_OUTPUT="${FEELNC_OUTPUT:-results/09_feelnc_classify}"
-# CONFLICT, UNRESOLVED. The manuscript Methods state
-#     "assessed cis-context using a 200 bp to 100 kb window
-#      (--window=200 --maxwindow=100000)"
-# but the classifier output that every downstream stage consumes is named
-#     lncRNA_classes_CNE_6_24_HISAT2_1kb_100kb.txt
-# i.e. a 1 kb window. The filename is evidence of what was actually run; the
-# Methods text says otherwise. The default here follows the DATA (1000).
-# Resolve with S. Urquiza before freezing - see docs/MANUSCRIPT_ALIGNMENT.md.
+# RESOLVED against the raw command notebook. The Methods are wrong.
+#
+# provenance/longRNA_command_notebook/bash_scripts.txt records seven
+# FEELnc_classifier runs. The FINAL one - the 6+24 h rn8 run, under the
+# heading "Para 6 y 24 hrs", whose output filename is exactly what this
+# pipeline consumes - is at line 300:
+#
+#   FEELnc_classifier.pl -i cand_lncRNAs_CNE624_rn8_8_annotated.gtf.lncRNA.gtf \
+#     -a .../Rattus_norvegicus.GRCr8.114.gtf \
+#     --window=1000 --maxwindow=100000 \
+#     > lncRNA_classes_CNE624_rn8_8_annotated_1kb_100kb.txt
+#
+# --window=200 appears only in the six EARLIER exploratory runs (lines 199,
+# 207, 209, 219, 227), every one of which used maxwindow 10000 or 50000 and
+# produced a differently named file that nothing consumes.
+#
+# The Methods' "200 bp to 100 kb window (--window=200 --maxwindow=100000)"
+# pairs the window from the discarded runs with the maxwindow from the final
+# one. 1000/100000 is correct. See docs/MANUSCRIPT_ALIGNMENT.md.
 FEELNC_WINDOW="${FEELNC_WINDOW:-1000}"
 FEELNC_MAXWINDOW="${FEELNC_MAXWINDOW:-100000}"
 # Dataset prefix. The historical analysis used CNE_6_24_HISAT2 (6 h + 24 h,

@@ -34,7 +34,60 @@
 # docs/REFERENCE_AUDIT.md.
 # ---------------------------------------------------------------------------
 
-SUZ_ENSEMBL_HOST_DEFAULT <- "https://sep2025.archive.ensembl.org"
+# ---------------------------------------------------------------------------
+# THE ENSEMBL RELEASE IS SET IN ONE PLACE: metadata/reference_release.tsv.
+#
+# Changing the release must change the biomaRt archive AND the GTF/FASTA that
+# stage 00 downloads, together. They are driven from the same file so they
+# cannot drift apart.
+#
+#   release 114 -> https://may2025.archive.ensembl.org   (ensembl_mart_114)
+#   release 115 -> https://sep2025.archive.ensembl.org   (ensembl_mart_115)
+# Both verified live against /biomart/martservice?type=registry.
+#
+# WHICH RELEASE THIS PROJECT ACTUALLY USED
+# ----------------------------------------
+# Five independent lines of evidence say release 114:
+#   1. The final FEELnc run - the one whose output filename the pipeline
+#      consumes - uses Rattus_norvegicus.GRCr8.114.gtf
+#      (bash_scripts.txt:293 and :300).
+#   2. The circRNA branch uses GRCr8.114.gtf
+#      (CIRI_2_run_all_seba.sh:6, vis_run_ciri2_seba.sh:2).
+#   3. All three Babi notebooks pin biomaRt to version = 114.
+#   4. The frozen metadata tables in data/frozen/ were built at 114.
+#   5. Figure 2B reproduces EXACTLY from those 114 tables.
+# No executed command anywhere references release 115.
+#
+# Every mention of "115" in the received material is prose, and always as
+# "Rattus_norvegicus.mRatBN7.2.115.gtf" - a file that does not exist, because
+# release 115 ships GRCr8, not mRatBN7.2. It originates in the 7 Jul starter
+# package's reference_manifest.tsv and propagated from there into the
+# manuscript Methods.
+#
+# See docs/REFERENCE_AUDIT.md. The active release is whatever
+# metadata/reference_release.tsv says; this file does not decide it.
+# ---------------------------------------------------------------------------
+
+SUZ_ENSEMBL_ARCHIVES <- c("114" = "https://may2025.archive.ensembl.org",
+                          "115" = "https://sep2025.archive.ensembl.org")
+
+#' Read the active Ensembl release from metadata/reference_release.tsv.
+suz_ensembl_release <- function(repo_root = NULL) {
+  env <- Sys.getenv("ENSEMBL_RELEASE", unset = "")
+  if (nzchar(env)) return(trimws(env))
+  repo_root <- repo_root %||% tryCatch(suz_repo_root(), error = function(e) ".")
+  f <- file.path(repo_root, "metadata", "reference_release.tsv")
+  if (file.exists(f)) {
+    x <- try(utils::read.delim(f, stringsAsFactors = FALSE), silent = TRUE)
+    if (!inherits(x, "try-error") && "active" %in% names(x) && "release" %in% names(x)) {
+      hit <- x$release[tolower(as.character(x$active)) %in% c("yes", "true", "1")]
+      if (length(hit)) return(trimws(as.character(hit[1])))
+    }
+  }
+  "115"   # fall back to the release the project was instructed to lock to
+}
+
+SUZ_ENSEMBL_HOST_DEFAULT <- NULL   # resolved at call time from the release
 SUZ_ENSEMBL_DATASET      <- "rnorvegicus_gene_ensembl"
 
 # Confirmed live during the rebuild:
@@ -65,7 +118,17 @@ suz_ensembl_host <- function(host = NULL) {
   if (!is.null(opt) && nzchar(opt)) return(suz_normalize_host(opt))
   env <- Sys.getenv("ENSEMBL_HOST", unset = "")
   if (nzchar(env)) return(suz_normalize_host(env))
-  SUZ_ENSEMBL_HOST_DEFAULT
+
+  rel <- suz_ensembl_release()
+  if (!rel %in% names(SUZ_ENSEMBL_ARCHIVES)) {
+    stop("Ensembl release '", rel, "' has no archive mapped in ",
+         "SUZ_ENSEMBL_ARCHIVES (scripts/R/lib/ensembl.R). Known: ",
+         paste(names(SUZ_ENSEMBL_ARCHIVES), collapse = ", "),
+         ".\nAdd the archive host there and in metadata/reference_release.tsv.",
+         call. = FALSE)
+  }
+  message("[ensembl] release : ", rel, "  (metadata/reference_release.tsv)")
+  suz_normalize_host(unname(SUZ_ENSEMBL_ARCHIVES[[rel]]))
 }
 
 #' Connect to the pinned Ensembl archive.

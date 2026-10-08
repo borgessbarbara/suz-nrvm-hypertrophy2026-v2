@@ -6,7 +6,7 @@ mRNA, lncRNA, miRNA and circRNA into ceRNA networks.
 
 - **6 main figures + 5 supplementary figures** — see `metadata/figure_script_map.tsv`
 - **Linux-first.** Windows via WSL2 or Docker, not native paths.
-- **Reference lock:** `Rattus_norvegicus.GRCr8.dna.toplevel.fa` +
+- **Reference lock:** `Rattus_norvegicus.GRCr8.dna.primary_assembly.fa` +
   `Rattus_norvegicus.GRCr8.115.gtf`, Ensembl release 115, biomaRt pinned to
   `https://sep2025.archive.ensembl.org`.
 

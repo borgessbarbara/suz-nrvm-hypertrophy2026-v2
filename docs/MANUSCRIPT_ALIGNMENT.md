@@ -113,17 +113,40 @@ an "mRatBN7.2" GTF, which could not have been run as written.
 
 Two further points on the same sentence:
 
-- Ensembl publishes no separate `dna.primary_assembly` for GRCr8; the toplevel
-  file is equivalent and is what the repository downloads.
+- The Methods are RIGHT about primary assembly, and an earlier version of this
+  report was wrong to call it an error. Ensembl does publish
+  `dna.primary_assembly` for GRCr8 (per chromosome), which per the Ensembl
+  README means toplevel is NOT equivalent - toplevel carries N-padded patch and
+  haplotype regions. `bash_scripts.txt:46` even marks the toplevel index
+  "(NO USAR)". The repository had been downloading toplevel; stage 00 now
+  builds the primary assembly. See `docs/REFERENCE_AUDIT.md`.
 - The circRNA Methods say both callers referenced "the Ensembl rat **rn7**
   genome". Every path in the recovered circRNA scripts is rn8/GRCr8
   (`rat_primary_assembly_orderr8.fa`, `rn8.refflat.nochr.txt`,
   `Rattus_norvegicus.GRCr8.114.gtf`, `STAR_rn8`, index `Rn8`). The rn7 claim is
   wrong.
 
-**Recommended Methods text:** genome `Rattus_norvegicus.GRCr8.dna.toplevel.fa`
-and annotation `Rattus_norvegicus.GRCr8.115.gtf` (Ensembl release 115), noting
-that the circRNA branch used GRCr8 release 114. See `docs/REFERENCE_AUDIT.md`.
+**And the release itself is wrong, not just the filename.** Checking the raw
+command notebook settles it: *every executed command in the project used
+release **114***, and no command anywhere uses 115. The final FEELnc run
+(`bash_scripts.txt:293,300`), the circRNA branch
+(`CIRI_2_run_all_seba.sh:6`), the biomaRt pin in all three metadata notebooks
+(`version = 114`), the frozen tables in `data/frozen/`, and the fact that
+Figure 2B reproduces exactly from those tables all agree. The Salmon work is
+dated 12 August 2025; release 115 was published 3 September 2025.
+
+Every "115" in the received material is prose, always as the impossible
+`mRatBN7.2.115`, and traces back to one line in the 7 Jul starter package's
+`reference_manifest.tsv`.
+
+**Recommended Methods text:** genome
+`Rattus_norvegicus.GRCr8.dna.primary_assembly` (concatenated from the Ensembl
+per-chromosome files), annotation `Rattus_norvegicus.GRCr8.114.gtf` (Ensembl
+release 114), biomaRt `https://may2025.archive.ensembl.org`. The only change
+from the Methods as written is the release number and dropping the impossible
+`mRatBN7.2` prefix — "primary assembly" was already correct. The full evidence,
+and the one-line switch that moves the GTF, FASTA and biomaRt archive together
+(`metadata/reference_release.tsv`), are in `docs/REFERENCE_AUDIT.md`.
 
 ### 3.2 BSJ threshold: Methods say ≥2, code says ≥3 — BLOCKING
 
@@ -137,24 +160,47 @@ Figure 2B and every circRNA count in Figure 3. `scripts/R/04b_circRNA_de_tempora
 exposes `--bsj-min` and logs the choice; it currently defaults to 3, matching
 the code rather than the prose.
 
-### 3.3 FEELnc classifier window: Methods say 200 bp, the data says 1 kb
+### 3.3 FEELnc classifier window: the Methods are wrong - RESOLVED
 
 > "assessed cis-context using a 200 bp to 100 kb window
 > (--window=200 --maxwindow=100000)"
 
-The classifier output every downstream stage consumes is named
-`lncRNA_classes_CNE_6_24_HISAT2_1kb_100kb.txt`. A filename is evidence of what
-ran; the Methods are not. Stage 09 defaults to 1000 and now carries the
-conflict as a comment.
+Settled against `provenance/longRNA_command_notebook/bash_scripts.txt`, which
+records seven FEELnc_classifier runs. The final one - the 6+24 h rn8 run under
+the heading "Para 6 y 24 hrs", whose output filename is exactly what the
+pipeline consumes - is at line 300:
 
-### 3.4 Salmon index — FIXED in the repo
+```
+--window=1000 --maxwindow=100000  >  lncRNA_classes_CNE624_rn8_8_annotated_1kb_100kb.txt
+```
+
+`--window=200` appears only in the six earlier exploratory runs (lines 199,
+207, 209, 219, 227), every one of which used maxwindow 10000 or 50000 and
+produced a differently named file that nothing consumes.
+
+The Methods sentence pairs the window from the discarded runs with the
+maxwindow from the final one. **Correct text: `--window=1000 --maxwindow=100000`
+(1 kb to 100 kb).** The repository default was already right.
+
+### 3.4 Salmon index - CONFIRMED, and the repo now matches
 
 > "using a genome-aware **decoy/gentrome** index"
 
-Stage 10 built a transcriptome-only index, which gives different
-quantifications. It now builds a proper gentrome (transcripts + genome) with a
-decoy list, matching the Methods. `BUILD_DECOY=0` restores the old behaviour
-and warns.
+The Methods are right, and `bash_scripts.txt:232-235` proves it:
+
+```
+salmon index -t gentrome_CNE624_8_H.fa -i transcripts_CNE624_H_index \
+             --decoys decoys.txt -p 6 -k 31
+```
+
+(the `CNE624_8_H` index is the 6+24 h HISAT2 one this pipeline reproduces),
+with quantification at `:286-288` using `-l A -p 8 --validateMappings`, and
+Salmon v1.10.3 named at `:280`.
+
+Stage 10 had been building a transcriptome-only index, which gives different
+quantifications. It now builds a gentrome (transcripts + genome) with a decoy
+list, using the same `--decoys` and `-k 31` as the original. `BUILD_DECOY=0`
+restores the old behaviour and warns.
 
 ### 3.5 lncRNA volcano fold-change cutoff
 

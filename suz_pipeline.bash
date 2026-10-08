@@ -6,9 +6,9 @@
 # Long RNA (mRNA + novel lncRNA), small RNA (miRNA), circRNA, and the ceRNA
 # networks that tie them together.
 #
-# Reference lock: Rattus_norvegicus.GRCr8.dna.toplevel.fa
-#                 Rattus_norvegicus.GRCr8.115.gtf   (Ensembl release 115)
-#                 biomaRt host https://sep2025.archive.ensembl.org
+# Reference lock: Rattus_norvegicus.GRCr8.dna.primary_assembly.fa
+#                 Rattus_norvegicus.GRCr8.<REL>.gtf  (release from metadata/reference_release.tsv)
+#                 biomaRt archive follows the same release. See docs/REFERENCE_AUDIT.md.
 #
 # Stage groups:
 #   00-12   long RNA and small RNA     (env qc_align, mirge, intarna)
@@ -90,8 +90,14 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-GENOME_FASTA="${GENOME_FASTA:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.toplevel.fa}"
-GTF="${GTF:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.115.gtf}"
+GENOME_FASTA="${GENOME_FASTA:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.primary_assembly.fa}"
+# Ensembl release from metadata/reference_release.tsv (see stage 00).
+REL_FILE="$REPO_ROOT/metadata/reference_release.tsv"
+RELEASE="${ENSEMBL_RELEASE:-}"
+[ -z "$RELEASE" ] && [ -f "$REL_FILE" ] && \
+  RELEASE="$(awk -F'\t' 'NR>1 && tolower($2) ~ /^(yes|true|1)$/ {print $1; exit}' "$REL_FILE")"
+RELEASE="${RELEASE:-115}"
+GTF="${GTF:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.${RELEASE}.gtf}"
 
 for f in "$LONGRNA_SAMPLES" "$SMALLRNA_SAMPLES" "$FASTQ_MANIFEST"; do
   [ -f "$f" ] || { echo "[ERROR] not found: $f" >&2; exit 1; }

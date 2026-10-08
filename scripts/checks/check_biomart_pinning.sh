@@ -12,7 +12,7 @@
 set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/../.." || exit 1
 
-EXPECTED_HOST="sep2025.archive.ensembl.org"
+# the expected host is derived from metadata/reference_release.tsv, not fixed here
 status=0
 
 echo "== biomaRt pinning check =="
@@ -31,14 +31,42 @@ else
   echo "  ok: all connections go through lib/ensembl.R"
 fi
 
-# 2. the pinned default is the expected archive
-if grep -qE "SUZ_ENSEMBL_HOST_DEFAULT[[:space:]]*<-[[:space:]]*\"https://${EXPECTED_HOST}\"" \
-     scripts/R/lib/ensembl.R; then
-  echo "  ok: default host is https://${EXPECTED_HOST} (Ensembl release 115)"
-else
-  echo "FAIL: the default host in scripts/R/lib/ensembl.R is not https://${EXPECTED_HOST}"
-  grep -n 'SUZ_ENSEMBL_HOST_DEFAULT' scripts/R/lib/ensembl.R | sed 's/^/  /'
+# 2. the active release resolves to a known archive, and the GTF follows it
+if [ ! -f metadata/reference_release.tsv ]; then
+  echo "FAIL: metadata/reference_release.tsv is missing; the release is unset."
   status=1
+else
+  ACTIVE=$(awk -F'\t' 'NR>1 && tolower($2) ~ /^(yes|true|1)$/ {print $1; exit}' \
+           metadata/reference_release.tsv)
+  N_ACTIVE=$(awk -F'\t' 'NR>1 && tolower($2) ~ /^(yes|true|1)$/' \
+             metadata/reference_release.tsv | wc -l)
+  if [ "$N_ACTIVE" -ne 1 ]; then
+    echo "FAIL: metadata/reference_release.tsv has $N_ACTIVE active releases; exactly 1 is required."
+    status=1
+  elif ! grep -qE "\"$ACTIVE\"[[:space:]]*=[[:space:]]*\"https://[a-z0-9]+\.archive\.ensembl\.org\"" \
+          scripts/R/lib/ensembl.R; then
+    echo "FAIL: release $ACTIVE has no archive host in SUZ_ENSEMBL_ARCHIVES."
+    grep -n 'SUZ_ENSEMBL_ARCHIVES' -A4 scripts/R/lib/ensembl.R | sed 's/^/  /'
+    status=1
+  else
+    HOST=$(awk -F'\t' -v r="$ACTIVE" 'NR>1 && $1==r {print $3; exit}' metadata/reference_release.tsv)
+    echo "  ok: active release $ACTIVE -> $HOST"
+    # the bash stages must read the same file rather than hard-coding a release
+    # Only an ASSIGNMENT that bakes in a release is a problem. Help text that
+    # mentions one is fine and often necessary - stage 15 documents that the
+    # circRNA branch historically used GRCr8.114.
+    BAKED_RX='^[^:]+:[0-9]+:[^#]*=[^=]*GRCr8\.[0-9]+\.gtf'
+    if grep -rnE 'GRCr8\.[0-9]+\.gtf' scripts/bash suz_pipeline.bash 2>/dev/null \
+         | grep -vE '\$\{RELEASE\}' | grep -qE "$BAKED_RX"; then
+      echo "FAIL: a bash stage hard-codes an Ensembl release instead of reading"
+      echo "      metadata/reference_release.tsv:"
+      grep -rnE 'GRCr8\.[0-9]+\.gtf' scripts/bash suz_pipeline.bash \
+        | grep -vE '\$\{RELEASE\}' | grep -E "$BAKED_RX" | sed 's/^/  /'
+      status=1
+    else
+      echo "  ok: every bash stage takes the release from the same file"
+    fi
+  fi
 fi
 
 # 3. nobody reintroduced version= as a substitute for host=

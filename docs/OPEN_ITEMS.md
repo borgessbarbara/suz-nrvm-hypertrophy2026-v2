@@ -15,9 +15,20 @@ Items are grouped by who can resolve them.
 > - **A3 (replicates) is resolved.** Every transcriptomic figure legend states
 >   N = 3 per condition, matching the code. A4 (which library "rep3" was) is
 >   still open.
-> - **C2 is now a manuscript problem, not a manifest typo.** The Methods still
->   name `Rattus_norvegicus.mRatBN7.2.115.gtf`, a file that does not exist, and
->   pair it with a GRCr8 FASTA.
+> - **C1/C2 have been overtaken by a bigger finding — now the top item.**
+>   Checking the raw command notebook shows **every executed command used
+>   Ensembl release 114**; no command anywhere uses 115. The "release 115 lock"
+>   traces to one line in the 7 Jul starter package and names a file that has
+>   never existed. There is no 114-vs-115 "gap" to reconcile: the whole project
+>   is 114, including the frozen tables that reproduce Figure 2B exactly.
+>   Set in one place now (`metadata/reference_release.tsv`); currently still
+>   115 because that is the instructed lock. **S. Urquiza's call.** Full
+>   evidence in `REFERENCE_AUDIT.md`.
+> - **The FEELnc window is resolved: the Methods are wrong.** The final run
+>   (`bash_scripts.txt:300`) is `--window=1000 --maxwindow=100000`; `--window=200`
+>   belongs to six earlier discarded runs.
+> - **The Salmon decoy/gentrome index is confirmed** by `bash_scripts.txt:232-235`
+>   and the repository now matches it.
 > - **C3 confirmed:** the Methods call the circRNA reference "rn7"; every path
 >   in the circRNA scripts is rn8/GRCr8.
 > - **D3 confirmed:** the Methods already say miRBase, so no correction needed

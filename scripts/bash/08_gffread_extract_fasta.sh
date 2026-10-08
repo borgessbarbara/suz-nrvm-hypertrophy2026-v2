@@ -11,7 +11,7 @@ source "$SCRIPT_DIR/_activate_env.sh" env_qc_align
 
 # Configuration (from environment or defaults)
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-GENOME_FASTA="${GENOME_FASTA:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.toplevel.fa}"
+GENOME_FASTA="${GENOME_FASTA:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.primary_assembly.fa}"
 GFFCOMPARE_OUTPUT="${GFFCOMPARE_OUTPUT:-results/07_gffcompare}"
 FASTA_OUTPUT="${FASTA_OUTPUT:-results/08_gffread_fasta}"
 

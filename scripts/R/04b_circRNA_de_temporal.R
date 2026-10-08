@@ -1,36 +1,27 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R04b — final circRNA differential expression and export.
+# R04b - circRNA differential expression and export.
 #
-#   Implements stage 5 of 06_NOTES_FOR_COLLABORATOR/repository_merge_plan.md:
-#     "circRNA_05_final_DE_temporal.R - final manuscript circRNA DE/temporal
-#      classification using the verified sample set and verified BSJ rule."
+# Applies the BSJ filter and replicate selection to R04 output, runs DESeq2,
+# and writes the four file families the downstream circRNA stages need:
+#   raw_count_matrix_all_{6,24}.txt
+#   0{6,7}_circRNA_sequences_de{6,24}_DE_complete_table.txt
+#   circRNA_{UP,DOWN}_{6,24}h_all_records.fa   (requires CIRI-AS sequences)
 #
-#   *** RECONSTRUCTED FROM PROVENANCE - NOT THE ORIGINAL SCRIPT.            ***
-#   *** Requires confirmation by S. Urquiza / J. P. See docs/OPEN_ITEMS.md. ***
+# Every contested parameter is a flag, not an edit:
+#   --bsj-min      minimum back-splice reads    (default 3)
+#   --replicates   replicate indices to keep    (default 1,2,4)
+#   --use-combat   apply ComBat_seq             (default off)
+#   --alpha        nominal p threshold          (default 0.05)
+#   --lfc-cut      log2 fold-change threshold   (default 0.5)
 #
-# EVERY CONTESTED PARAMETER LIVES HERE, AND EVERY ONE IS STILL OPEN
-# -----------------------------------------------------------------
-#   --bsj-min      Methods say "at least two BSJ counts" (= 2).
-#                  01_circexp3.Rmd:91 and 02_ciriquant.Rmd:85 use
-#                  readNumber > 2 (= 3). Default 3, matching the CODE.
-#                  docs/OPEN_ITEMS.md A1 - BLOCKING.
-#   --replicates   Default 1,2,4. Replicate 3 is excluded from every final
-#                  analysis, and the manuscript states N = 3 per condition.
-#                  The historical notebooks used 4+4. docs/OPEN_ITEMS.md A3.
-#   --use-combat   The notebooks applied ComBat_seq; the final volcano script
-#                  does not. OFF by default. docs/OPEN_ITEMS.md A2.
-#                  NOTE batch maps 1:1 to replicate index, so dropping
-#                  replicate 3 removes Batch3 entirely.
-#   --alpha /      Nominal p < 0.05 and |log2FC| >= 0.5, per the Methods.
-#   --lfc-cut      circRNA DE is explicitly exploratory: nominal p, not FDR.
+# Usage:   Rscript scripts/R/04b_circRNA_de_temporal.R [--merge-dir DIR] [--ciri-as-dir DIR] [--out-dir DIR]
+#          Rscript scripts/R/04b_circRNA_de_temporal.R --help
 #
-# Because R04 is deterministic and this stage is not, the whole point of the
-# split is that you can re-run this under a different BSJ rule, replicate set
-# or batch model in seconds, without re-parsing the caller output.
-#
-# THE TEMPORAL CLASSIFICATION lives in R13 (Figure 3C circRNA), which also
-# emits early/sustained/late/reversal_circRNA.csv for R21.
+# RECONSTRUCTED: no original script for this step was supplied. Rebuilt from
+# archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/03_tool_comparation.Rmd
+# All five parameters above are unresolved.
+# See docs/CHANGES_FROM_ORIGINALS.md and docs/OPEN_ISSUES.md before relying on it.
 # =============================================================================
 
 suppressPackageStartupMessages({
@@ -67,7 +58,7 @@ opt <- parse_args(OptionParser(
     "\nR04b: apply the BSJ filter and replicate selection to R04's merged loci,",
     "\nrun circRNA differential expression, and export the four file families",
     "\nthe downstream circRNA stages require.",
-    "\n\n*** RECONSTRUCTED - see the header and docs/OPEN_ITEMS.md. ***")))
+    "\n\n*** RECONSTRUCTED - see the header and docs/OPEN_ISSUES.md. ***")))
 
 out_dir <- ensure_out_dir(opt$`out-dir`)
 reps <- as.integer(strsplit(opt$replicates, ",")[[1]])
@@ -214,7 +205,7 @@ if (is.null(seq_lookup)) {
   message("[R04b] Bash stage 16 (circRNA-miRNA IntaRNA) cannot run without them.")
   message("[R04b] Note that stage 15 only covers SQ13-SQ16 in the original, so")
   message("[R04b] sequences for the other samples may never have existed.")
-  message("[R04b] See docs/OPEN_ITEMS.md A5 and A7.")
+  message("[R04b] See docs/OPEN_ISSUES.md A5 and A7.")
   message("=====================================================================")
 }
 
@@ -234,7 +225,7 @@ writeLines(c(
   "",
   "Every parameter above is an unresolved open item. Confirm the BSJ rule, the",
   "replicate set and the ComBat_seq decision with S. Urquiza and J. P. before",
-  "these outputs reach the manuscript. See docs/OPEN_ITEMS.md."),
+  "these outputs reach the manuscript. See docs/OPEN_ISSUES.md."),
   file.path(out_dir, "README_RECONSTRUCTION.txt"))
 
 message("[R04b] complete -> ", out_dir)

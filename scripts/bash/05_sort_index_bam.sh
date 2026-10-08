@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
-# Stage 05: Convert SAM to BAM, sort, and index
-# Converts HISAT2 output (.sam) to compressed BAM format,
-# sorts by coordinate, and creates index files
+# Stage 05 - SAM to BAM, sort and index (samtools).
+#
+# Converts the stage 04 output to BAM, sorts by coordinate and writes a .bai
+# for each.
+#
+# Usage:  bash scripts/bash/05_sort_index_bam.sh
+# Env:    ALIGN_OUTPUT, BAM_OUTPUT, THREADS
+#
+# Next: 06_stringtie_assemble_merge.sh
 
 set -euo pipefail
 

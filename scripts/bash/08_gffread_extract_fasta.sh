@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
-# Stage 08: Extract transcript sequences (gffread)
-# Extracts FASTA sequences of all reconstructed transcripts from the genome
-# Produces both genomic coordinates (cDNA) for lncRNA/novel transcripts
+# Stage 08 - extract transcript sequences (gffread).
+#
+# Writes two FASTAs from the annotated GTF: every reconstructed transcript, and
+# the novel intergenic subset (class_code "u") used as lncRNA candidates.
+#
+# Usage:  bash scripts/bash/08_gffread_extract_fasta.sh
+# Env:    GFFCOMPARE_OUTPUT, GENOME_FASTA, FASTA_OUTPUT
+#
+# Next: 09_feelnc_classify.sh
 
 set -euo pipefail
 

@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
-# Stage 12: lncRNA-miRNA interaction prediction (IntaRNA)
-# Runs IntaRNA to predict binding interactions between lncRNA candidates
-# and miRNA sequences. This is the final bash stage before R-based ceRNA integration.
+# Stage 12 - lncRNA-miRNA duplex prediction (IntaRNA).
 #
-# Note: This stage depends on R script 10 (extract_lncRNA_for_intarna.R)
-# being run first to generate the lncRNA FASTA candidates.
+# Four runs with --mode=M --outMode=C, pairing UP lncRNAs against DOWN miRNAs
+# and DOWN lncRNAs against UP miRNAs at each time point. The output names must
+# keep matching the Interact_*.csv glob that R21 reads.
 #
-# Runs in isolated conda environment (env_intarna)
+# Requires R19 (lncRNA target FASTAs) and R14 (miRNA FASTAs) to have run.
+# Runs in its own conda environment (env_intarna).
+#
+# Usage:  bash scripts/bash/12_intarna_run.sh
+# Env:    INTARNA_CANDIDATES_DIR, MIRNA_FASTA_DIR, INTARNA_OUTPUT
+#
+# Next: 13_circrna_circexplorer.sh
 
 set -euo pipefail
 

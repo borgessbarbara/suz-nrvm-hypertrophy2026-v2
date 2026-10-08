@@ -1,19 +1,15 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R05 — Figure 4A-B and Figure S4A: curated KEGG and TF-pathway integration
+# R05 - Figure 4A-B: curated KEGG GSEA and transcription-factor integration.
 #
-# PORTED, NOT REWRITTEN.
-# Source: archive/.../script_final_depurado_TF_KEGG.R (1300 lines)
-# Produced by scripts/dev/port_from_archive.sh, which applies exactly five
-# classes of change and passes everything else through unmodified:
-#   1. this preamble (optparse CLI, lib/ sourcing, base_dir/out_dir/dpi)
-#   2. hard-coded C:/Users/sebau/... base_dir and out_dir commented out
-#   3. base = "C:/Users/sebau/..." default arguments -> base = base_dir
-#   4. browser-download duplicates "name(1).csv" removed from candidate lists
-#   5. the /mnt/data container search path removed
+# Curated-pathway GSEA split into 6 h-only, shared and 24 h-only programmes,
+# then the TF-by-pathway panel for each state.
 #
-# Diff this file against the archived original to audit the port:
-#   diff archive/.../script_final_depurado_TF_KEGG.R scripts/R/12_tf_kegg_integration.R
+# Usage:   Rscript scripts/R/05_tf_kegg_integration.R [--in-dir DIR] [--out-dir DIR] [--dpi N]
+#          Rscript scripts/R/05_tf_kegg_integration.R --help
+#
+# Adapted from archive/final_package_v3_original/01_FINAL_FIGURE_AND_ANALYSIS_SCRIPTS/script_final_depurado_TF_KEGG.R
+# Changes from the original are listed in docs/CHANGES_FROM_ORIGINALS.md
 # =============================================================================
 
 suppressPackageStartupMessages(library(optparse))
@@ -36,13 +32,12 @@ source(file.path(.here, "lib", "plotting.R"))
 
 base_dir <- normalizePath(.opt$`in-dir`, winslash = "/", mustWork = FALSE)
 out_dir  <- ensure_out_dir(.opt$`out-dir`)
-.suz_out_root <- out_dir   ## [ported] preserved: the body below rebinds out_dir
+.suz_out_root <- out_dir
 png_dpi  <- .opt$dpi
 dpi_png  <- .opt$dpi
 message("[R05] in-dir : ", base_dir)
 message("[R05] out-dir: ", out_dir)
 
-# ----------------------------- ported body ----------------------------------
 suppressPackageStartupMessages({
   library(readr)
   library(dplyr)
@@ -74,7 +69,7 @@ kegg_only6_path  <- "KEGG_6h_vs_24h_Only6h_long_format_SYMBOLS.txt"
 kegg_only24_path <- "KEGG_6h_vs_24h_Only24h_long_format_SYMBOLS.txt"
 kegg_shared_path <- "KEGG_6h_vs_24h_Shared_long_format_SYMBOLS.txt"
 
-out_dir <- ensure_out_dir(file.path(.suz_out_root, "Paper_Fig4_Fig5_FINAL_ONE_SCRIPT"))  ## [ported] was a CWD-relative path
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "Paper_Fig4_Fig5_FINAL_ONE_SCRIPT"))
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 alpha <- 0.05
@@ -547,7 +542,7 @@ early_path <- "early_mRNA.csv"
 late_path  <- "late_mRNA.csv"
 sustained_path <- "sustained_mRNA.csv"
 
-out_dir <- ensure_out_dir(file.path(.suz_out_root, "TF_panels_out_DE_phase"))  ## [ported] was a CWD-relative path
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "TF_panels_out_DE_phase"))
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 # Parameters
@@ -998,7 +993,7 @@ sustained_path <- "sustained_mRNA.csv"
 # IMPORTANTE: este archivo debe venir del script Fig5
 pathways_selected_path <- file.path("Paper_Fig4_Fig5_FINAL_ONE_SCRIPT", "pathways_selected_for_TF.csv")
 
-out_dir <- ensure_out_dir(file.path(.suz_out_root, "Fig6_TF_panels_out_FINAL"))  ## [ported] was a CWD-relative path
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "Fig6_TF_panels_out_FINAL"))
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 alpha <- 0.05

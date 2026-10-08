@@ -1,27 +1,19 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R13 — Figure 3C circRNA: exploratory temporal heatmap.
+# R13 - Figure 3C circRNA: exploratory temporal heatmap.
 #
-#   *** NEW SCRIPT. No standalone original existed. ***
+# Classifies circRNA loci as Early, Sustained, Late or Reversal from the two
+# state-specific DE tables, draws the heatmap, and writes the per-phase locus
+# lists (early/sustained/late/reversal_circRNA.csv) that R21 reads.
 #
-# 04_METADATA/final_figure_script_map.tsv marks this panel OPEN:
-#     "Figure 3 | C circRNA | Exploratory temporal heatmap |
-#      Exact standalone script not isolated | OPEN |
-#      Repository may need a small dedicated script from the final circRNA
-#      DE/temporal table."
-# and remaining_open_items.tsv repeats it as category FIG3C_CIRC. This is that
-# script.
+# circRNA differential expression is exploratory throughout the manuscript:
+# the threshold is a nominal p value, not an FDR.
 #
-# It deliberately mirrors the structure of the lncRNA and mRNA temporal
-# heatmaps (R09, R10) so the three Figure 3C panels are directly comparable
-# once assembled: same phase definitions, same z-scoring, same ordering.
+# Usage:   Rscript scripts/R/13_figure3C_circRNA_heatmap.R [--in-dir DIR] [--out-dir DIR] [--dpi N]
+#          Rscript scripts/R/13_figure3C_circRNA_heatmap.R --help
 #
-# EXPLORATORY STATUS
-# ------------------
-# 31_phase_aware_ceRNA_coherence_plots.R states that "circRNA trajectories
-# remain exploratory", and the circRNA DE uses a NOMINAL p threshold rather
-# than FDR. That is carried through here: the panel is labelled exploratory
-# and the caption records the thresholds actually applied.
+# NEW: no standalone script for this panel existed in any package received.
+# See docs/CHANGES_FROM_ORIGINALS.md
 # =============================================================================
 
 suppressPackageStartupMessages({

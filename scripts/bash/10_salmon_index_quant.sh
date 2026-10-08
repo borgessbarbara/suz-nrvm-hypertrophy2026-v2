@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
-# Stage 10: Transcript quantification (Salmon)
-# Builds a Salmon index from the merged transcriptome and quantifies
-# all samples against it. This is the primary quantification method
-# for the R DESeq2 analysis (via tximport).
+# Stage 10 - transcript quantification (Salmon).
+#
+# Builds a decoy-aware gentrome index (transcripts concatenated with the
+# genome, plus a decoy list naming the genome sequences) and quantifies each
+# sample with -l A --validateMappings.
+#
+# BUILD_DECOY=0 builds a transcriptome-only index instead and warns; that does
+# not match the manuscript Methods.
+#
+# Env: TRANSCRIPTOME_FASTA, GENOME_FASTA, SALMON_OUTPUT, THREADS, BUILD_DECOY
+#
+# Next: 11_mirge3_run.sh
 
 set -euo pipefail
 
@@ -37,22 +45,6 @@ fi
 
 # Build Salmon index if it doesn't exist.
 #
-# CONFIRMED against the raw command notebook. The Methods' "genome-aware
-# decoy/gentrome index" is exactly what was run -
-# archive/raw_scripts_original/bash_scripts/bash_scripts.txt:232-235:
-#
-#   salmon index -t gentrome_CNE24_H.fa    -i transcripts_CNE24_H_index    --decoys decoys.txt -p 6 -k 31
-#   salmon index -t gentrome_CNE24_ST.fa   -i transcripts_CNE24_ST_index   --decoys decoys.txt -p 6 -k 31
-#   salmon index -t gentrome_CNE624_8_H.fa -i transcripts_CNE624_H_index   --decoys decoys.txt -p 6 -k 31
-#   salmon index -t gentrome_CNE624_8_ST.fa -i transcripts_CN624_ST_index  --decoys decoys.txt -p 6 -k 31
-#
-# (the CNE624_8_H index is the 6+24 h HISAT2 one this pipeline reproduces),
-# and quantification at :286-288 with -l A -p 8 --validateMappings.
-# Salmon v1.10.3 is named at :280.
-#
-# An earlier version of this stage built a plain transcriptome-only index,
-# which is NOT what was run and gives different quantifications.
-# The long-form --decoys and -k 31 below match the original verbatim.
 SALMON_INDEX="$SALMON_OUTPUT/salmon_index"
 GENOME_FASTA="${GENOME_FASTA:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.primary_assembly.fa}"
 BUILD_DECOY="${BUILD_DECOY:-1}"

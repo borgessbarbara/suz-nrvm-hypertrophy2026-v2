@@ -6,7 +6,7 @@ Figure 2	A	Integrated bioinformatic workflow diagram	(none)	Manual diagram	Not a
 Figure 2	B	Gene/feature inventory across RNA biotypes, log10 scale; circRNA = unique detected loci	R06_transcriptome_overview.R	26_transcriptome_overview_with_circRNA.R	VERIFIED: reproduces the published counts exactly (21,981 protein-coding; 16,149 annotated lncRNA; 840 novel lncRNA; 1,778 snoRNA; 1,517 snRNA; 204 miRNA). circRNA bar (8,736) needs the circRNA branch.
 Figure 2	C	Annotated and novel lncRNA genes/loci and transcripts	R07_lncRNA_characterization_gtf.R	15_lncRNA_characterization_from_GTF.R	Published: 16,149 annotated / 840 novel genes; 39,276 annotated / 1,117 novel transcripts.
 Figure 3	A	Up/down counts for mRNA, lncRNA, miRNA and BSJ-supported circRNA at 6 h and 24 h	R09_de_counts_heatmaps_gba.R	35_FINAL_missing_figures_miRNA_heatmap_DE_GBA.R	Published counts verified self-consistent with Figure S3C.
-Figure 3	B	Early / Sustained / Late programs, DOWN at base and UP on top	R10_figure3B_temporal_programs.R	36b_Figure3_panelB_DOWN_bottom_UP_top.R	DISCREPANCY: the published lncRNA panel (61/84, 95/180, 104/224) disagrees with the Results text and Figure S3C (62/86, 86/172, 109/227). See docs/MANUSCRIPT_ALIGNMENT.md.
+Figure 3	B	Early / Sustained / Late programs, DOWN at base and UP on top	R10_figure3B_temporal_programs.R	36b_Figure3_panelB_DOWN_bottom_UP_top.R	DISCREPANCY: the published lncRNA panel (61/84, 95/180, 104/224) disagrees with the Results text and Figure S3C (62/86, 86/172, 109/227). See docs/CHANGES_FROM_ORIGINALS.md.
 Figure 3	C mRNA	Temporal heatmap, log2FC at 6 h and 24 h	R11_figure3C_mRNA_heatmap.R	05_Figure3_mRNA_programs.R	Grey cells = not DE at that state.
 Figure 3	C lncRNA	Temporal heatmap	R12_figure3C_lncRNA_heatmap.R	37c_lncRNA_temporal_heatmaps_annotated_novel_MSTRG_FIXED.R	MSTRG treated as novel.
 Figure 3	C miRNA	Temporal heatmap	R09_de_counts_heatmaps_gba.R	35_FINAL_missing_figures_miRNA_heatmap_DE_GBA.R
@@ -34,7 +34,7 @@ Figure S3	C miRNA	Directional-overlap heatmap	R18_directional_overlap.R	NEW
 Figure S3	C circRNA	Directional-overlap heatmap	R22_circRNA_cross_reference.R	24_FINAL_..._cross_reference.R	Output 20_circRNA_directional_overlap_counts.csv.
 Figure S3	C lncRNA	Directional-overlap heatmaps, annotated and novel shown separately	R18_directional_overlap.R	39e_lncRNA_directional_overlap_barplot_UP_top_DOWN_bottom_FINAL.R
 Figure S4	A	Curated KEGG representation among significant lncRNA-mRNA correlations, 6 h and 24 h	R09_de_counts_heatmaps_gba.R	35_FINAL_missing_figures_miRNA_heatmap_DE_GBA.R	Single-panel figure. |rho| >= 0.8 and p < 0.05. Published counts verified against the Results text.
-Figure S5	A	Median log2FC trajectories and IQR for unique nodes in filtered triplets, by Early/Sustained/Late	R23_ceRNA_phase_aware_plots.R	31_phase_aware_ceRNA_coherence_plots.R	NOT Figure 6A. The ported script still names its output Figure6A_*; see docs/MANUSCRIPT_ALIGNMENT.md.
+Figure S5	A	Median log2FC trajectories and IQR for unique nodes in filtered triplets, by Early/Sustained/Late	R23_ceRNA_phase_aware_plots.R	31_phase_aware_ceRNA_coherence_plots.R	NOT Figure 6A; the v3 audit map had Figure 6 and S5 transposed. Output renamed FigureS5A_*. See docs/CHANGES_FROM_ORIGINALS.md.
 Figure S5	B	Sustained UP-DOWN-UP network	R24_ceRNA_cytoscape_export.R	32f_export_ceRNA_cytoscape_TF11_curatedKEGG_MFE20.R	Cytoscape layout manual.
 Figure S5	C	Late UP-DOWN-UP network	R24_ceRNA_cytoscape_export.R	32f_...
 Figure S5	D	Early DOWN-UP-DOWN network	R24_ceRNA_cytoscape_export.R	32f_...

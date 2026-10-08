@@ -1,43 +1,20 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R04 — circRNA annotation and CIRCexplorer/CIRIquant locus merge.
+# R04 - circRNA annotation and CIRCexplorer/CIRIquant locus merge.
 #
-#   Implements stage 4 of 06_NOTES_FOR_COLLABORATOR/repository_merge_plan.md:
-#     "circRNA_04_annotation_merge.R - fixed-resource annotation and
-#      CIRCexplorer/CIRIquant locus merge based on the Rmd logic."
+# Parses both callers per sample, reconciles their coordinate conventions,
+# merges loci, and writes an UNFILTERED back-splice-junction count matrix plus
+# a locus annotation table. Deterministic: no BSJ threshold, replicate
+# selection or batch correction happens here. Those all live in R04b.
 #
-#   *** RECONSTRUCTED FROM PROVENANCE - NOT THE ORIGINAL SCRIPT.            ***
-#   *** Requires confirmation by S. Urquiza / J. P. before the repository   ***
-#   *** is frozen. See docs/OPEN_ITEMS.md A7.                               ***
+# Outputs: all_circrnas.csv, bsj_count_matrix_unfiltered_{6,24}.txt
 #
-# WHY THIS STAGE IS DELIBERATELY PARAMETER-FREE
-# ---------------------------------------------
-# Everything here is deterministic: parse both callers' per-sample output,
-# reconcile coordinates, merge loci, emit an UNFILTERED BSJ count matrix.
-# None of the contested choices (BSJ threshold, replicate set, ComBat_seq)
-# are applied here - they all live in R04b. That separation is the point of
-# Seba's split: the BSJ rule is still unresolved (the Methods say >= 2, the
-# code says > 2), so DE has to be re-runnable under either rule without
-# re-parsing every CIRCexplorer and CIRIquant output.
+# Usage:   Rscript scripts/R/04_circRNA_annotation_merge.R [--circexplorer-dir DIR] [--ciriquant-dir DIR] [--out-dir DIR]
+#          Rscript scripts/R/04_circRNA_annotation_merge.R --help
 #
-# LOGIC PRESERVED VERBATIM FROM 03_tool_comparation.Rmd
-# -----------------------------------------------------
-#  * The asymmetric coordinate fix: +1 is added to the CIRCexplorer start
-#    coordinate and NOT to the CIRIquant one (:16 vs :23). A deliberate
-#    0-based/1-based reconciliation that must survive any refactor.
-#  * Merge key c("chr", "Start", "End"); software tag one of
-#    "circexp3_and_ciriquant" / "circexp3" / "ciriquant".
-#  * Recorded counts, asserted as warnings: intersection 46,302;
-#    CIRCexplorer-only 3,419; CIRIquant-only 23,739.
-#
-# KNOWN BUG IN THE PROVENANCE, NOT REPRODUCED
-# -------------------------------------------
-# 03_tool_comparation.Rmd:28 does
-#     c3_cq <- merge(...); c3_cq <- length(c3_cq$chr); c3_cq$circRNA_ID <- ...
-# which overwrites the data frame with a scalar and then attempts `$<-` on an
-# atomic vector. As committed the chunk cannot run past line 30. The intent is
-# obvious (noting the 46,302 intersection), so the count is kept as an
-# assertion and the data frame is not clobbered.
+# RECONSTRUCTED: no original script for this step was supplied. Rebuilt from
+# archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/03_tool_comparation.Rmd
+# See docs/CHANGES_FROM_ORIGINALS.md and docs/OPEN_ISSUES.md before relying on it.
 # =============================================================================
 
 suppressPackageStartupMessages({
@@ -65,7 +42,7 @@ opt <- parse_args(OptionParser(
     "\ncoordinates, merge loci, and emit an unfiltered BSJ count matrix plus a",
     "\nlocus annotation table.",
     "\n\nNo BSJ, replicate or batch-correction choices are made here - see R04b.",
-    "\n\n*** RECONSTRUCTED - see the header and docs/OPEN_ITEMS.md. ***")))
+    "\n\n*** RECONSTRUCTED - see the header and docs/OPEN_ISSUES.md. ***")))
 
 out_dir <- ensure_out_dir(opt$`out-dir`)
 

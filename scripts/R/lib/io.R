@@ -1,26 +1,16 @@
 # ---------------------------------------------------------------------------
-# lib/io.R — input resolution, delimiter sniffing and column-name matching.
+# lib/io.R - input resolution, delimiter sniffing, column matching, output.
 #
-# Replaces three bad habits inherited from the original scripts:
-#
-#  1. Hard-coded absolute paths. Eleven raw scripts and six of the final figure
-#     scripts begin with
-#         base_dir <- "C:/Users/sebau/OneDrive/Documentos/Tesis_Doc_SU-Z/..."
-#     (12_..._ALL_RECORDS_FINAL.R repeats it three times, at :8, :21 and :28),
-#     18_curated_Fig4A_Fig6C_from_shortlist.R uses "C:/Users/sebau/Downloads",
-#     and 36b_Figure3_panelB...R searches c(".", "/mnt/data").
-#
-#  2. Browser-download filename variants hard-coded as FIRST preference:
-#         "Interact_circUP_miDOWN_6h_all_modeM(1).csv"
-#         "DE_miRNA_All_with_status_NE6(1).txt"
-#         "NE_vs_Ctrl_6h_lncRNA_DE(2).txt"
-#     present in 31_, 32f_, 35_, 36b_, 37c_, 39e_ and 24_FINAL_. These pick a
-#     stale copy in preference to the clean one. find_input() rejects any
-#     candidate matching the "(N)" pattern outright.
-#
-#  3. Silent degradation. Several originals carry on with NULL/NA when an input
-#     is missing. find_input() stops with the search path printed unless the
-#     caller passes optional = TRUE.
+# Exports:
+#   find_input()        locate an input by basename under --in-dir; stops with
+#                       the search path printed unless optional = TRUE
+#   read_auto()         read a delimited file, sniffing tab/comma/semicolon
+#   choose_col()        resolve a column by exact name, then by regex
+#   ensure_out_dir()    create an output directory (with a Windows MAX_PATH hint)
+#   write_out()         write a CSV and log it
+#   write_out_tsv()     write a TSV and log it
+#   write_input_manifest()  record every resolved input beside the outputs
+#   read_frozen()       read a table from data/frozen/ (plain or gzipped)
 # ---------------------------------------------------------------------------
 
 .suz_download_artifact_rx <- "\\(\\d+\\)\\.[A-Za-z0-9]+$"

@@ -149,7 +149,7 @@ bash09	out	lncRNA_classes_CNE624_rn8_8_annotated_1kb_100kb.txt	historical alias 
 02	out	NE_vs_Ctrl_24h_mRNA_full_with_NS.txt	full DE table including non-significant rows
 21	out	Figure7_priority_ceRNA_triplets.csv	historical alias of Fig8_priority_ceRNA_triplets.txt
 21	out	MAIN_FIGURE_ceRNA_triplets.csv	historical alias of Fig8_priority_ceRNA_triplets.txt
-04b	out	06_circRNA_sequences_de24_DE_complete_table.txt	misnamed fallback the ceRNA stage tries after 07_; see docs/OPEN_ITEMS.md
+04b	out	06_circRNA_sequences_de24_DE_complete_table.txt	misnamed fallback the ceRNA stage tries after 07_; see docs/OPEN_ISSUES.md
 04b	out	README_RECONSTRUCTION.txt	
 13	out	early_circRNA.csv	circRNA temporal phase list
 13	out	sustained_circRNA.csv	circRNA temporal phase list

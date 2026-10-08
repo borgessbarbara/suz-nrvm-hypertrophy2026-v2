@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
-# Stage 07: Annotate reconstructed transcriptome (gffcompare)
-# Compares merged StringTie GTF against reference to classify transcripts
-# and identify novel lncRNA candidates
+# Stage 07 - annotate the reconstructed transcriptome (gffcompare).
+#
+# Compares the merged StringTie GTF against the reference annotation, assigning
+# a class code to every transcript. Produces merged.annotated.gtf and the
+# .tmap table that stage 09b and R01 both read.
+#
+# Usage:  bash scripts/bash/07_gffcompare.sh
+# Env:    STRINGTIE_MERGED, GTF_FILE, GFFCOMPARE_OUTPUT, ENSEMBL_RELEASE
+#
+# Next: 08_gffread_extract_fasta.sh
 
 set -euo pipefail
 

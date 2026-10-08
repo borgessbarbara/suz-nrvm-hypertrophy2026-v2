@@ -1,34 +1,18 @@
 #!/usr/bin/env bash
-# Stage 13: circRNA detection with the CIRCexplorer / CLEAR branch.
+# Stage 13 - circRNA detection, CIRCexplorer/CLEAR branch.
 #
-# Consolidates the three batch-specific scripts received from the circRNA
-# co-author into one sample-sheet-driven loop:
-#   archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/CIRCexp3_run_all_2023_SebaNECardio.sh    H1-H4
-#   archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/CIRCexp3_run_all_2023_SebaNECardio_2.sh  SQ1-SQ8
-#   archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/CIRCexp3_run_all_2023_SebaNECardio_3.sh  SQ13-SQ16
+# One sample-sheet-driven loop: fastp, CLEAR run3.py (HISAT2), STAR on the
+# unmapped reads, CIRCexplorer2 parse and annotate, CLEAR circ_quant.py.
+# Each sample gets its own scratch directory.
 #
-# TOOL NAMING — READ BEFORE EDITING THE METHODS TEXT
-# --------------------------------------------------
-# The methods prose says "CIRCexplorer3 v1.0.0". The recovered scripts invoke
-# `CIRCexplorer2 parse` and `CIRCexplorer2 annotate` together with CLEAR's
-# run3.py and circ_quant.py. The string "circexplorer3" appears only as a
-# directory name. The actual commands are preserved here unchanged; see
-# docs/METHODS_NOTES.md.
+# Usage:  bash scripts/bash/13_circrna_circexplorer.sh --genome-fasta F --refflat F \
+#                --star-index D --hisat-index P --clear-src D [options]
+#         bash scripts/bash/13_circrna_circexplorer.sh --help
 #
-# WHAT CHANGED FROM THE ORIGINALS
-# -------------------------------
-#  * One loop over the sample sheet instead of three hard-coded ranges.
-#  * Per-sample scratch directory. The originals all decompressed into one
-#    shared directory and then globbed `*.fq`, so two concurrent runs would
-#    pick up each other's reads. They were only safe to run strictly one at
-#    a time, and nothing said so.
-#  * Sample name derived from the sample sheet instead of the fragile
-#    `${read1: -21:-19}` substring arithmetic.
-#  * set -euo pipefail, and `rm -rf` targets are now validated before use.
-#  * All absolute /media/storage2/jpablo/... paths are CLI arguments.
+# The refFlat, STAR index and genome FASTA are not in this repository; see
+# metadata/external_inputs.tsv.
 #
-# fastp settings are unchanged:
-#   --detect_adapter_for_pe -f 10 -F 10 -3 --cut_tail_mean_quality 28 -q 30 -w 8
+# Next: 14_circrna_ciriquant.sh
 
 set -euo pipefail
 
@@ -71,7 +55,7 @@ Options:
 
 Reference note: rn8 == GRCr8. The refFlat and indexes are rn8-era resources
 that are NOT supplied in any package received; see
-metadata/circRNA_input_manifest.tsv and docs/OPEN_ITEMS.md.
+metadata/external_inputs.tsv and docs/OPEN_ISSUES.md.
 EOF
 }
 

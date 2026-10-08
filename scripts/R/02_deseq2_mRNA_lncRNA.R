@@ -1,19 +1,15 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R02 — Bulk mRNA and lncRNA DESeq2, temporal programmes, correlations, hubs and KEGG; the upstream engine for most figure stages
+# R02 - mRNA and lncRNA differential expression.
 #
-# PORTED, NOT REWRITTEN.
-# Source: archive/.../Integrated_Bulk_v3_6_24h.R (2564 lines)
-# Produced by scripts/dev/port_from_archive.sh, which applies exactly five
-# classes of change and passes everything else through unmodified:
-#   1. this preamble (optparse CLI, lib/ sourcing, base_dir/out_dir/dpi)
-#   2. hard-coded C:/Users/sebau/... base_dir and out_dir commented out
-#   3. base = "C:/Users/sebau/..." default arguments -> base = base_dir
-#   4. browser-download duplicates "name(1).csv" removed from candidate lists
-#   5. the /mnt/data container search path removed
+# DESeq2 with the multifactorial design, temporal programme assignment,
+# lncRNA-mRNA correlations, lncRNA hub ranking, and the KEGG input tables.
 #
-# Diff this file against the archived original to audit the port:
-#   diff archive/.../Integrated_Bulk_v3_6_24h.R scripts/R/02_deseq2_mRNA_lncRNA.R
+# Usage:   Rscript scripts/R/02_deseq2_mRNA_lncRNA.R [--in-dir DIR] [--out-dir DIR] [--dpi N]
+#          Rscript scripts/R/02_deseq2_mRNA_lncRNA.R --help
+#
+# Adapted from archive/raw_scripts_original/R_scripts/Integrated_Bulk_v3_6_24h.R
+# Changes from the original are listed in docs/CHANGES_FROM_ORIGINALS.md
 # =============================================================================
 
 suppressPackageStartupMessages(library(optparse))
@@ -36,18 +32,14 @@ source(file.path(.here, "lib", "plotting.R"))
 
 base_dir <- normalizePath(.opt$`in-dir`, winslash = "/", mustWork = FALSE)
 out_dir  <- ensure_out_dir(.opt$`out-dir`)
-.suz_out_root <- out_dir   ## [ported] preserved: the body below rebinds out_dir
+.suz_out_root <- out_dir
 png_dpi  <- .opt$dpi
 dpi_png  <- .opt$dpi
 message("[R02] in-dir : ", base_dir)
 message("[R02] out-dir: ", out_dir)
 
-# --- [ported] additional inputs for this stage ------------------------------
-# The original hard-coded three absolute paths:
-#   gtf_file   <- "C:/Users/sebau/.../merged_CNE_6_24_HISAT2.annotated.gtf"   (x3, lines 16/429/2192)
-#   base_dir   <- "C:/Users/sebau/.../salmon_quants_NE624/"                   (x3, lines 28/428/2191)
-# and wrote output_dir into the current working directory. All four are now
-# resolved here, once.
+# --- inputs for this stage ---------------------------------------------------
+# --gtf and --salmon-dir; base_dir is reused below as the Salmon quant root.
 .extra <- commandArgs(trailingOnly = TRUE)
 .arg <- function(flag, default = NULL) {
   i <- which(.extra == flag)
@@ -73,7 +65,6 @@ message("[R02] salmon-dir : ", .suz_salmon)
 # The original used `base_dir` as the Salmon quant root; keep that meaning.
 base_dir <- .suz_salmon
 
-# ----------------------------- ported body ----------------------------------
 library(tximport)
 library(rtracklayer)
 library(DESeq2)
@@ -89,7 +80,7 @@ library(Mfuzz)
 library(Biobase)
 
 # 1. Generar tx2gene
-## [ported] original: gtf_file <- "C:/Users/sebau/OneDrive/Documentos/Tesis_Doc_SU-Z/Script_Analysis/NE_trancriptome_analysis/Salmon_Quantification_Analysis/NE6_24_analysis/merged_CNE_6_24_HISAT2.annotated.gtf"
+
 gtf_file <- .suz_gtf
 tx2gene_file <- file.path(out_dir, "tx2gene.tsv")
 
@@ -102,7 +93,7 @@ if (!file.exists(tx2gene_file)) {
 } 
 
 # 2. Metadata
-## [ported] base_dir is set from the CLI in the preamble. Original line:
+
 # base_dir <- "C:/Users/sebau/OneDrive/Documentos/Tesis_Doc_SU-Z/Script_Analysis/salmon_quants_NE624/"
 
 samples <- c("Ctrl6_rep1","Ctrl6_rep2","Ctrl6_rep4",
@@ -503,9 +494,9 @@ library(ggvenn)
 library(UpSetR)
 
 # 1. Metadata y archivos
-## [ported] base_dir is set from the CLI in the preamble. Original line:
+
 # base_dir <- "C:/Users/sebau/OneDrive/Documentos/Tesis_Doc_SU-Z/Script_Analysis/salmon_quants_NE624/"
-## [ported] original: gtf_file <- "C:/Users/sebau/OneDrive/Documentos/Tesis_Doc_SU-Z/Script_Analysis/NE_trancriptome_analysis/Salmon_Quantification_Analysis/NE6_24_analysis/merged_CNE_6_24_HISAT2.annotated.gtf"
+
 gtf_file <- .suz_gtf
 output_dir <- file.path(out_dir, "DESeq2_Multifactorial_Results_fixed")
 if (!dir.exists(output_dir)) dir.create(output_dir)
@@ -1201,7 +1192,7 @@ library(tibble)
 library(ggplot2)
 
 # 2. Directorio de salida ----------------------------------
-outdir <- ensure_out_dir(file.path(.suz_out_root, "GSEA_results"))  ## [ported] was a CWD-relative path
+outdir <- ensure_out_dir(file.path(.suz_out_root, "GSEA_results"))
 if (!dir.exists(outdir)) dir.create(outdir, recursive = TRUE)
 
 # 3. Función para preparar el vector rankeado (ENTREZ, único) ----
@@ -2268,9 +2259,9 @@ library(ggvenn)
 library(UpSetR)
 
 # 1. Paths, metadata y archivos
-## [ported] base_dir is set from the CLI in the preamble. Original line:
+
 # base_dir   <- "C:/Users/sebau/OneDrive/Documentos/Tesis_Doc_SU-Z/Script_Analysis/salmon_quants_NE624/"
-## [ported] original: gtf_file   <- "C:/Users/sebau/OneDrive/Documentos/Tesis_Doc_SU-Z/Script_Analysis/NE_trancriptome_analysis/Salmon_Quantification_Analysis/NE6_24_analysis/merged_CNE_6_24_HISAT2.annotated.gtf"
+
 gtf_file   <- .suz_gtf
 output_dir <- file.path(out_dir, "DESeq2_Multifactorial_Results_fixed2")
 if (!dir.exists(output_dir)) dir.create(output_dir)

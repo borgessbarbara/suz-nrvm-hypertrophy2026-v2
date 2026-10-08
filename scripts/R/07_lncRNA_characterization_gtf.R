@@ -1,24 +1,16 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R07 — Figure 2C and Supplementary Figure S2A-C:
-#       lncRNA structural characterisation from the reconstructed GTF.
+# R07 - Figure 2C and Figure S2A-C: lncRNA structural characterisation.
 #
-# Ported from 15_lncRNA_characterization_from_GTF.R (219 lines), which was
-# byte-identical in both the raw and the FINAL packages.
+# Parses the reconstructed transcriptome GTF and summarises, for annotated
+# (ENSRNOG) versus novel (MSTRG) loci: transcript length, exon count, isoform
+# complexity per locus, and the gene/transcript inventory.
 #
-# This is the GTF-driven characterisation. The collection also contained a
-# CSV-driven alternative, 16_lncRNA_characterization_curatedCSV_only.R, which
-# read the meta_* tables instead. That one was dropped from the FINAL handoff
-# and is archived under archive/raw_scripts_original/. The two produce
-# DIFFERENT inventory numbers from different sources, so do not mix them: the
-# figure map assigns Figure 2C and S2A-C to this GTF-based script.
+# Usage:   Rscript scripts/R/07_lncRNA_characterization_gtf.R [--gtf FILE] [--out-dir DIR] [--dpi N]
+#          Rscript scripts/R/07_lncRNA_characterization_gtf.R --help
 #
-# WHAT CHANGED
-#  * base_dir "C:/Users/sebau/.../NE6_24_analysis" -> --gtf / --out-dir.
-#  * ggsave pairs at dpi 400 -> save_figure() at --dpi (default 600, matching
-#    every other stage; pass --dpi 400 to reproduce the original exactly).
-#  * The hand-rolled GTF parser, the MSTRG/ENSRNOG source inference, the
-#    transcript_class case_when, and all four panels are unchanged.
+# Adapted from archive/final_package_v3_original/01_FINAL_FIGURE_AND_ANALYSIS_SCRIPTS/15_lncRNA_characterization_from_GTF.R
+# Changes from the original are listed in docs/CHANGES_FROM_ORIGINALS.md
 # =============================================================================
 
 suppressPackageStartupMessages({

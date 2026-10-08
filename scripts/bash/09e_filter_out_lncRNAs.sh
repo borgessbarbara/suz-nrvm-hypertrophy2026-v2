@@ -1,29 +1,20 @@
 #!/usr/bin/env bash
-# Stage 09e: produce the lncRNA-depleted merged GTF.
+# Stage 09e - produce the lncRNA-depleted merged GTF.
 #
-# Ported from archive/babi_preprocessing_original/filter_out_lncRNAs.sh (B. Borges).
-# This is the step that produces `filtered_merged_<id>.annotated.gtf`, which
-# R01 reads as its `other_rna_gtf` input. It takes the merged annotated GTF and
-# removes every record belonging to a transcript in the lncRNA set.
+# Removes every record belonging to a transcript in the lncRNA set, giving
+# filtered_merged_<id>.annotated.gtf, which R01 reads as its other-RNA input.
 #
-# WHAT CHANGED
-# ------------
-#  * DIR=/home/vmaracaja/shared-projects/sebauz_sr is now --work-dir. Note the
-#    original used a DIFFERENT server root from stages 09c/09d
-#    (SUZ_sr_2025), so the chain as received never ran end-to-end in one place.
-#  * The original wrote <ident>_transcript_ids.txt beside its inputs and those
-#    intermediates were never preserved; they now go to --transcripts-dir.
-#  * The four hard-coded idents (two HISAT2 + two STAR) are now derived from
-#    whatever lncRNA_tx GTFs stage 09d produced. STAR is not carried forward.
-#  * set -euo pipefail added.
+# REQUIRES GNU AWK. The filter uses the three-argument form of match(), which
+# only gawk implements. Under mawk the capture group is never populated, every
+# line passes, and the output is an unfiltered GTF that looks correct. The
+# stage checks for gawk and aborts if it is missing.
 #
-# GAWK IS REQUIRED
-# ----------------
-# The filter uses GNU awk's THREE-ARGUMENT match(), i.e.
-#     match($0, /transcript_id "([^"]+)"/, arr)
-# mawk and BSD awk accept only two arguments: against them this either errors
-# or silently never populates arr[1], which would pass every line through and
-# produce an unfiltered "filtered" GTF. The check below is not optional.
+# Usage:  bash scripts/bash/09e_filter_out_lncRNAs.sh [--transcripts-dir DIR]
+#                [--merged-dir DIR] [--merged-gtf NAME] [--out-dir DIR]
+#
+# Adapted from archive/transcriptome_metadata_original/filter_out_lncRNAs.sh
+#
+# Next: Rscript scripts/R/01_transcriptome_metadata_annotation.R
 
 set -euo pipefail
 

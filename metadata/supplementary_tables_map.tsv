@@ -13,7 +13,7 @@ S5D_top_lncRNAs	State-specific lncRNA hub prioritisation	R15_lncRNA_hubs.R	SUPP_
 S6A_unique_pairs	Unique state-specific miRNA-mRNA pairs	R14_mirna_mRNA_integration.R	miRNA-mRNA pair tables	OK	Published: 6 pairs at 6 h, 26 at 24 h.
 S6B_final_KEGG	miRNA-mRNA pairs retained after curated KEGG mapping	R14_mirna_mRNA_integration.R	curated KEGG mapping tables	OK	Published: 2 of 6 at 6 h, 22 of 26 at 24 h. Figure 5B-C source.
 S6C_pathway_summary	miRNA-pathway summary	R14_mirna_mRNA_integration.R		OK
-S7A_circRNA_DE	circRNA locus-level DE results	R20_circRNA_volcanoes.R	circRNA_full_DESeq2_results_{6h,24h}_all_rows.csv	BLOCKED	Depends on the RECONSTRUCTED R04 stage. See docs/OPEN_ITEMS.md.
+S7A_circRNA_DE	circRNA locus-level DE results	R20_circRNA_volcanoes.R	circRNA_full_DESeq2_results_{6h,24h}_all_rows.csv	BLOCKED	Depends on the RECONSTRUCTED R04 stage. See docs/OPEN_ISSUES.md.
 S7B_temporal_summary	circRNA temporal summary	R13_figure3C_circRNA_heatmap.R	00_circRNA_temporal_classification.csv, 01_circRNA_temporal_phase_counts.csv	BLOCKED	Same dependency.
 S8A_strict_triplets	Complete strict ceRNA triplet list	R21 + R22	HIGH_CONFIDENCE_ceRNA_triplets_E_le_minus20.csv, 12_STRICT_DE_coherent_circRNA_triplets.csv	OK	Published: 2,593 total (2,584 lncRNA + 9 circRNA).
 S8B_phase_summary	Phase summaries for the strict triplets	R23_ceRNA_phase_aware_plots.R	03_phase_timepoint_triplet_counts.csv, 04_phase_only_pooled_summary_median_IQR.csv	OK	Figure S5A source.

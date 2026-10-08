@@ -1,19 +1,12 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R14 — Figure 5B-C: miRNA-mRNA curated pathway maps; also emits the miRNA FASTAs for IntaRNA
+# R14 - Figure 5B-C: miRNA-mRNA pathway maps. Also writes the miRNA FASTAs used by IntaRNA.
 #
-# PORTED, NOT REWRITTEN.
-# Source: archive/.../script_miRNA_mRNA_6_24.R (492 lines)
-# Produced by scripts/dev/port_from_archive.sh, which applies exactly five
-# classes of change and passes everything else through unmodified:
-#   1. this preamble (optparse CLI, lib/ sourcing, base_dir/out_dir/dpi)
-#   2. hard-coded C:/Users/sebau/... base_dir and out_dir commented out
-#   3. base = "C:/Users/sebau/..." default arguments -> base = base_dir
-#   4. browser-download duplicates "name(1).csv" removed from candidate lists
-#   5. the /mnt/data container search path removed
+# Usage:   Rscript scripts/R/14_mirna_mRNA_integration.R [--in-dir DIR] [--out-dir DIR] [--dpi N]
+#          Rscript scripts/R/14_mirna_mRNA_integration.R --help
 #
-# Diff this file against the archived original to audit the port:
-#   diff archive/.../script_miRNA_mRNA_6_24.R scripts/R/13_mirna_mRNA_integration.R
+# Adapted from archive/final_package_v3_original/01_FINAL_FIGURE_AND_ANALYSIS_SCRIPTS/script_miRNA_mRNA_6_24.R
+# Changes from the original are listed in docs/CHANGES_FROM_ORIGINALS.md
 # =============================================================================
 
 suppressPackageStartupMessages(library(optparse))
@@ -36,13 +29,12 @@ source(file.path(.here, "lib", "plotting.R"))
 
 base_dir <- normalizePath(.opt$`in-dir`, winslash = "/", mustWork = FALSE)
 out_dir  <- ensure_out_dir(.opt$`out-dir`)
-.suz_out_root <- out_dir   ## [ported] preserved: the body below rebinds out_dir
+.suz_out_root <- out_dir
 png_dpi  <- .opt$dpi
 dpi_png  <- .opt$dpi
 message("[R14] in-dir : ", base_dir)
 message("[R14] out-dir: ", out_dir)
 
-# ----------------------------- ported body ----------------------------------
 suppressPackageStartupMessages({
   library(readr)
   library(dplyr)
@@ -52,7 +44,7 @@ suppressPackageStartupMessages({
   library(ggplot2)
 })
 
-out_dir <- ensure_out_dir(file.path(.suz_out_root, "Paper_miRNA_mRNA_AllCombos_Dotplots"))  ## [ported] was a CWD-relative path
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "Paper_miRNA_mRNA_AllCombos_Dotplots"))
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 alpha_mirna <- 0.05
@@ -390,7 +382,7 @@ library(stringr)
 # Files
 
 mirbase_fasta <- "mature.fa"
-out_dir <- ensure_out_dir(file.path(.suz_out_root, "miRNA_FASTA_by_condition"))  ## [ported] was a CWD-relative path
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "miRNA_FASTA_by_condition"))
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 input_files <- c(
@@ -480,7 +472,7 @@ library(tidyverse)
 feelnc_file <- "lncRNA_classes_CNE624_rn8_8_annotated_1kb_100kb.txt"
 mrna6_file  <- "NE_vs_Ctrl_6h_mRNA_DE.txt"
 mrna24_file <- "NE_vs_Ctrl_24h_mRNA_DE.txt"
-out_dir <- ensure_out_dir(file.path(.suz_out_root, "FEELnc_summary_panels"))  ## [ported] was a CWD-relative path
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "FEELnc_summary_panels"))
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 x <- read_tsv(feelnc_file, show_col_types = FALSE) %>%

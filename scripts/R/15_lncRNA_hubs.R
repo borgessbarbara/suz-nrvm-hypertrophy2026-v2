@@ -1,19 +1,12 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R15 — Figure S4C: top lncRNA hubs and co-expression dynamics
+# R15 - Figure S4C: top lncRNA hubs and co-expression dynamics.
 #
-# PORTED, NOT REWRITTEN.
-# Source: archive/.../06_Figure4_refine_heatmap_hubs.R (206 lines)
-# Produced by scripts/dev/port_from_archive.sh, which applies exactly five
-# classes of change and passes everything else through unmodified:
-#   1. this preamble (optparse CLI, lib/ sourcing, base_dir/out_dir/dpi)
-#   2. hard-coded C:/Users/sebau/... base_dir and out_dir commented out
-#   3. base = "C:/Users/sebau/..." default arguments -> base = base_dir
-#   4. browser-download duplicates "name(1).csv" removed from candidate lists
-#   5. the /mnt/data container search path removed
+# Usage:   Rscript scripts/R/15_lncRNA_hubs.R [--in-dir DIR] [--out-dir DIR] [--dpi N]
+#          Rscript scripts/R/15_lncRNA_hubs.R --help
 #
-# Diff this file against the archived original to audit the port:
-#   diff archive/.../06_Figure4_refine_heatmap_hubs.R scripts/R/14_lncRNA_hubs.R
+# Adapted from archive/final_package_v3_original/01_FINAL_FIGURE_AND_ANALYSIS_SCRIPTS/06_Figure4_refine_heatmap_hubs.R
+# Changes from the original are listed in docs/CHANGES_FROM_ORIGINALS.md
 # =============================================================================
 
 suppressPackageStartupMessages(library(optparse))
@@ -41,7 +34,6 @@ dpi_png  <- .opt$dpi
 message("[R15] in-dir : ", base_dir)
 message("[R15] out-dir: ", out_dir)
 
-# ----------------------------- ported body ----------------------------------
 suppressPackageStartupMessages({
   library(readr)
   library(dplyr)
@@ -53,11 +45,11 @@ suppressPackageStartupMessages({
   library(purrr)
 })
 
-## [ported] base_dir is set from the CLI in the preamble. Original line:
+
 # base_dir   <- "C:/Users/sebau/OneDrive/Documentos/Tesis_Doc_SU-Z/Script_Analysis/NE_trancriptome_analysis/Salmon_Quantification_Analysis/NE6_24_analysis"
 bulk_dir   <- file.path(base_dir, "DESeq2_Multifactorial_Results_fixed")
 fig45_dir  <- file.path(base_dir, "Paper_Fig4_Fig5_FINAL_ONE_SCRIPT")
-## [ported] out_dir is set from the CLI in the preamble. Original line:
+
 # out_dir    <- file.path(base_dir, "Paper_Fig4_REFINED")
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 

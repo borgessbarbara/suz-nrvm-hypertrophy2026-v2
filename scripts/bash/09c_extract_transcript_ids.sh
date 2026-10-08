@@ -1,18 +1,13 @@
 #!/usr/bin/env bash
-# Stage 09c: extract unique transcript IDs from each exon GTF.
+# Stage 09c - extract unique transcript IDs from each exon GTF.
 #
-# Ported from archive/babi_preprocessing_original/extract_transcript_ids.sh
-# (B. Borges). Logic is unchanged; what changed:
+# Reads every *.gtf in --exons-dir and writes <basename>_IDs.txt beside it.
 #
-#   * the hard-coded GTF_DIR=/home/vmaracaja/shared-projects/SUZ_sr_2025/exons
-#     is now --exons-dir / $EXONS_DIR;
-#   * the original `cd "$GTF_DIR"` and wrote its log beside the inputs; this
-#     version keeps inputs read-only and writes the log under --log-dir;
-#   * set -euo pipefail added (the original had no error handling, so a failed
-#     grep produced a silently empty *_IDs.txt).
+# Usage:  bash scripts/bash/09c_extract_transcript_ids.sh [--exons-dir DIR] [--log-dir DIR]
 #
-# The extraction itself is byte-for-byte the same pipeline:
-#     grep -o 'transcript_id "[^"]*"' | sed | sed | sort -u
+# Adapted from archive/transcriptome_metadata_original/extract_transcript_ids.sh
+#
+# Next: 09d_subset_merged_gtfs.sh
 
 set -euo pipefail
 

@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
-# Stage 04: Genome alignment (HISAT2)
-# Aligns trimmed reads to the reference genome with --dta-cufflinks flag
-# (suitable for StringTie transcript assembly)
+# Stage 04 - genome alignment (HISAT2).
+#
+# Builds the index if it is absent, then aligns the trimmed reads with
+# --dta-cufflinks, which is what StringTie assembly in stage 06 expects.
+#
+# Usage:  bash scripts/bash/04_align_hisat2.sh
+# Env:    TRIM_OUTPUT, GENOME_FASTA, ALIGN_OUTPUT, THREADS
+#
+# Next: 05_sort_index_bam.sh
 
 set -euo pipefail
 

@@ -11,7 +11,7 @@
 #   -dex -mdt DESmetadata_24h.csv
 #
 # Only the 24 h command survives; there is no recorded 6 h invocation even
-# though miRNAs_6_24.R consumes a 6 h count matrix. See docs/OPEN_ITEMS.md.
+# though miRNAs_6_24.R consumes a 6 h count matrix. See docs/OPEN_ISSUES.md.
 name: suz_mirge
 channels:
   - conda-forge

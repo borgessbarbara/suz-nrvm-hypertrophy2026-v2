@@ -1,22 +1,20 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R06 — Figure 2B: RNA-class inventory including circRNA loci.
+# R06 - Figure 2B: RNA-class inventory across the 6 h and 24 h states.
 #
-# Ported from 26_transcriptome_overview_with_circRNA.R (151 lines), which was
-# the most portable script in the whole collection: it was the only one in the
-# FINAL package with CWD-relative rather than absolute paths.
+# Counts genes per biotype from the transcript metadata tables, separates
+# annotated from novel lncRNA, and adds circRNA loci as the union across both
+# states. Plotted on a log10 scale.
 #
-# WHAT CHANGED
-#  * optparse CLI; the four "User-adjustable paths" at the top of the original
-#    become arguments.
-#  * The two hisat2_6_24_meta_* inputs now resolve through read_frozen(), so
-#    the Ensembl-114 tables under data/frozen/ are used by default. Pass
-#    --meta-ann / --meta-novel to point at freshly generated R01 output
-#    instead - but see docs/OPEN_ITEMS.md before doing so for the manuscript.
-#  * save_dual() -> lib/plotting.R save_figure(), with --dpi.
-#  * The analysis itself (biotype normalisation, the explicit annotated vs
-#    novel lncRNA split, the circRNA union across 6 h and 24 h, the log10
-#    axis) is unchanged.
+# Reads the frozen metadata tables from data/frozen/ by default; pass
+# --meta-ann / --meta-novel to use freshly generated R01 output instead, or
+# --skip-circrna to build the panel without the circRNA bar.
+#
+# Usage:   Rscript scripts/R/06_transcriptome_overview.R [--in-dir DIR] [--out-dir DIR] [--dpi N]
+#          Rscript scripts/R/06_transcriptome_overview.R --help
+#
+# Adapted from archive/final_package_v3_original/01_FINAL_FIGURE_AND_ANALYSIS_SCRIPTS/26_transcriptome_overview_with_circRNA.R
+# Changes from the original are listed in docs/CHANGES_FROM_ORIGINALS.md
 # =============================================================================
 
 suppressPackageStartupMessages({
@@ -101,7 +99,7 @@ if (!isTRUE(opt$`skip-circrna`)) {
          "They are produced by scripts/R/04b_circRNA_de_temporal.R, which is a\n",
          "RECONSTRUCTION of a step that no received package contained.\n",
          "Run the circRNA branch first, or pass --skip-circrna to build Figure 2B\n",
-         "without the circRNA bar. See metadata/circRNA_input_manifest.tsv.",
+         "without the circRNA bar. See metadata/external_inputs.tsv.",
          call. = FALSE)
   }
   read_circ_ids <- function(path) {

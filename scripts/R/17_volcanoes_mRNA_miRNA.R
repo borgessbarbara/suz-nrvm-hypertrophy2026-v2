@@ -1,34 +1,17 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R17 — Figure S3A-B mRNA and miRNA: volcano plots.
+# R17 - Figure S3A-B mRNA and miRNA: volcano plots.
 #
-#   *** NEW SCRIPT. The final plotting code was embedded in the large
-#   *** historical scripts and was never isolated.
+# Thresholds follow the manuscript Methods and are class-specific:
+#   mRNA   adjusted p < 0.05 and log2 fold-change at least 1
+#   miRNA  adjusted p < 0.05 and log2 fold-change at least 0.5
 #
-# 04_METADATA/final_figure_script_map.tsv marks this panel OPEN:
-#     "Figure S3 | A-B mRNA/miRNA | Volcano plots |
-#      Final standalone scripts not isolated | OPEN |
-#      Code exists in larger historical scripts; collaborator should
-#      extract/parameterize only final plotting logic."
-# and remaining_open_items.tsv repeats it as category S3_MRNA_MIRNA.
+# Usage:   Rscript scripts/R/17_volcanoes_mRNA_miRNA.R [--in-dir DIR] [--out-dir DIR] [--dpi N]
+#          Rscript scripts/R/17_volcanoes_mRNA_miRNA.R --help
 #
-# The equivalent lncRNA panel is 07_Figure4_clean_volcanoes.R, ported as R15.
-# This script deliberately mirrors R15's conventions so the S3A-B panels are
-# consistent once assembled:
-#   * padj threshold for mRNA and miRNA (FDR), as in the DESeq2 stages;
-#   * the same UP/DOWN palette from lib/plotting.R;
-#   * top-N labelling per direction.
-#
-# THRESHOLDS ARE CLASS-SPECIFIC, PER THE MANUSCRIPT METHODS
-# ---------------------------------------------------------
-# "For mRNAs, significance was defined as adjusted p < 0.05 and |log2FC| >= 1;
-#  for lncRNAs and miRNAs, adjusted p < 0.05 and |log2FC| >= 0.5."
-# so the defaults here are 1 for mRNA and 0.5 for miRNA.
-#
-# NOTE the unresolved conflict on the sibling lncRNA panel: its source script
-# 07_Figure4_clean_volcanoes.R sets `absfc_cutoff <- 0`, i.e. it calls
-# significance on padj ALONE with no fold-change requirement, which
-# contradicts the Methods' >= 0.5 for lncRNA. See docs/MANUSCRIPT_ALIGNMENT.md.
+# NEW: the final plotting code for these panels was embedded in the large
+# historical scripts and was never isolated.
+# See docs/CHANGES_FROM_ORIGINALS.md
 # =============================================================================
 
 suppressPackageStartupMessages({

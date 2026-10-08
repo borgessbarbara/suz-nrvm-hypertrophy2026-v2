@@ -1,48 +1,20 @@
 #!/usr/bin/env bash
-# =============================================================================
-# Stage 09b: materialise the exons/ layout.
+# Stage 09b - materialise the exons/ layout from the FEELnc output.
 #
-#   *** RECONSTRUCTED STEP — NOT AN ORIGINAL SCRIPT. ***
-#   *** Requires confirmation by S. Urquiza / B. Borges before the repo is  ***
-#   *** frozen. See docs/OPEN_ITEMS.md, item "Step [B] is unrecovered".     ***
+# Writes, per dataset:
+#   <prefix>.annotated.gtf             the codpot candidate set
+#   <prefix>.annotated.lncRNA.gtf      coding-potential lncRNA calls
+#   <prefix>.annotated.otherRNAs.gtf   the complement
 #
-# WHY THIS EXISTS
-# ---------------
-# The "Babi analysis" preprocessing chain begins by reading three files per
-# dataset out of an exons/ directory:
+# Usage:  bash scripts/bash/09b_feelnc_split_exon_gtfs.sh [--help]
+# Env:    FEELNC_OUTPUT, EXONS_DIR, PREFIX, INCLUDE_NOORF_IN_OTHER
 #
-#     exons/<id>.annotated.gtf              exon-only, 46,030 transcripts
-#     exons/<id>.annotated.lncRNA.gtf       exon-only, 42,127 transcripts
-#     exons/<id>.annotated.otherRNAs.gtf    exon-only,  3,822 transcripts
+# RECONSTRUCTED: the original command for this step was never recorded.
+# Verify with scripts/checks/check_feelnc_split_counts.sh, which compares the
+# transcript counts against the historical outputs.
+# See docs/CHANGES_FROM_ORIGINALS.md and docs/OPEN_ISSUES.md.
 #
-# The command that produced them is in neither "Babi analysis" nor
-# bash_scripts.txt. It was identified from the data:
-#
-#   * FEELnc's 42,040 classified lncRNA transcripts are 100% contained in
-#     .lncRNA.gtf (set difference in that direction is exactly 0);
-#   * .lncRNA.gtf and .otherRNAs.gtf are disjoint;
-#   * every one of the 46,030 IDs is a gffcompare .tmap qry_id;
-#   * the subset spans all 13 gffcompare class codes, so it is NOT
-#     class-code driven;
-#   * the files are exon lines only with the minimal attribute set
-#     gene_id / transcript_id / exon_number.
-#
-# That is the signature of FEELnc:
-#     FEELnc_filter   -> the candidate set          = .annotated.gtf
-#     FEELnc_codpot   -> .lncRNA.gtf                = .annotated.lncRNA.gtf
-#                     -> .mRNA.gtf (+ .noORF.gtf)   = .annotated.otherRNAs.gtf
-#
-# Two independent numbers corroborate it:
-#   * 42,127 - 42,040 = 87 lncRNA transcripts present in the GTF but absent
-#     from the classifier output. Those are the orphans FEELnc_classifier
-#     drops when no partner falls in the 1 kb / 100 kb window — which also
-#     proves the split used codpot output, not classifier output.
-#   * 46,030 - 42,127 - 3,822 = 81 transcripts in the candidate set but in
-#     neither split. Those are the .noORF.gtf bucket.
-#
-# This stage therefore just renames and unions stage 09's FEELnc outputs into
-# the historical layout, and checks the counts.
-# =============================================================================
+# Next: 09c_extract_transcript_ids.sh
 
 set -euo pipefail
 
@@ -136,7 +108,7 @@ cat > "$EXONS_DIR/RECONSTRUCTION_NOTE.txt" <<EOF
 These files were produced by scripts/bash/09b_feelnc_split_exon_gtfs.sh, a
 RECONSTRUCTION of a step whose original command was not recovered.
 
-Historical reference counts (from SUZ2026/Babi analysis/exons/, CNE_6_24_HISAT2):
+Historical reference counts (from the original transcriptome-metadata analysis (exons/), CNE_6_24_HISAT2):
   annotated  46030 unique transcripts
   lncRNA     42127
   otherRNAs   3822

@@ -1,19 +1,15 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R03 — miRNA DESeq2 at 6 h and 24 h, temporal classification and the miRWalk export tables
+# R03 - miRNA differential expression.
 #
-# PORTED, NOT REWRITTEN.
-# Source: archive/.../miRNAs_6_24.R (1560 lines)
-# Produced by scripts/dev/port_from_archive.sh, which applies exactly five
-# classes of change and passes everything else through unmodified:
-#   1. this preamble (optparse CLI, lib/ sourcing, base_dir/out_dir/dpi)
-#   2. hard-coded C:/Users/sebau/... base_dir and out_dir commented out
-#   3. base = "C:/Users/sebau/..." default arguments -> base = base_dir
-#   4. browser-download duplicates "name(1).csv" removed from candidate lists
-#   5. the /mnt/data container search path removed
+# DESeq2 at 6 h and 24 h, temporal classification, and the miRWalk export
+# tables the integration stages read.
 #
-# Diff this file against the archived original to audit the port:
-#   diff archive/.../miRNAs_6_24.R scripts/R/03_mirna_deseq2.R
+# Usage:   Rscript scripts/R/03_mirna_deseq2.R [--in-dir DIR] [--out-dir DIR] [--dpi N]
+#          Rscript scripts/R/03_mirna_deseq2.R --help
+#
+# Adapted from archive/raw_scripts_original/R_scripts/miRNAs_6_24.R
+# Changes from the original are listed in docs/CHANGES_FROM_ORIGINALS.md
 # =============================================================================
 
 suppressPackageStartupMessages(library(optparse))
@@ -36,21 +32,16 @@ source(file.path(.here, "lib", "plotting.R"))
 
 base_dir <- normalizePath(.opt$`in-dir`, winslash = "/", mustWork = FALSE)
 out_dir  <- ensure_out_dir(.opt$`out-dir`)
-.suz_out_root <- out_dir   ## [ported] preserved: the body below rebinds out_dir
+.suz_out_root <- out_dir
 png_dpi  <- .opt$dpi
 dpi_png  <- .opt$dpi
 message("[R03] in-dir : ", base_dir)
 message("[R03] out-dir: ", out_dir)
 
-# --- [ported] input resolution for this stage --------------------------------
-# The original read the two miRge count matrices from the current working
-# directory by bare filename. NOTE the "3v3" in those names: the miRNA
-# analysis is three-vs-three, matching the mRNA/lncRNA DESeq2 (rep1/rep2/rep4)
-# and the final circRNA volcano script. See docs/OPEN_ITEMS.md.
+# --- input resolution --------------------------------------------------------
 .mirna_counts <- function(fname) find_input(fname, in_dir = base_dir,
                                             what = paste("miRge count matrix", fname))
 
-# ----------------------------- ported body ----------------------------------
 # ==============================
 # Análisis de miRNAs NE 6h / 24h
 # ==============================
@@ -672,7 +663,7 @@ library(readr)
 de_6_file  <- "DE_miRNA_All_with_status_NE6.txt"   # archivo 6h
 de_24_file <- "DE_miRNA_All_with_status_NE24.txt"  # archivo 24h
 
-outdir <- ensure_out_dir(file.path(.suz_out_root, "miRNA_temporal_summary"))  ## [ported] was a CWD-relative path
+outdir <- ensure_out_dir(file.path(.suz_out_root, "miRNA_temporal_summary"))
 if (!dir.exists(outdir)) dir.create(outdir)
 
 # Si tus txt son tabulados:
@@ -812,7 +803,7 @@ library(UpSetR)
 de_6_file  <- "DE_miRNA_All_with_status_NE6.txt"
 de_24_file <- "DE_miRNA_All_with_status_NE24.txt"
 
-outdir <- ensure_out_dir(file.path(.suz_out_root, "miRNA_volcano_upset"))  ## [ported] was a CWD-relative path
+outdir <- ensure_out_dir(file.path(.suz_out_root, "miRNA_volcano_upset"))
 if (!dir.exists(outdir)) dir.create(outdir)
 
 # Si tus archivos son tabulados:
@@ -970,7 +961,7 @@ library(UpSetR)
 de_6_file  <- "DE_miRNA_All_with_status_NE6.txt"
 de_24_file <- "DE_miRNA_All_with_status_NE24.txt"
 
-outdir <- ensure_out_dir(file.path(.suz_out_root, "miRNA_volcano_upset"))  ## [ported] was a CWD-relative path
+outdir <- ensure_out_dir(file.path(.suz_out_root, "miRNA_volcano_upset"))
 if (!dir.exists(outdir)) dir.create(outdir)
 
 # Si tus archivos son tabulados:

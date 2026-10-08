@@ -6,7 +6,7 @@
 #   C:/Users/sebau/OneDrive/Documentos/...        (11 raw + 6 final scripts)
 #   C:/Users/sebau/Downloads                      (18_curated_Fig4A_Fig6C)
 #   C:/Users/Barbara/OneDrive/.../seba-short-reads (the three .qmd execute-dirs)
-#   /home/vmaracaja/shared-projects/SUZ_sr_2025   (two Babi .sh)
+#   /home/vmaracaja/shared-projects/SUZ_sr_2025   (two metadata-chain .sh)
 #   /home/vmaracaja/shared-projects/sebauz_sr     (filter_out_lncRNAs.sh)
 #   D:/ and E:/ drive letters                     (the circRNA .Rmd notebooks)
 #   /mnt/data                                     (36b_, a container path)

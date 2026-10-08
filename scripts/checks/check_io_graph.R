@@ -13,7 +13,7 @@
 #   * produced by an earlier stage      (metadata/stage_io.tsv)
 #   * a frozen input                    (data/frozen/)
 #   * declared external and not produced by this pipeline
-#                                       (metadata/circRNA_input_manifest.tsv,
+#                                       (metadata/external_inputs.tsv,
 #                                        metadata/reference_manifest.tsv)
 # Anything else is reported as an orphan.
 # =============================================================================
@@ -94,7 +94,7 @@ frozen <- basename(list.files("data/frozen", pattern = "\\.(csv|txt|tsv)(\\.gz)?
 frozen <- unique(sub("\\.gz$", "", frozen))
 
 external <- character(0)
-for (f in c("metadata/circRNA_input_manifest.tsv", "metadata/reference_manifest.tsv",
+for (f in c("metadata/external_inputs.tsv", "metadata/reference_manifest.tsv",
              "metadata/external_inputs.tsv")) {
   if (!file.exists(f)) next
   x <- suppressWarnings(read_tsv(f, show_col_types = FALSE, progress = FALSE))
@@ -153,7 +153,7 @@ cat("  ordering violations   : ", ordering, "\n", sep = "")
 
 if (orphans > 0 || ordering > 0) {
   cat("\nFAILED - declare the source in metadata/stage_io.tsv, or list the file as\n")
-  cat("external in metadata/circRNA_input_manifest.tsv, or fix the stage order.\n")
+  cat("external in metadata/external_inputs.tsv, or fix the stage order.\n")
   quit(status = 1)
 }
 cat("\nPASS\n")

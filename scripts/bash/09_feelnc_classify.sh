@@ -1,23 +1,17 @@
 #!/usr/bin/env bash
-# Stage 09: lncRNA identification and classification (FEELnc)
+# Stage 09 - lncRNA identification and classification (FEELnc).
 #
-#   1. FEELnc_filter.pl     -> candidate transcript set (exon lines only)
-#   2. FEELnc_codpot.pl     -> .lncRNA.gtf / .mRNA.gtf / .noORF.gtf
-#   3. FEELnc_classifier.pl -> lncRNA_classes_<prefix>_1kb_100kb.txt
+#   FEELnc_filter.pl     -> candidate transcript set (exon lines only)
+#   FEELnc_codpot.pl     -> .lncRNA.gtf / .mRNA.gtf / .noORF.gtf
+#   FEELnc_classifier.pl -> lncRNA_classes_<prefix>_1kb_100kb.txt
 #
-# Settings are taken verbatim from archive/raw_scripts_original/bash_scripts/bash_scripts.txt,
-# which records four successive FEELnc runs, all with:
-#     -b transcript_biotype=protein_coding -b transcript_status=KNOWN --mode=intergenic
-# and a classifier window of 1 kb / 100 kb (hence the historical filename
-# lncRNA_classes_..._1kb_100kb.txt).
+# Settings: -b transcript_biotype=protein_coding -b transcript_status=KNOWN
+#           --monoex=1 --mode=intergenic --window=1000 --maxwindow=100000
 #
-# WHICH candidate GTF was final is an OPEN item: the notebook shows the input
-# evolving through candidate_lncRNA_NE6_NE24.gtf -> candidate_lncRNAs_NE6_NE24_oct.gtf
-# -> cand_lncRNAs_NE6_NE24_annotated.gtf -> cand_lncRNAs_ALLPE_annotated.gtf.
-# See docs/OPEN_ITEMS.md.
+# Env: GTF_FILE, GENOME_FASTA, GFFCOMPARE_OUTPUT, FEELNC_OUTPUT, PREFIX,
+#      FEELNC_WINDOW, FEELNC_MAXWINDOW
 #
-# Downstream: stage 09b normalises these outputs into the exons/ layout that
-# the Babi preprocessing chain (09c-09e) and R01 expect.
+# Next: 09b_feelnc_split_exon_gtfs.sh
 
 set -euo pipefail
 
@@ -35,29 +29,10 @@ GTF_FILE="${GTF_FILE:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.${RELEASE}.g
 GENOME_FASTA="${GENOME_FASTA:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.primary_assembly.fa}"
 GFFCOMPARE_OUTPUT="${GFFCOMPARE_OUTPUT:-results/07_gffcompare}"
 FEELNC_OUTPUT="${FEELNC_OUTPUT:-results/09_feelnc_classify}"
-# RESOLVED against the raw command notebook. The Methods are wrong.
-#
-# archive/raw_scripts_original/bash_scripts/bash_scripts.txt records seven
-# FEELnc_classifier runs. The FINAL one - the 6+24 h rn8 run, under the
-# heading "Para 6 y 24 hrs", whose output filename is exactly what this
-# pipeline consumes - is at line 300:
-#
-#   FEELnc_classifier.pl -i cand_lncRNAs_CNE624_rn8_8_annotated.gtf.lncRNA.gtf \
-#     -a .../Rattus_norvegicus.GRCr8.114.gtf \
-#     --window=1000 --maxwindow=100000 \
-#     > lncRNA_classes_CNE624_rn8_8_annotated_1kb_100kb.txt
-#
-# --window=200 appears only in the six EARLIER exploratory runs (lines 199,
-# 207, 209, 219, 227), every one of which used maxwindow 10000 or 50000 and
-# produced a differently named file that nothing consumes.
-#
-# The Methods' "200 bp to 100 kb window (--window=200 --maxwindow=100000)"
-# pairs the window from the discarded runs with the maxwindow from the final
-# one. 1000/100000 is correct. See docs/MANUSCRIPT_ALIGNMENT.md.
 FEELNC_WINDOW="${FEELNC_WINDOW:-1000}"
 FEELNC_MAXWINDOW="${FEELNC_MAXWINDOW:-100000}"
 # Dataset prefix. The historical analysis used CNE_6_24_HISAT2 (6 h + 24 h,
-# HISAT2). Only the HISAT2 branch is carried forward; see docs/OPEN_ITEMS.md.
+# HISAT2). Only the HISAT2 branch is carried forward; see docs/OPEN_ISSUES.md.
 PREFIX="${PREFIX:-CNE_6_24_HISAT2}"
 
 mkdir -p "$FEELNC_OUTPUT"

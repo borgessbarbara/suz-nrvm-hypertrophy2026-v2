@@ -1,52 +1,28 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R01 — transcriptome metadata and annotation.
+# R01 - Transcript metadata and annotation.
 #
-# Ported from "Babi analysis/2_nrvm_transcriptome_metadata_handling.qmd"
-# (B. Borges, 671 lines), which is the script that actually produced the
-# hisat2_6_24_meta_ann.csv and hisat2_6_24_meta_novel_lncRNA.csv files that
-# six downstream scripts read and that no script in the repository previously
-# generated.
+# Builds, for the HISAT2 6+24 h dataset:
+#   <prefix>_meta_ann.csv              annotated transcripts with exon counts
+#   <prefix>_meta_novel_lncRNA.csv     novel lncRNA loci (class codes u, i, x)
+#   <prefix>_exon_lengths.csv          per-exon table
+#   <prefix>_incompatible_lncRNA.csv   lncRNA predictions Ensembl calls otherwise
+#   <prefix>.compatible.gtf            the retained transcript set
+#   <prefix>_feelnc_validated.csv      FEELnc relations for validated lncRNAs
+#   gtf_outputs/<prefix>_final_annotated.gtf
 #
-# The eight analysis steps are preserved exactly:
-#   1  load tmap + FEELnc classes + lncRNA GTF + other-RNA GTF
-#   2  drop non-stranded transcripts, export stranded GTFs, tag pred_biotype
-#   2a gffcompare class-code summary
-#   3  biomaRt annotation of class "=", "c", "k" transcripts   <-- PINNED HOST
-#   4  drop lncRNA predictions that Ensembl calls something else (unless
-#      class "=" or "c"), export the compatible GTF
-#   5  exon lengths and per-transcript exon counts FROM THE GTF  -> _meta_ann.csv
-#   6  novel lncRNA characterisation (class "u", "i", "x")       -> _meta_novel_lncRNA.csv
-#   7  FEELnc filtering to validated lncRNAs
-#   8  final combined annotated GTF
+# This is the only stage that queries Ensembl. The archive host is pinned in
+# scripts/R/lib/ensembl.R, driven by metadata/reference_release.tsv.
 #
-# WHAT CHANGED
-# ------------
-#  * HISAT2 ONLY. The original ran four dataset configs (STAR 24h, HISAT2 24h,
-#    STAR 6+24h, HISAT2 6+24h). S. Urquiza confirmed only HISAT2 was used
-#    ("Si, solo com hisat2"), so the STAR configs are gone. That also moots the
-#    unexplained STAR novel-lncRNA deficit (48/63 novel transcripts for STAR
-#    against 2,597/3,786 for HISAT2).
-#  * biomaRt is pinned. The original used version = 114, resolved at runtime
-#    against www.ensembl.org. This uses the release-115 archive host via
-#    lib/ensembl.R. See docs/REFERENCE_AUDIT.md for why that is a safe change:
-#    114 and 115 are both GRCr8.
-#  * execute-dir "C:/Users/Bárbara/OneDrive/Documents/seba-short-reads" and all
-#    relative paths are replaced by CLI arguments.
-#  * The stranded GTFs from step 2 were written back beside the inputs; they
-#    now go to --out-dir, leaving inputs read-only.
-#  * kable() display tables are written as CSV summaries instead of printed.
+# Usage:   Rscript scripts/R/01_transcriptome_metadata_annotation.R [--in-dir DIR] [--out-dir DIR]
+#          Rscript scripts/R/01_transcriptome_metadata_annotation.R --dry-run-biomart
+#          Rscript scripts/R/01_transcriptome_metadata_annotation.R --help
 #
-# PROVENANCE CAVEAT
-# -----------------
-# "Babi analysis/.Rhistory" shows the interactive session that produced the
-# shipped files calling run_full_analysis() with a FOURTH argument,
-# exon_attributes, which the committed .qmd does not accept. In v1 of the
-# notebook exon coordinates came from a second biomaRt round-trip; in v2 they
-# come from the GTF (step 5 above). The committed .qmd is therefore not
-# byte-for-byte the code that produced the shipped CSVs. That is one of the
-# two reasons those CSVs ship frozen under data/frozen/ rather than being
-# regenerated. See docs/OPEN_ITEMS.md.
+# Requires bash stages 07 and 09 through 09e.
+#
+# Adapted from the transcriptome-metadata notebook (B. Borges). The shell steps
+# it depends on are in archive/transcriptome_metadata_original/.
+# Changes from the original are listed in docs/CHANGES_FROM_ORIGINALS.md
 # =============================================================================
 
 suppressPackageStartupMessages({
@@ -313,7 +289,7 @@ write_out(feelnc_validated, out_dir, paste0(prefix, "_feelnc_validated.csv"))
 
 # Recorded for the record: in the historical input every row already had
 # isBest == 1 (42,040 of 42,040), so the isBest filter applied downstream in
-# R06/R13 is a no-op on this file. See docs/OPEN_ITEMS.md.
+# R06/R13 is a no-op on this file. See docs/OPEN_ISSUES.md.
 n_best <- if ("isBest" %in% names(feelnc_data)) sum(feelnc_data$isBest == 1) else NA_integer_
 sw("07_final", data.frame(
   Dataset = c("Final Known Transcripts", "Novel lncRNAs",
@@ -385,4 +361,4 @@ sw("08_final_gtf", data.frame(
 message("[R01] complete -> ", out_dir)
 message("[R01] NOTE: the manuscript figures were produced from the Ensembl-114 ",
         "copies of these tables, shipped under data/frozen/. Compare before ",
-        "substituting these outputs. See docs/OPEN_ITEMS.md.")
+        "substituting these outputs. See docs/OPEN_ISSUES.md.")

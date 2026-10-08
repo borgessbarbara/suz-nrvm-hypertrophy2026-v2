@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
-# Stage 03: Quality control on trimmed FASTQ files (FastQC)
-# Produces HTML/ZIP reports for all trimmed FASTQ files
+# Stage 03 - quality control on the trimmed FASTQ files (FastQC).
+#
+# Writes one HTML/ZIP report pair per trimmed file, for comparison against the
+# stage 01 reports.
+#
+# Usage:  bash scripts/bash/03_qc_trimmed.sh
+# Env:    TRIM_OUTPUT, QC_TRIMMED, THREADS
+#
+# Next: 04_align_hisat2.sh
 
 set -euo pipefail
 

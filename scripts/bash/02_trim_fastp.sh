@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
-# Stage 02: Adapter and quality trimming (fastp)
-# Handles both paired-end and single-end reads with parameters:
-#   -f 10 -F 10 (trim front)
-#   -3 (trim tail, 3' end)
-#   --cut_tail_mean_quality 28 (quality threshold)
-#   -q 30 (minimum base quality)
+# Stage 02 - adapter and quality trimming (fastp).
+#
+# Handles paired-end and single-end libraries. Settings:
+#   -f 10 -F 10                     trim 10 bases from the front of each read
+#   -3                              trim the 3' tail
+#   --cut_tail_mean_quality 28      tail-trimming quality threshold
+#   -q 30                           minimum base quality
+#
+# Usage:  bash scripts/bash/02_trim_fastp.sh
+# Env:    FASTQ_DIR, TRIM_OUTPUT, THREADS, TRIM_FRONT, TRIM_QUALITY,
+#         MIN_BASE_QUALITY
+#
+# Next: 03_qc_trimmed.sh
 
 set -euo pipefail
 

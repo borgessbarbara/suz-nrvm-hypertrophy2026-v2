@@ -1,8 +1,17 @@
 #!/usr/bin/env bash
-# Stage 11: Small RNA/miRNA quantification (miRge3.0)
-# Identifies and quantifies miRNAs from small RNA-seq libraries
-# Uses miRBase database (confirmed final choice)
-# Runs in isolated conda environment (env_mirge)
+# Stage 11 - small-RNA/miRNA quantification (miRge3.0).
+#
+# Quantifies miRNAs from the small-RNA libraries against the rat miRBase
+# library (-on rat -db mirbase). Adapters and the DE metadata file come from
+# the recorded 24 h invocation; no 6 h command was ever recorded.
+#
+# Runs in its own conda environment (env_mirge).
+#
+# Usage:  bash scripts/bash/11_mirge3_run.sh
+# Env:    SMALLRNA_FASTQ_DIR, MIRGE_LIB, MIRGE_OUTPUT, MIRGE_ORGANISM,
+#         MIRGE_DB, ADAPTER_3, ADAPTER_G, METADATA_CSV, THREADS
+#
+# Next: 12_intarna_run.sh
 
 set -euo pipefail
 

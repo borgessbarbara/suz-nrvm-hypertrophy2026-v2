@@ -23,3 +23,8 @@ merged_annotated_rn8_CNE624_8_H.fa	gffread (bash stage 08)	derived	R19	Transcrip
 all_transcripts.fa	gffread (bash stage 08)	derived	R19
 merged_lncRNAs.fa	gffread (bash stage 08)	derived	R19
 lncRNA_gene_to_transcript_map_from_classes.csv	derived from the FEELnc classes	derived	R19	Built from lncRNA_classes_*.txt.
+miRWalk_miRNA_Targets_{3UTR,5UTR,CDS}_{UP,DOWN}{6,24}.csv	EXTERNAL (miRWalk v3.0 web)	NOT SUPPLIED	circRNA module	Twelve files. Not in any package received.
+miRDB target prediction data_4miRNAs_correlation.xls.xlsx	EXTERNAL (miRDB)	NOT SUPPLIED	circRNA module	Only Excel input in the corpus; note the doubled .xls.xlsx extension.
+rn8.yml	EXTERNAL	NOT SUPPLIED	circRNA module	Observed in the CIRIquant shell scripts. Must be recovered or recreated and committed.
+rn8.refflat.nochr.txt	EXTERNAL	NOT SUPPLIED	circRNA module	Referenced by all three CIRCexplorer scripts.
+rat_primary_assembly_orderr8.fa	EXTERNAL	VERIFY	circRNA module	Likely the same GRCr8 assembly as the project lock; verify by checksum.

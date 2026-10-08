@@ -11,7 +11,7 @@
 # scripts actually invoke `CIRCexplorer2 parse` and `CIRCexplorer2 annotate`
 # together with CLEAR's run3.py and circ_quant.py. CLEAR is the package that
 # provides the circexplorer3-era workflow. Both are pinned below; see
-# docs/METHODS_NOTES.md before changing the methods text either way.
+# docs/CHANGES_FROM_ORIGINALS.md before changing the methods text either way.
 name: suz_circrna
 channels:
   - conda-forge

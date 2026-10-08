@@ -1,24 +1,16 @@
 #!/usr/bin/env bash
-# Stage 14: circRNA detection and quantification with CIRIquant.
+# Stage 14 - circRNA detection and quantification, CIRIquant branch.
 #
-# Consolidates:
-#   archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/CIRIquant_all_run_2023_Seba_NE_Cardio_1.sh  H1-H4
-#   archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/CIRIquant_all_run_2023_Seba_NE_Cardio_2.sh  SQ1-SQ8
-#   archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/CIRIquant_all_run_2023_Seba_NE_Cardio_3.sh  SQ13-SQ16
+# One sample-sheet-driven loop: fastp, then CIRIquant.
 #
-# The CIRIquant invocation is preserved exactly:
-#     CIRIquant -t 30 -1 $read1 -2 $read2 --config rn8.yml -o $sample -p $sample
-# and so are the fastp settings. The commented-out `--circ ... --tool
-# CIRCexplorer2` variant in the originals is NOT enabled here; if the deposited
-# results used it, say so in docs/OPEN_ITEMS.md and switch --use-circexplorer-prior on.
+# Usage:  bash scripts/bash/14_circrna_ciriquant.sh --config rn8.yml [options]
+#         bash scripts/bash/14_circrna_ciriquant.sh --help
 #
-# BLOCKING INPUT: rn8.yml
-# -----------------------
-# CIRIquant needs a YAML config naming the genome FASTA, the GTF, and the
-# bwa/hisat2/stringtie/samtools binaries. The original points at
-# /media/storage2/jpablo/CIRIquant/rn8.yml, which is not in any package
-# received. This stage fails loudly rather than guessing; see
-# metadata/circRNA_input_manifest.tsv.
+# Requires the CIRIquant YAML config, which is not in this repository. The
+# stage fails with an explanation rather than guessing; see
+# metadata/external_inputs.tsv.
+#
+# Next: 15_circrna_ciri_as.sh
 
 set -euo pipefail
 
@@ -81,8 +73,8 @@ The historical scripts reference
     /media/storage2/jpablo/CIRIquant/rn8.yml
 which was never included in any package received from the circRNA co-author.
 It is recorded as a blocking open item:
-    metadata/circRNA_input_manifest.tsv   (row: CIRIquant config)
-    docs/OPEN_ITEMS.md
+    metadata/external_inputs.tsv   (row: CIRIquant config)
+    docs/OPEN_ISSUES.md
 
 Recreating it requires knowing exactly which genome FASTA and GTF the circRNA
 branch used - which is itself an open item, because the circRNA scripts carry

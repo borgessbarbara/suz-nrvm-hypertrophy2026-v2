@@ -1,15 +1,15 @@
 # ---------------------------------------------------------------------------
-# lib/plotting.R — one figure-saving path for every stage.
+# lib/plotting.R - one figure-saving path and one palette for every stage.
 #
-# The originals each rolled their own: 05_Figure3_mRNA_programs.R falls back
-# from cairo_pdf() to pdf(), 36b_ optionally loads patchwork, 24_FINAL_ uses
-# ggsave(useDingbats = FALSE) at dpi 600. Standardise on: paired PDF + PNG,
-# cairo when available, configurable DPI (default 600, as every original used).
+# Exports:
+#   save_figure()             write a paired PDF and PNG, cairo where available
+#   suz_theme()               shared ggplot theme
+#   suz_direction_colours     UP / DOWN / NS
+#   suz_rna_class_colours     mRNA / lncRNA / miRNA / circRNA
+#   suz_phase_colours         Early / Sustained / Late / Reversal
+#   suz_direction_levels      DOWN at the base, UP on top
 #
-# Note for the record: Babi analysis/nrvm_transcriptome_visualization.qmd has
-# zero ggsave() calls — all 40+ of its panels existed only inside the rendered
-# HTML. Any panel from that notebook that reaches the manuscript must be
-# re-emitted through save_figure() so there is a file on disk.
+# Figures are written at --dpi, default 600.
 # ---------------------------------------------------------------------------
 
 SUZ_DPI_DEFAULT <- 600

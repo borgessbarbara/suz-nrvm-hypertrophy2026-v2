@@ -1,29 +1,9 @@
 #!/usr/bin/env bash
-# Stage 15: BWA-MEM -> CIRI2 -> CIRI-AS circRNA sequence reconstruction.
+# Stage 15 - circRNA sequence reconstruction (BWA-MEM, CIRI2, CIRI-AS).
 #
-# Ported from archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/CIRI_2_run_all_seba.sh.
+# Note the fastp settings differ from stages 13 and 14: this branch adds
+# -b 140 -B 140 -l 140, hard-trimming to 140 bp for CIRI-AS.
 #
-# SAMPLE COVERAGE — DELIBERATELY NOT WIDENED
-# ------------------------------------------
-# The original loop is `for m in {13..16}`, i.e. SQ13-SQ16 ONLY. There is no
-# CIRI2/CIRI-AS loop for H1-H4 or SQ1-SQ8 anywhere in the material received.
-# The audit flags this (remaining_open_items.tsv, category CIRI_AS) with the
-# instruction: parameterize the generic command for the full sample sheet
-# "only if that reflects the actual analysis; otherwise recover the missing
-# batch commands."
-#
-# So --only defaults to SQ13,SQ14,SQ15,SQ16. Running the full sheet is
-# possible but must be an explicit choice: pass --all and you will be asked to
-# confirm, because doing so silently would change what the methods describe.
-#
-# NOTE ON fastp: this branch uses DIFFERENT fastp settings from stages 13/14 —
-# it adds `-b 140 -B 140 -l 140`, hard-trimming reads to 140 bp. That is
-# required by CIRI-AS's fixed-length assumptions and is preserved verbatim.
-#
-# Reference note: this script uses Rattus_norvegicus.GRCr8.114.gtf, while the
-# project lock is GRCr8.115. Both are GRCr8 (releases 114 and 115 share the
-# assembly; 113 and earlier are mRatBN7.2), so this is an annotation-release
-# gap, not an assembly conflict. See docs/REFERENCE_AUDIT.md.
 
 set -euo pipefail
 
@@ -100,7 +80,7 @@ if [ "$RUN_ALL" -eq 1 ] && [ "$CONFIRM_ALL" -ne 1 ]; then
 The original CIRI2/CIRI-AS loop covered SQ13-SQ16 only. Running every sample
 produces reconstruction output for samples the published analysis never had,
 which changes what the methods section describes. If that is intended, pass
---yes-widen as well and record the decision in docs/OPEN_ITEMS.md.
+--yes-widen as well and record the decision in docs/OPEN_ISSUES.md.
 EOF
   exit 1
 fi

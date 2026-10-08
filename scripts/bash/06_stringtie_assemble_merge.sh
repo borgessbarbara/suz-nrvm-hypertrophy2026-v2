@@ -1,6 +1,21 @@
 #!/usr/bin/env bash
-# Stage 06: Transcript assembly and merge (StringTie)
-# Assembles transcripts per sample using guided mode, then merges all samples
+# Stage 06 - transcript assembly and merge (StringTie).
+#
+# Phase 1 assembles each BAM in reference-guided mode (-G); phase 2 merges all
+# per-sample GTFs into one reconstructed transcriptome.
+#
+# STRINGTIE_EXTRA passes additional flags to phase 1 and defaults to empty,
+# which is plain guided assembly as the manuscript Methods describe it. The
+# invocation actually used for the GRCr8 run was never recorded; the recorded
+# runs used --conservative, and two early ones also -f 0.05 -m 200 -t -s 3.0.
+# See docs/OPEN_ISSUES.md before choosing.
+#
+# Usage:  bash scripts/bash/06_stringtie_assemble_merge.sh
+#         STRINGTIE_EXTRA="--conservative" bash scripts/bash/06_stringtie_assemble_merge.sh
+# Env:    BAM_OUTPUT, GTF_FILE, STRINGTIE_OUTPUT, STRINGTIE_MERGED,
+#         STRINGTIE_EXTRA, THREADS, ENSEMBL_RELEASE
+#
+# Next: 07_gffcompare.sh
 
 set -euo pipefail
 
@@ -21,6 +36,8 @@ BAM_OUTPUT="${BAM_OUTPUT:-results/05_hisat2_bam}"
 THREADS="${THREADS:-8}"
 STRINGTIE_OUTPUT="${STRINGTIE_OUTPUT:-results/06_stringtie_assembly}"
 STRINGTIE_MERGED="${STRINGTIE_MERGED:-results/06_stringtie_assembly/merged.gtf}"
+STRINGTIE_EXTRA="${STRINGTIE_EXTRA:-}"
+read -r -a STRINGTIE_EXTRA_ARR <<< "$STRINGTIE_EXTRA"
 
 # Ensure output directory exists
 mkdir -p "$STRINGTIE_OUTPUT"
@@ -30,6 +47,7 @@ echo "[INFO] Reference GTF: $GTF_FILE"
 echo "[INFO] BAM input: $BAM_OUTPUT"
 echo "[INFO] Output directory: $STRINGTIE_OUTPUT"
 echo "[INFO] Threads: $THREADS"
+echo "[INFO] Extra assembly flags: ${STRINGTIE_EXTRA:-<none>}"
 echo ""
 
 # Check if GTF exists
@@ -64,6 +82,7 @@ for bam_file in $BAM_FILES; do
   stringtie \
     -p "$THREADS" \
     -G "$GTF_FILE" \
+    ${STRINGTIE_EXTRA_ARR[@]+"${STRINGTIE_EXTRA_ARR[@]}"} \
     -o "$output_gtf" \
     "$bam_file"
 

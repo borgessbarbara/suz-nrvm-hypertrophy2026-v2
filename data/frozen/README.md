@@ -34,7 +34,7 @@ the annotated-vs-novel lncRNA split. Regenerating would therefore change
 published numbers.
 
 **2. The committed notebook is not exactly the code that produced them.**
-`Babi analysis/.Rhistory` shows the session that generated these files calling
+The `.Rhistory` of the original analysis shows the session that generated
 `run_full_analysis(config, ensembl, tx_attributes, exon_attributes)` — four
 arguments. The committed `.qmd` defines the function with three. In the
 earlier version exon coordinates came from a second biomaRt round-trip; in the
@@ -42,9 +42,9 @@ committed version they come from the GTF. So an intermediate variant produced
 the shipped files, and that variant was not preserved.
 
 **3. Their upstream chain has a reconstructed step.** R01 depends on bash
-stages 09b–09e, and 09b is itself a reconstruction (see
-`docs/OPEN_ITEMS.md`). Regenerating these tables would propagate that
-uncertainty into Figure 2B.
+stages 09b–09e, and 09b is itself a reconstruction (see `docs/OPEN_ISSUES.md`
+§4.1). Regenerating these tables would propagate that uncertainty into
+Figure 2B.
 
 ## Who reads them
 
@@ -77,4 +77,4 @@ major_iso_id, ref_match_len, pred_biotype
 
 Regenerate with R01, then compare against these copies and report the delta to
 S. Urquiza. Figure 2B's counts and the lncRNA inventory in Figure 2C / S2 both
-move if the annotation release changes.
+move if the annotation release changes. Tracked as `docs/OPEN_ISSUES.md` §8.3.

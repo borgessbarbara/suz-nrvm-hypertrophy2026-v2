@@ -1,71 +1,19 @@
 # ---------------------------------------------------------------------------
-# lib/ensembl.R — the single biomaRt entry point for the whole pipeline.
+# lib/ensembl.R - the single biomaRt entry point.
 #
-# Every Ensembl query in this repository goes through connect_ensembl(). There
-# must be no other useMart()/useEnsembl() call anywhere under scripts/R/;
+# Every Ensembl query goes through connect_ensembl(). There must be no other
+# useMart()/useEnsembl() call under scripts/R/;
 # scripts/checks/check_biomart_pinning.sh enforces that.
 #
-# WHY THE HOST IS PINNED
-# ----------------------
-# The historical scripts connected to the live Ensembl service with no version
-# pin at all:
+# The release is set in metadata/reference_release.tsv and drives both the
+# biomaRt archive host and the GTF that bash stage 00 downloads, so they
+# cannot drift apart. Override for one run with ENSEMBL_RELEASE=114.
 #
-#   Babi analysis/2_nrvm_transcriptome_metadata_handling.qmd:533
-#       useEnsembl(biomart = "genes", dataset = "rnorvegicus_gene_ensembl",
-#                  version = 114)
-#   archive/final_package_v3_original/02_CIRCRNA_UPSTREAM_RAW_PROVENANCE/00_annotation_biomart.Rmd:42,122
-#       useDataset("rnorvegicus_gene_ensembl", useMart("ensembl"))
+#   release 114 -> https://may2025.archive.ensembl.org
+#   release 115 -> https://sep2025.archive.ensembl.org
 #
-# `version=` is resolved by biomaRt at runtime against www.ensembl.org, and that
-# resolution has changed between biomaRt releases; `useMart("ensembl")` is not
-# pinned at all. Neither is reproducible. An explicit archive host is.
-#
-#   https://sep2025.archive.ensembl.org/  ==  Ensembl release 115
-#
-# Verified against the Ensembl FTP: release-115 files are dated 2025-09-03, and
-# release 115 ships Rattus_norvegicus.GRCr8.115.gtf — the exact GTF this project
-# locks to (metadata/reference_manifest.tsv).
-#
-# Do NOT also pass version= together with host=. With an archive host the
-# release is already determined, and passing both is redundant at best and
-# contradictory at worst.
-#
-# Releases 114 and 115 are both GRCr8; 113 and earlier are mRatBN7.2. See
-# docs/REFERENCE_AUDIT.md.
-# ---------------------------------------------------------------------------
-
-# ---------------------------------------------------------------------------
-# THE ENSEMBL RELEASE IS SET IN ONE PLACE: metadata/reference_release.tsv.
-#
-# Changing the release must change the biomaRt archive AND the GTF/FASTA that
-# stage 00 downloads, together. They are driven from the same file so they
-# cannot drift apart.
-#
-#   release 114 -> https://may2025.archive.ensembl.org   (ensembl_mart_114)
-#   release 115 -> https://sep2025.archive.ensembl.org   (ensembl_mart_115)
-# Both verified live against /biomart/martservice?type=registry.
-#
-# WHICH RELEASE THIS PROJECT ACTUALLY USED
-# ----------------------------------------
-# Five independent lines of evidence say release 114:
-#   1. The final FEELnc run - the one whose output filename the pipeline
-#      consumes - uses Rattus_norvegicus.GRCr8.114.gtf
-#      (bash_scripts.txt:293 and :300).
-#   2. The circRNA branch uses GRCr8.114.gtf
-#      (CIRI_2_run_all_seba.sh:6, vis_run_ciri2_seba.sh:2).
-#   3. All three Babi notebooks pin biomaRt to version = 114.
-#   4. The frozen metadata tables in data/frozen/ were built at 114.
-#   5. Figure 2B reproduces EXACTLY from those 114 tables.
-# No executed command anywhere references release 115.
-#
-# Every mention of "115" in the received material is prose, and always as
-# "Rattus_norvegicus.mRatBN7.2.115.gtf" - a file that does not exist, because
-# release 115 ships GRCr8, not mRatBN7.2. It originates in the 7 Jul starter
-# package's reference_manifest.tsv and propagated from there into the
-# manuscript Methods.
-#
-# See docs/REFERENCE_AUDIT.md. The active release is whatever
-# metadata/reference_release.tsv says; this file does not decide it.
+# Exports: connect_ensembl(), check_ensembl_connection(), suz_getBM(),
+#          suz_ensembl_release(), suz_ensembl_host().
 # ---------------------------------------------------------------------------
 
 SUZ_ENSEMBL_ARCHIVES <- c("114" = "https://may2025.archive.ensembl.org",
@@ -97,12 +45,6 @@ SUZ_ENSEMBL_DATASET      <- "rnorvegicus_gene_ensembl"
 
 #' Strip a trailing slash from a host URL.
 #'
-#' THIS MATTERS. biomaRt pastes "/biomart/martservice" onto the host, so
-#' "https://sep2025.archive.ensembl.org/" becomes
-#' ".../biomart//martservice" and the call fails with the entirely unhelpful
-#'     Error: Can't retrieve empty body.
-#' The same URL without the trailing slash works. Both forms are accepted
-#' here so nobody loses an afternoon to it.
 suz_normalize_host <- function(host) {
   if (is.null(host) || !nzchar(host)) return(host)
   sub("/+$", "", trimws(host))
@@ -166,7 +108,7 @@ connect_ensembl <- function(host    = NULL,
        " attempts.\n  host: ", host,
        "\n  last error: ", conditionMessage(last_err),
        "\nIf the archive has been retired, record the replacement host in ",
-       "metadata/reference_manifest.tsv and docs/REFERENCE_AUDIT.md before ",
+       "metadata/reference_manifest.tsv and docs/CHANGES_FROM_ORIGINALS.md before ",
        "changing it here — the annotation release is part of the methods.",
        call. = FALSE)
 }
@@ -201,7 +143,7 @@ suz_getBM <- function(attributes, filters, values, mart, ...) {
       !any(nzchar(filters))) {
     stop("suz_getBM(): 'filters' is required whenever 'values' is supplied. ",
          "A getBM() call with values= but no filters= silently ignores the ",
-         "values (see docs/OPEN_ITEMS.md).", call. = FALSE)
+         "values (see docs/OPEN_ISSUES.md).", call. = FALSE)
   }
   biomaRt::getBM(attributes = attributes, filters = filters,
                  values = values, mart = mart, ...)

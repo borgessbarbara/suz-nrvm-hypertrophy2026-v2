@@ -1,5 +1,5 @@
 # QC, trimming, alignment, assembly, annotation, quantification.
-# Covers bash stages 01-10 and the Babi preprocessing chain 09b-09e.
+# Covers bash stages 01-10 and the transcript-metadata chain 09b-09e.
 #
 # Versions follow metadata/software_tool_inventory.tsv. Where the inventory
 # says TO_FILL the pin is left open here too; replace with the exported

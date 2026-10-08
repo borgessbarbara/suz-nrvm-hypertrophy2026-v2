@@ -1,19 +1,12 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R22 — Figure S3C circRNA and the cross-ncRNA convergent modules
+# R22 - Figure S3C circRNA and the cross-ncRNA convergent modules.
 #
-# PORTED, NOT REWRITTEN.
-# Source: archive/.../24_FINAL_circRNA_lncRNA_miRNA_mRNA_cross_reference.R (894 lines)
-# Produced by scripts/dev/port_from_archive.sh, which applies exactly five
-# classes of change and passes everything else through unmodified:
-#   1. this preamble (optparse CLI, lib/ sourcing, base_dir/out_dir/dpi)
-#   2. hard-coded C:/Users/sebau/... base_dir and out_dir commented out
-#   3. base = "C:/Users/sebau/..." default arguments -> base = base_dir
-#   4. browser-download duplicates "name(1).csv" removed from candidate lists
-#   5. the /mnt/data container search path removed
+# Usage:   Rscript scripts/R/22_circRNA_cross_reference.R [--in-dir DIR] [--out-dir DIR] [--dpi N]
+#          Rscript scripts/R/22_circRNA_cross_reference.R --help
 #
-# Diff this file against the archived original to audit the port:
-#   diff archive/.../24_FINAL_circRNA_lncRNA_miRNA_mRNA_cross_reference.R scripts/R/24_circRNA_cross_reference.R
+# Adapted from archive/circrna_addendum_v1_original/scripts/24_FINAL_circRNA_lncRNA_miRNA_mRNA_cross_reference.R
+# Changes from the original are listed in docs/CHANGES_FROM_ORIGINALS.md
 # =============================================================================
 
 suppressPackageStartupMessages(library(optparse))
@@ -41,7 +34,6 @@ dpi_png  <- .opt$dpi
 message("[R22] in-dir : ", base_dir)
 message("[R22] out-dir: ", out_dir)
 
-# ----------------------------- ported body ----------------------------------
 suppressPackageStartupMessages({
   library(tidyverse)
   library(readr)
@@ -49,9 +41,9 @@ suppressPackageStartupMessages({
   library(scales)
 })
 
-## [ported] base_dir is set from the CLI in the preamble. Original line:
+
 # base_dir <- "C:/Users/sebau/OneDrive/Documentos/Tesis_Doc_SU-Z/Script_Analysis/NE_trancriptome_analysis/Salmon_Quantification_Analysis/NE6_24_analysis"
-## [ported] out_dir is set from the CLI in the preamble. Original line:
+
 # out_dir <- file.path(base_dir, "CircRNA_ceRNA_cross_reference_FINAL")
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
@@ -384,7 +376,7 @@ selected_miRNAs <- hc_duplexes %>%
   distinct(timepoint, miRNA, miRNA_key, miRNA_direction_file, miRNA_log2FC, miRNA_padj, miRNA_verification)
 
 # 4. Read the complete lncRNA-miRNA-mRNA triplets and the previous priority/figure table
-## [ported] the "(1)" browser-download duplicates were removed from the three
+
 ## candidate lists below.
 lnc_complete_path <- find_first(c(
   "COHERENT_lncRNA_miRNA_mRNA_triplets.csv"

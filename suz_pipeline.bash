@@ -8,7 +8,7 @@
 #
 # Reference lock: Rattus_norvegicus.GRCr8.dna.primary_assembly.fa
 #                 Rattus_norvegicus.GRCr8.<REL>.gtf  (release from metadata/reference_release.tsv)
-#                 biomaRt archive follows the same release. See docs/REFERENCE_AUDIT.md.
+#                 biomaRt archive follows the same release. See docs/CHANGES_FROM_ORIGINALS.md.
 #
 # Stage groups:
 #   00-12   long RNA and small RNA     (env qc_align, mirge, intarna)
@@ -16,7 +16,7 @@
 #   13-16   circRNA module             (env circrna, intarna)
 #   R01-R26 analysis and figures       (env r)
 #
-# See README.md for the full stage table and docs/OPEN_ITEMS.md for what still
+# See README.md for the full stage table and docs/OPEN_ISSUES.md for what still
 # needs confirmation before the repository is frozen.
 # =============================================================================
 
@@ -47,7 +47,7 @@ Inputs
   --longrna-samples FILE    default metadata/longRNA_samples.tsv
   --smallrna-samples FILE   default metadata/smallRNA_samples.tsv
   --fastq-manifest FILE     default metadata/fastq_manifest.tsv
-  --genome-fasta FILE       default: downloaded by stage 00 (GRCr8 toplevel)
+  --genome-fasta FILE       default: built by stage 00 (GRCr8 primary assembly)
   --gtf FILE                default: downloaded by stage 00 (GRCr8.115)
   --skip-download-refs      do not run stage 00
 
@@ -63,7 +63,7 @@ Execution
 Notes
   * The circRNA module needs references and tools that are NOT in this
     repository (rn8.refflat, rn8.yml, CIRI2.pl, CIRI_AS.pl, a STAR index).
-    See metadata/circRNA_input_manifest.tsv. Those stages take their own
+    See metadata/external_inputs.tsv. Those stages take their own
     arguments; run them directly rather than through this wrapper.
   * Stage 09b is a RECONSTRUCTION of a step whose original command was never
     recovered. Verify it with scripts/checks/check_feelnc_split_counts.sh.
@@ -167,7 +167,7 @@ for s in "${ORDER[@]}"; do
    This stage needs resources that are not in the repository (refFlat,
    rn8.yml, CIRI2.pl, CIRI_AS.pl, STAR index). Run it directly:
      bash scripts/bash/$scr --help
-   See metadata/circRNA_input_manifest.tsv and docs/OPEN_ITEMS.md.
+   See metadata/external_inputs.tsv and docs/OPEN_ISSUES.md.
 EOF
     continue
   fi
@@ -196,4 +196,4 @@ fi
 
 echo
 echo "[INFO] pipeline finished. Outputs under $OUT"
-echo "[INFO] Before treating results as final, read docs/OPEN_ITEMS.md."
+echo "[INFO] Before treating results as final, read docs/OPEN_ISSUES.md."

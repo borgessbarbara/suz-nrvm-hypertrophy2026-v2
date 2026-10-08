@@ -1,19 +1,12 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R21 — Coherent ceRNA pairs and triplets, all records; feeds Figure 6B-F
+# R21 - Coherent ceRNA pairs and triplets; the input to the Figure 6 networks.
 #
-# PORTED, NOT REWRITTEN.
-# Source: archive/.../12_ceRNA_coherent_pairs_and_triplets_ALL_RECORDS_FINAL.R (982 lines)
-# Produced by scripts/dev/port_from_archive.sh, which applies exactly five
-# classes of change and passes everything else through unmodified:
-#   1. this preamble (optparse CLI, lib/ sourcing, base_dir/out_dir/dpi)
-#   2. hard-coded C:/Users/sebau/... base_dir and out_dir commented out
-#   3. base = "C:/Users/sebau/..." default arguments -> base = base_dir
-#   4. browser-download duplicates "name(1).csv" removed from candidate lists
-#   5. the /mnt/data container search path removed
+# Usage:   Rscript scripts/R/21_ceRNA_coherent_pairs_triplets.R [--in-dir DIR] [--out-dir DIR] [--dpi N]
+#          Rscript scripts/R/21_ceRNA_coherent_pairs_triplets.R --help
 #
-# Diff this file against the archived original to audit the port:
-#   diff archive/.../12_ceRNA_coherent_pairs_and_triplets_ALL_RECORDS_FINAL.R scripts/R/20_ceRNA_coherent_pairs_triplets.R
+# Adapted from archive/final_package_v3_original/01_FINAL_FIGURE_AND_ANALYSIS_SCRIPTS/12_ceRNA_coherent_pairs_and_triplets_ALL_RECORDS_FINAL.R
+# Changes from the original are listed in docs/CHANGES_FROM_ORIGINALS.md
 # =============================================================================
 
 suppressPackageStartupMessages(library(optparse))
@@ -41,7 +34,6 @@ dpi_png  <- .opt$dpi
 message("[R21] in-dir : ", base_dir)
 message("[R21] out-dir: ", out_dir)
 
-# ----------------------------- ported body ----------------------------------
 suppressPackageStartupMessages({
   library(tidyverse)
   library(readr)
@@ -49,9 +41,9 @@ suppressPackageStartupMessages({
   library(ggplot2)
 })
 
-## [ported] base_dir is set from the CLI in the preamble. Original line:
+
 # base_dir <- "C:/Users/sebau/OneDrive/Documentos/Tesis_Doc_SU-Z/Script_Analysis/NE_trancriptome_analysis/Salmon_Quantification_Analysis/NE6_24_analysis"
-## [ported] out_dir is set from the CLI in the preamble. Original line:
+
 # out_dir <- file.path(base_dir, "Paper_ceRNA_candidates_all_records")
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 energy_high <- -20

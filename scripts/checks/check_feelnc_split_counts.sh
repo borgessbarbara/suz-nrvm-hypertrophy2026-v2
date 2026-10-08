@@ -5,7 +5,7 @@
 # never recovered. The only evidence we have that the reconstruction is right
 # is that it reproduces the transcript counts of the historical outputs.
 #
-# Historical reference (SUZ2026/Babi analysis/exons/, CNE_6_24_HISAT2):
+# Historical reference (the original transcriptome-metadata analysis (exons/), CNE_6_24_HISAT2):
 #     <id>.annotated.gtf            46030 unique transcripts
 #     <id>.annotated.lncRNA.gtf     42127
 #     <id>.annotated.otherRNAs.gtf   3822
@@ -15,7 +15,7 @@
 #     46030 - 42127 - 3822 = 81 transcripts in neither split (the noORF bucket)
 #
 # Run it against the historical directory to establish the baseline:
-#   check_feelnc_split_counts.sh --dir "/c/.../Babi analysis/exons" \
+#   check_feelnc_split_counts.sh --dir "/path/to/transcriptome-metadata/exons" \
 #                                --prefix CNE_6_24_HISAT2
 # or against a pipeline run:
 #   check_feelnc_split_counts.sh --dir results/09b_exons

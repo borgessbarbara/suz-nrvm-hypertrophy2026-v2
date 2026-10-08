@@ -1,19 +1,12 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R19 — Prepare the lncRNA target FASTAs for IntaRNA stage 12
+# R19 - Builds the lncRNA target FASTAs for the IntaRNA run in bash stage 12.
 #
-# PORTED, NOT REWRITTEN.
-# Source: archive/.../09_extract_lncRNA_candidates_for_IntaRNA.R (303 lines)
-# Produced by scripts/dev/port_from_archive.sh, which applies exactly five
-# classes of change and passes everything else through unmodified:
-#   1. this preamble (optparse CLI, lib/ sourcing, base_dir/out_dir/dpi)
-#   2. hard-coded C:/Users/sebau/... base_dir and out_dir commented out
-#   3. base = "C:/Users/sebau/..." default arguments -> base = base_dir
-#   4. browser-download duplicates "name(1).csv" removed from candidate lists
-#   5. the /mnt/data container search path removed
+# Usage:   Rscript scripts/R/19_extract_lncRNA_for_intarna.R [--in-dir DIR] [--out-dir DIR] [--dpi N]
+#          Rscript scripts/R/19_extract_lncRNA_for_intarna.R --help
 #
-# Diff this file against the archived original to audit the port:
-#   diff archive/.../09_extract_lncRNA_candidates_for_IntaRNA.R scripts/R/18_extract_lncRNA_for_intarna.R
+# Adapted from archive/raw_scripts_original/R_scripts/09_extract_lncRNA_candidates_for_IntaRNA.R
+# Changes from the original are listed in docs/CHANGES_FROM_ORIGINALS.md
 # =============================================================================
 
 suppressPackageStartupMessages(library(optparse))
@@ -41,7 +34,6 @@ dpi_png  <- .opt$dpi
 message("[R19] in-dir : ", base_dir)
 message("[R19] out-dir: ", out_dir)
 
-# ----------------------------- ported body ----------------------------------
 
 suppressPackageStartupMessages({
   library(dplyr)
@@ -66,9 +58,9 @@ suppressPackageStartupMessages({
 #   to subset FASTA sequences.
 
 # User parameters
-## [ported] base_dir is set from the CLI in the preamble. Original line:
+
 # base_dir   <- "C:/Users/sebau/OneDrive/Documentos/Tesis_Doc_SU-Z/Script_Analysis/NE_trancriptome_analysis/Salmon_Quantification_Analysis/NE6_24_analysis"
-## [ported] out_dir is set from the CLI in the preamble. Original line:
+
 # out_dir  <- file.path(base_dir, "IntaRNA_lncRNA_candidates")
 
 # Edit this path to your transcript FASTA containing the lncRNA transcripts.

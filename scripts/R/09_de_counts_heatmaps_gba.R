@@ -1,19 +1,16 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# R09 — Figure 3A, Figure 3C miRNA, Figure 5A and Figure S4B: DE counts, miRNA temporal heatmap and lncRNA guilt-by-association
+# R09 - Figures 3A, 3C miRNA, 5A and S4A.
 #
-# PORTED, NOT REWRITTEN.
-# Source: archive/.../35_FINAL_missing_figures_miRNA_heatmap_DE_GBA.R (738 lines)
-# Produced by scripts/dev/port_from_archive.sh, which applies exactly five
-# classes of change and passes everything else through unmodified:
-#   1. this preamble (optparse CLI, lib/ sourcing, base_dir/out_dir/dpi)
-#   2. hard-coded C:/Users/sebau/... base_dir and out_dir commented out
-#   3. base = "C:/Users/sebau/..." default arguments -> base = base_dir
-#   4. browser-download duplicates "name(1).csv" removed from candidate lists
-#   5. the /mnt/data container search path removed
+# Up/down DE counts across all four RNA classes, the miRNA temporal heatmap,
+# the lncRNA guilt-by-association map, and the curated KEGG representation
+# among significant lncRNA-mRNA correlations.
 #
-# Diff this file against the archived original to audit the port:
-#   diff archive/.../35_FINAL_missing_figures_miRNA_heatmap_DE_GBA.R scripts/R/07_de_counts_heatmaps_gba.R
+# Usage:   Rscript scripts/R/09_de_counts_heatmaps_gba.R [--in-dir DIR] [--out-dir DIR] [--dpi N]
+#          Rscript scripts/R/09_de_counts_heatmaps_gba.R --help
+#
+# Adapted from archive/final_package_v3_original/01_FINAL_FIGURE_AND_ANALYSIS_SCRIPTS/35_FINAL_missing_figures_miRNA_heatmap_DE_GBA.R
+# Changes from the original are listed in docs/CHANGES_FROM_ORIGINALS.md
 # =============================================================================
 
 suppressPackageStartupMessages(library(optparse))
@@ -36,20 +33,19 @@ source(file.path(.here, "lib", "plotting.R"))
 
 base_dir <- normalizePath(.opt$`in-dir`, winslash = "/", mustWork = FALSE)
 out_dir  <- ensure_out_dir(.opt$`out-dir`)
-.suz_out_root <- out_dir   ## [ported] preserved: the body below rebinds out_dir
+.suz_out_root <- out_dir
 png_dpi  <- .opt$dpi
 dpi_png  <- .opt$dpi
 message("[R09] in-dir : ", base_dir)
 message("[R09] out-dir: ", out_dir)
 
-# ----------------------------- ported body ----------------------------------
 
 suppressPackageStartupMessages({
   library(tidyverse)
   library(scales)
 })
 
-out_dir <- ensure_out_dir(file.path(.suz_out_root, "Final_missing_figures_FINAL"))  ## [ported] was a CWD-relative path
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "Final_missing_figures_FINAL"))
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 # -----------------------------

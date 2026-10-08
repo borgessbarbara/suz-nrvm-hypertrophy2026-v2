@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
-# Stage 01: Quality control on raw FASTQ files (FastQC)
-# Produces HTML/ZIP reports for all raw FASTQ files
+# Stage 01 - quality control on the raw FASTQ files (FastQC).
+#
+# Writes one HTML/ZIP report pair per input file.
+#
+# Usage:  bash scripts/bash/01_qc_raw.sh
+# Env:    FASTQ_DIR, QC_OUTPUT, THREADS
+#
+# Next: 02_trim_fastp.sh
 
 set -euo pipefail
 

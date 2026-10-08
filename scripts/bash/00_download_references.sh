@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
-# Download default Ensembl references (rat genome + GTF) if they don't exist
-# This is automatically called by suz_pipeline.bash unless --genome-fasta and --gtf flags are provided
+# Stage 00 - download the Ensembl rat reference.
 #
-# Parameters:
-#   $1 = genome FASTA path (optional; defaults to references/Rattus_norvegicus.GRCr8.dna.toplevel.fa)
-#   $2 = GTF path (optional; defaults to references/Rattus_norvegicus.GRCr8.${RELEASE}.gtf)
+# Builds the GRCr8 PRIMARY ASSEMBLY (not toplevel): prefers a single
+# dna.primary_assembly.fa.gz, otherwise downloads the per-chromosome parts and
+# concatenates them. Also downloads the matching GTF.
+#
+# The release comes from metadata/reference_release.tsv, the same file
+# scripts/R/lib/ensembl.R reads. Override with ENSEMBL_RELEASE=114.
+#
+# Usage:  bash scripts/bash/00_download_references.sh [GENOME_FASTA] [GTF_FILE]
+# Env:    ENSEMBL_RELEASE, PRIMARY_PARTS
+#
+# Next: 01_qc_raw.sh
 
 set -euo pipefail
 
@@ -22,37 +29,6 @@ elif [ -f "$REL_FILE" ]; then
 fi
 RELEASE="${RELEASE:-115}"
 echo "[INFO] Ensembl release: $RELEASE  (metadata/reference_release.tsv)"
-# =============================================================================
-# PRIMARY ASSEMBLY, NOT TOPLEVEL.
-#
-# The Ensembl FASTA README:
-#   TOPLEVEL        "...includes chromosomes, regions not assembled into
-#                    chromosomes and N padded haplotype/patch regions."
-#   PRIMARY ASSEMBLY "...all toplevel sequence regions excluding haplotypes
-#                    and patches. This file is best used for performing
-#                    sequence similarity searches where patch and haplotype
-#                    sequences would confuse analysis. If the primary assembly
-#                    file is not present, that indicates that there are no
-#                    haplotype/patch regions, and the 'toplevel' file is
-#                    equivalent."
-#
-# Ensembl publishes dna.primary_assembly.* for rat GRCr8, so primary assembly
-# and toplevel are NOT equivalent here: toplevel carries N-padded patch and
-# haplotype sequence that would confuse alignment.
-#
-# This also matches what was actually run. In
-# archive/raw_scripts_original/bash_scripts/bash_scripts.txt:
-#   :27-28  "#Ensembl primary assembly with all concate" -> genome_primary_RN7.fa
-#   :46     "#Para Hisat2 rata y ensembl toplevel (NO USAR)"   <- do not use
-#   :49-50  "#Para Hisat2 rata y ensembl primary assembly" -> .../primary_assembly/Rn72
-# and the circRNA branch uses rat_primary_assembly_orderr8.fa.
-# The toplevel index was explicitly marked "do not use".
-#
-# Ensembl ships the primary assembly either as one concatenated file or split
-# per chromosome (or both). This handles either: it prefers the concatenated
-# file and otherwise downloads the parts and concatenates them, which is what
-# "with all concate" in the notebook describes.
-# =============================================================================
 GENOME_FASTA="${1:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.primary_assembly.fa}"
 GTF_FILE="${2:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.${RELEASE}.gtf}"
 
@@ -127,7 +103,7 @@ if [ ! -f "$GENOME_FASTA" ]; then
 [ERROR] Per the Ensembl README, that would mean GRCr8 has no haplotype/patch
 [ERROR] regions and toplevel is equivalent. Verify before falling back:
 [ERROR]   GENOME_FASTA=<path to toplevel> bash scripts/bash/00_download_references.sh
-[ERROR] and record the decision in docs/REFERENCE_AUDIT.md.
+[ERROR] and record the decision in docs/OPEN_ISSUES.md.
 EOF
       exit 1
     fi

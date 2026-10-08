@@ -1,25 +1,19 @@
 #!/usr/bin/env bash
-# Stage 16: circRNA-miRNA duplex prediction with IntaRNA.
+# Stage 16 - circRNA-miRNA duplex prediction (IntaRNA).
 #
-# The four circRNA-miRNA commands, exactly as recorded in
-# archive/final_package_v3_original/03_INTARNA_COMMANDS/IntaRNA_commands_as_used.sh and
-# archive/final_package_v3_original/03_INTARNA_COMMANDS/IntaRNA_manifest.tsv:
+# Four runs, pairing UP circRNAs against DOWN miRNAs and vice versa, because a
+# sponging relationship predicts opposite directions. All use
+# --mode=M --outMode=C. R21 later retains duplexes with MFE <= -20 kcal/mol.
 #
-#   IntaRNA --mode=M -t circRNA_UP_6h_all_records.fa    -q miRNAs_DOWN_6hr.fa  --outMode=C --out Interact_circUP_miDOWN_6h_all_modeM.csv
-#   IntaRNA --mode=M -t circRNA_DOWN_6h_all_records.fa  -q miRNAs_UP_6hr.fa    --outMode=C --out Interact_circDOWN_miUP_6h_all_modeM.csv
-#   IntaRNA --mode=M -t circRNA_UP_24h_all_records.fa   -q miRNAs_DOWN_24hr.fa --outMode=C --out Interact_circUP_miDOWN_24h_all_modeM.csv
-#   IntaRNA --mode=M -t circRNA_DOWN_24h_all_records.fa -q miRNAs_UP_24hr.fa   --outMode=C --out Interact_circDOWN_miUP_24h_all_modeM.csv
+# The output names must not change: R21 globs Interact_*.csv and parses the
+# state and direction out of them.
 #
-# The pairing is deliberately anti-correlated: UP circRNAs are tested against
-# DOWN miRNAs and vice versa, because a sponging ceRNA relationship predicts
-# opposite directions. Stage R20 then retains duplexes with MFE <= -20 kcal/mol.
+# Usage:  bash scripts/bash/16_circrna_intarna.sh [--circ-fasta-dir DIR]
+#                [--mirna-fasta-dir DIR] [--out-dir DIR] [--threads N]
 #
-# The four target FASTAs come from R18b (the reconstructed circRNA merge/export
-# stage) and the four query FASTAs from R13. No script in any package received
-# produced the circRNA_*_all_records.fa files; see docs/OPEN_ITEMS.md.
+# Targets come from R04b, queries from R14.
 #
-# The output names MUST NOT change: R20 globs Interact_*.csv and parses the
-# state and direction out of these exact filenames.
+# Next: Rscript scripts/R/20_circRNA_volcanoes.R
 
 set -euo pipefail
 
@@ -92,7 +86,7 @@ scripts/R/04b_circRNA_de_temporal.R, which is itself a RECONSTRUCTION - no
 script in any package received generates these four files. The miRNA queries
 come from scripts/R/13_mirna_mRNA_integration.R.
 
-See metadata/circRNA_input_manifest.tsv and docs/OPEN_ITEMS.md.
+See metadata/external_inputs.tsv and docs/OPEN_ISSUES.md.
 EOF
   exit 1
 fi

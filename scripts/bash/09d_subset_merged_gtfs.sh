@@ -1,28 +1,16 @@
 #!/usr/bin/env bash
-# Stage 09d: pull full records out of the merged annotated GTF for each
-# transcript-ID list produced by stage 09c.
+# Stage 09d - pull full records out of the merged annotated GTF.
 #
-# Ported from archive/babi_preprocessing_original/subset_merged_gtfs.sh (B. Borges).
-# The subsetting itself is unchanged — grep -F against a pattern file of
-# literal `transcript_id "<ID>"` lines — which pulls both the transcript line
-# and its exon lines, with the full gffcompare attribute set (xloc, class_code,
-# cmp_ref, tss_id). That is exactly what R01 needs and what the exon-only
-# inputs do not carry.
+# For each <base>_IDs.txt from stage 09c, writes <base>_tx.gtf containing the
+# transcript and exon lines for those IDs, with the full gffcompare attribute
+# set (xloc, class_code, cmp_ref, tss_id) that R01 needs.
 #
-# WHAT CHANGED
-# ------------
-#  * The original had a hard-coded 12-arm `case` mapping each ID-file basename
-#    to a merged GTF. It had NO arm for "CNE_24_STAR.annotated" — only the
-#    misspelled "CNE24_STAR.annotated" that matched an odd filename in exons/.
-#    Any file renamed to the consistent form fell through to `*)` and was
-#    skipped with nothing but a warning. The mapping is now derived from the
-#    basename, so there is no list to fall off.
-#  * MAIN_DIR=/home/vmaracaja/shared-projects/SUZ_sr_2025 is now --work-dir.
-#  * set -euo pipefail added, and an empty output is now a hard error rather
-#    than a zero-byte file.
+# Usage:  bash scripts/bash/09d_subset_merged_gtfs.sh [--exons-dir DIR]
+#                [--merged-dir DIR] [--merged-gtf NAME] [--transcripts-dir DIR]
 #
-# Only the HISAT2 branch is carried forward (S. Urquiza, WhatsApp: "Si, solo
-# com hisat2"). The STAR half of the original mapping is intentionally gone.
+# Adapted from archive/transcriptome_metadata_original/subset_merged_gtfs.sh
+#
+# Next: 09e_filter_out_lncRNAs.sh
 
 set -euo pipefail
 

@@ -170,4 +170,4 @@ for sample in $samples; do
 done
 
 echo "[INFO] stage 15 complete -> $OUT_DIR"
-echo "[INFO] Next: Rscript scripts/R/18b_circRNA_merge_export.R"
+echo "[INFO] Next: Rscript scripts/R/04b_circRNA_de_temporal.R"

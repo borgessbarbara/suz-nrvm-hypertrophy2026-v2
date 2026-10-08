@@ -98,7 +98,7 @@ if (!isTRUE(opt$`skip-circrna`)) {
                                        what = "circRNA raw counts 24h")
   if (is.na(c6) || is.na(c24)) {
     stop("The circRNA count matrices were not found.\n",
-         "They are produced by scripts/R/18b_circRNA_merge_export.R, which is a\n",
+         "They are produced by scripts/R/04b_circRNA_de_temporal.R, which is a\n",
          "RECONSTRUCTION of a step that no received package contained.\n",
          "Run the circRNA branch first, or pass --skip-circrna to build Figure 2B\n",
          "without the circRNA bar. See metadata/circRNA_input_manifest.tsv.",

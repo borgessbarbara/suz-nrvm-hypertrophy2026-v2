@@ -27,7 +27,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 source "$SCRIPT_DIR/_activate_env.sh" env_intarna
 
-CIRC_FASTA_DIR="${CIRC_FASTA_DIR:-results/R04_circRNA_merge_export}"
+CIRC_FASTA_DIR="${CIRC_FASTA_DIR:-results/R04b_circRNA_de_temporal}"
 MIRNA_FASTA_DIR="${MIRNA_FASTA_DIR:-results/13_mirna_mrna_integration/miRNA_FASTA_by_condition}"
 OUT_DIR="${OUT_DIR:-results/16_intarna_circrna}"
 THREADS="${THREADS:-1}"
@@ -37,7 +37,7 @@ usage() {
   cat <<'EOF'
 Usage: 16_circrna_intarna.sh [options]
 
-  --circ-fasta-dir DIR   circRNA target FASTAs  (default results/R04_circRNA_merge_export)
+  --circ-fasta-dir DIR   circRNA target FASTAs  (default results/R04b_circRNA_de_temporal)
   --mirna-fasta-dir DIR  miRNA query FASTAs     (default results/13_.../miRNA_FASTA_by_condition)
   --out-dir DIR          default results/16_intarna_circrna
   --threads N            IntaRNA --threads (default 1; the originals did not set it)
@@ -88,7 +88,7 @@ if [ "$missing" -ne 0 ]; then
 [ERROR] One or more IntaRNA inputs are missing.
 
 The circRNA_{UP,DOWN}_{6,24}h_all_records.fa targets are produced by
-scripts/R/18b_circRNA_merge_export.R, which is itself a RECONSTRUCTION - no
+scripts/R/04b_circRNA_de_temporal.R, which is itself a RECONSTRUCTION - no
 script in any package received generates these four files. The miRNA queries
 come from scripts/R/13_mirna_mRNA_integration.R.
 

@@ -43,7 +43,7 @@ hold. Two of them have changed character; see the notes.
 - `provenance/circRNA_upstream/02_ciriquant.Rmd:85` — `df[df$readNumber > 2,]`
 
 `> 2` means **at least 3**. These are not the same rule and they give different
-inventories. `scripts/R/04_circRNA_merge_export.R --bsj-min` makes the choice
+inventories. `scripts/R/04b_circRNA_de_temporal.R --bsj-min` makes the choice
 explicit and logs it; the default of 3 reproduces the code, not the prose.
 
 **Needed:** which rule produced the deposited circRNA inventory, and a
@@ -134,7 +134,7 @@ Nothing in any package produces:
 The last one turned out **not** to be an orphan: it is output `12_` of the
 cross-reference stage. Reordering so R22 runs before R23/R24 fixed it.
 
-The other three are rebuilt by `scripts/R/04_circRNA_merge_export.R`, marked
+The other three are rebuilt by `scripts/R/04b_circRNA_de_temporal.R`, marked
 RECONSTRUCTED. The FASTA export additionally depends on CIRI-AS sequences,
 which A5 puts in doubt.
 

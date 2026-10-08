@@ -3,7 +3,7 @@ data/frozen/README.md	3372	e87afd4d9033711d22e75aeed92dc23f
 data/frozen/hisat2_6_24_meta_ann.csv.gz	2867529	d1cce96c2f57db43fecbf3d13a9589a7
 data/frozen/hisat2_6_24_meta_novel_lncRNA.csv.gz	66174	6ce30006c8eca8df2a8c86d84379ed72
 metadata/R_package_inventory.tsv	11444	c3f230d915abb0138cd9e6d5ab7bef9e
-metadata/circRNA_input_manifest.tsv	3255	8e5c0501a99b245dde447e26a98d7aef
+metadata/circRNA_input_manifest.tsv	3255	31a0705cec834a8b8fa138b4ac5e0828
 metadata/curated_kegg_allowlist.tsv	911	20d9b2c990e4bc2eac0669e6c81164be
 metadata/external_inputs.tsv	2544	b919b8cee51fedbee9269be101e2c5b3
 metadata/fastq_file_sizes.tsv	3616	3af396bd031ba207afd3ac5b0c938623
@@ -14,7 +14,7 @@ metadata/longRNA_samples.tsv	5829	e777f790498e3e83b86ae3ea964ccc6b
 metadata/reference_manifest.tsv	3172	7ae2a36ce59fdec7b08bf8d40932f325
 metadata/smallRNA_samples.tsv	3062	ca52afad2b45e8a1d27a6894d5cef11c
 metadata/software_tool_inventory.tsv	4401	192fbd34b377d94338663e2bd9f17395
-metadata/stage_io.tsv	7864	2e5fe5854437938306c3cc2e13132bba
+metadata/stage_io.tsv	8121	4289934119dbe3f116b1c51ea879ce97
 metadata/supplementary_tables_map.tsv	3579	3616d06444c2b07f2fd806f2c603099d
 provenance/babi_preprocessing/extract_transcript_ids.sh	1489	477bfa48abac7344f20998814bcba02b
 provenance/babi_preprocessing/filter_out_lncRNAs.sh	966	8ad21741a842c8bcb3957fd3f2c6f9b9

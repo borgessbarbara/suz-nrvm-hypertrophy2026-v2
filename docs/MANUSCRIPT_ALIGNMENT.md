@@ -133,7 +133,7 @@ The code is `readNumber > 2` in both notebooks
 (`01_circexp3.Rmd:91`, `02_ciriquant.Rmd:85`), i.e. **at least three**.
 
 This changes the circRNA inventory and therefore the 8,736 locus count in
-Figure 2B and every circRNA count in Figure 3. `scripts/R/04_circRNA_merge_export.R`
+Figure 2B and every circRNA count in Figure 3. `scripts/R/04b_circRNA_de_temporal.R`
 exposes `--bsj-min` and logs the choice; it currently defaults to 3, matching
 the code rather than the prose.
 

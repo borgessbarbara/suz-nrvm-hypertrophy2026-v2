@@ -67,7 +67,7 @@ figure map described.
   in neither the Babi folder nor the bash notebook. Identified from the data as
   the FEELnc_codpot split and verified against the historical transcript counts
   (46,030 / 42,127 / 3,822, with 87 classifier orphans and 81 noORF).
-- `04_circRNA_merge_export.R` — the step producing
+- `04b_circRNA_de_temporal.R` — the step producing
   `raw_count_matrix_all_*`, the `0{6,7}_*_DE_complete_table.txt` pair and the
   four IntaRNA target FASTAs. Rebuilt from `03_tool_comparation.Rmd`, including
   its asymmetric `+1` start correction for CIRCexplorer only.

@@ -40,7 +40,7 @@ while [ $# -gt 0 ]; do
 done
 
 # circRNA stages, skipped by --skip-circrna
-CIRC_STAGES=" 04 13 20 22 "
+CIRC_STAGES=" 04 04b 13 20 22 "
 
 in_selection() {
   local n="$1"
@@ -58,7 +58,7 @@ in_selection() {
   return 1
 }
 
-mapfile -t SCRIPTS < <(find "$R_DIR" -maxdepth 1 -name '[0-9][0-9]_*.R' | LC_ALL=C sort)
+mapfile -t SCRIPTS < <(find "$R_DIR" -maxdepth 1 -name '[0-9][0-9]*_*.R' | LC_ALL=C sort)
 [ ${#SCRIPTS[@]} -gt 0 ] || { echo "[ERROR] no R stages found in $R_DIR" >&2; exit 1; }
 
 echo "================================================================"
@@ -75,8 +75,9 @@ FAILED_LIST=""
 for s in "${SCRIPTS[@]}"; do
   base="$(basename "$s")"
   n="${base%%_*}"
+  n_num="${n%%[a-z]*}"
 
-  if ! in_selection "$n"; then skipped=$((skipped+1)); continue; fi
+  if ! in_selection "$n_num"; then skipped=$((skipped+1)); continue; fi
   if [ "$SKIP_CIRC" = 1 ] && [[ "$CIRC_STAGES" == *" $n "* ]]; then
     echo "-- R$n $base  (skipped: circRNA)"
     skipped=$((skipped+1)); continue
@@ -90,7 +91,7 @@ for s in "${SCRIPTS[@]}"; do
   args=(--in-dir "$RESULTS" --dpi "$DPI")
   # stages whose CLI has no --dpi
   case "$n" in
-    01|04) args=(--in-dir "$RESULTS") ;;
+    01|04|04b) args=(--in-dir "$RESULTS") ;;
   esac
 
   if [ "$DRY" = 1 ]; then

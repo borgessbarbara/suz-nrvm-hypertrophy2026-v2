@@ -1,9 +1,9 @@
 input_role	expected_filename_or_pattern	file_type	produced_by	priority	status	notes
-circRNA raw count matrix 6h	raw_count_matrix_all_6.txt	count matrix	R04_circRNA_merge_export.R	required	RECONSTRUCTED	No original script produces this. Rebuilt from 03_tool_comparation.Rmd logic. Needs confirmation.
-circRNA raw count matrix 24h	raw_count_matrix_all_24.txt	count matrix	R04_circRNA_merge_export.R	required	RECONSTRUCTED	As above.
-circRNA DE complete table 6h	06_circRNA_sequences_de6_DE_complete_table.txt	annotated DE table	R04_circRNA_merge_export.R	required	RECONSTRUCTED	Read by R13, R20, R21, R22.
-circRNA DE complete table 24h	07_circRNA_sequences_de24_DE_complete_table.txt	annotated DE table	R04_circRNA_merge_export.R	required	RECONSTRUCTED	Read by R13, R20, R21, R22. NOTE 12_..._ALL_RECORDS_FINAL.R also references a 06_*_de24_* name, which looks like a typo for 07_.
-circRNA IntaRNA target FASTA	circRNA_{UP,DOWN}_{6,24}h_all_records.fa	FASTA	R04_circRNA_merge_export.R	required	RECONSTRUCTED	Four files. Not flagged by the original audit; bash stage 16 cannot run without them.
+circRNA raw count matrix 6h	raw_count_matrix_all_6.txt	count matrix	R04b_circRNA_de_temporal.R	required	RECONSTRUCTED	No original script produces this. Rebuilt from 03_tool_comparation.Rmd logic. Needs confirmation.
+circRNA raw count matrix 24h	raw_count_matrix_all_24.txt	count matrix	R04b_circRNA_de_temporal.R	required	RECONSTRUCTED	As above.
+circRNA DE complete table 6h	06_circRNA_sequences_de6_DE_complete_table.txt	annotated DE table	R04b_circRNA_de_temporal.R	required	RECONSTRUCTED	Read by R13, R20, R21, R22.
+circRNA DE complete table 24h	07_circRNA_sequences_de24_DE_complete_table.txt	annotated DE table	R04b_circRNA_de_temporal.R	required	RECONSTRUCTED	Read by R13, R20, R21, R22. NOTE 12_..._ALL_RECORDS_FINAL.R also references a 06_*_de24_* name, which looks like a typo for 07_.
+circRNA IntaRNA target FASTA	circRNA_{UP,DOWN}_{6,24}h_all_records.fa	FASTA	R04b_circRNA_de_temporal.R	required	RECONSTRUCTED	Four files. Not flagged by the original audit; bash stage 16 cannot run without them.
 circRNA-miRNA IntaRNA output	Interact_circ{UP,DOWN}_mi{DOWN,UP}_{6,24}h_all_modeM.csv	IntaRNA CSV	bash 16_circrna_intarna.sh	required	OK	Four files. Names must match the Interact_*.csv glob in R21.
 lncRNA-miRNA IntaRNA output	Interact_Lnc{UP,DOWN}_mi{DOWN,UP}_{6,24}h_modeM.csv	IntaRNA CSV	bash 12_intarna_run.sh	required	OK	Four files.
 miRNA DE with status 6h	DE_miRNA_All_with_status_NE6.txt	DE table	R03_mirna_deseq2.R	required	OK

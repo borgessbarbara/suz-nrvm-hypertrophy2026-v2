@@ -84,14 +84,14 @@ stage	direction	filename	note
 19	out	Candidates_lncRNA_24h_DOWN.fa
 19	out	lncRNA_DE_with_phase_and_transcriptID.csv
 19	out	PRIORITY_top25_lncRNAs_per_group_for_IntaRNA.csv
-04	out	raw_count_matrix_all_6.txt	RECONSTRUCTED stage
-04	out	raw_count_matrix_all_24.txt	RECONSTRUCTED stage
-04	out	06_circRNA_sequences_de6_DE_complete_table.txt	RECONSTRUCTED stage
-04	out	07_circRNA_sequences_de24_DE_complete_table.txt	RECONSTRUCTED stage
-04	out	circRNA_UP_6h_all_records.fa	RECONSTRUCTED; needs CIRI-AS sequences
-04	out	circRNA_DOWN_6h_all_records.fa	RECONSTRUCTED; needs CIRI-AS sequences
-04	out	circRNA_UP_24h_all_records.fa	RECONSTRUCTED; needs CIRI-AS sequences
-04	out	circRNA_DOWN_24h_all_records.fa	RECONSTRUCTED; needs CIRI-AS sequences
+04b	out	raw_count_matrix_all_6.txt	RECONSTRUCTED stage
+04b	out	raw_count_matrix_all_24.txt	RECONSTRUCTED stage
+04b	out	06_circRNA_sequences_de6_DE_complete_table.txt	RECONSTRUCTED stage
+04b	out	07_circRNA_sequences_de24_DE_complete_table.txt	RECONSTRUCTED stage
+04b	out	circRNA_UP_6h_all_records.fa	RECONSTRUCTED; needs CIRI-AS sequences
+04b	out	circRNA_DOWN_6h_all_records.fa	RECONSTRUCTED; needs CIRI-AS sequences
+04b	out	circRNA_UP_24h_all_records.fa	RECONSTRUCTED; needs CIRI-AS sequences
+04b	out	circRNA_DOWN_24h_all_records.fa	RECONSTRUCTED; needs CIRI-AS sequences
 04	out	all_circrnas.csv
 20	out	circRNA_full_DESeq2_results_6h_all_rows.csv
 20	out	circRNA_full_DESeq2_results_24h_all_rows.csv
@@ -149,12 +149,15 @@ bash09	out	lncRNA_classes_CNE624_rn8_8_annotated_1kb_100kb.txt	historical alias 
 02	out	NE_vs_Ctrl_24h_mRNA_full_with_NS.txt	full DE table including non-significant rows
 21	out	Figure7_priority_ceRNA_triplets.csv	historical alias of Fig8_priority_ceRNA_triplets.txt
 21	out	MAIN_FIGURE_ceRNA_triplets.csv	historical alias of Fig8_priority_ceRNA_triplets.txt
-04	out	06_circRNA_sequences_de24_DE_complete_table.txt	misnamed fallback the ceRNA stage tries after 07_; see docs/OPEN_ITEMS.md
-04	out	README_RECONSTRUCTION.txt	
+04b	out	06_circRNA_sequences_de24_DE_complete_table.txt	misnamed fallback the ceRNA stage tries after 07_; see docs/OPEN_ITEMS.md
+04b	out	README_RECONSTRUCTION.txt	
 13	out	early_circRNA.csv	circRNA temporal phase list
 13	out	sustained_circRNA.csv	circRNA temporal phase list
 13	out	late_circRNA.csv	circRNA temporal phase list
 13	out	reversal_circRNA.csv	circRNA temporal phase list
 02	out	tx2gene_fixed.tsv	written then re-read by the same stage
 02	out	KEGG_6h_vs_24h_Shared_with_core_symbols.txt	
-04	out	_LOCI_ONLY.tsv	fallback written when no CIRI-AS sequences are available
+04b	out	_LOCI_ONLY.tsv	fallback written when no CIRI-AS sequences are available
+04	out	bsj_count_matrix_unfiltered_6.txt	unfiltered; R04b applies the BSJ rule
+04	out	bsj_count_matrix_unfiltered_24.txt	unfiltered; R04b applies the BSJ rule
+04	out	README_RECONSTRUCTION.txt	both R04 and R04b write one into their own output dir

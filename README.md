@@ -92,7 +92,8 @@ no stage reads a file a later stage produces.
 | 01 | `transcriptome_metadata_annotation` | — (produces the `meta_*` tables; **the only biomaRt call**) |
 | 02 | `deseq2_mRNA_lncRNA` | — (DE tables, temporal phases, correlations, hubs, KEGG) |
 | 03 | `mirna_deseq2` | — (miRNA DE and temporal tables) |
-| 04 | `circRNA_merge_export` | — **RECONSTRUCTED** |
+| 04 | `circRNA_annotation_merge` | — **RECONSTRUCTED** (deterministic: locus merge) |
+| 04b | `circRNA_de_temporal` | — **RECONSTRUCTED** (BSJ rule, replicates, ComBat all open) |
 | 05 | `tf_kegg_integration` | **Fig 4A-B, S4A** |
 | 06 | `transcriptome_overview` | **Fig 2B** |
 | 07 | `lncRNA_characterization_gtf` | **Fig 2C, S2A-C** |

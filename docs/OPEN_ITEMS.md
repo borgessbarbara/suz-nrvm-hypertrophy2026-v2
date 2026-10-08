@@ -6,6 +6,27 @@ file and line it comes from.
 
 Items are grouped by who can resolve them.
 
+> **See also [`MANUSCRIPT_ALIGNMENT.md`](MANUSCRIPT_ALIGNMENT.md)**, the check of
+> this repository against manuscript v14. Several items below were confirmed,
+> resolved or escalated by it:
+>
+> - **A1 (BSJ threshold) is now BLOCKING.** The Methods commit to "at least two
+>   BSJ counts"; the code is `readNumber > 2`, i.e. at least three.
+> - **A3 (replicates) is resolved.** Every transcriptomic figure legend states
+>   N = 3 per condition, matching the code. A4 (which library "rep3" was) is
+>   still open.
+> - **C2 is now a manuscript problem, not a manifest typo.** The Methods still
+>   name `Rattus_norvegicus.mRatBN7.2.115.gtf`, a file that does not exist, and
+>   pair it with a GRCr8 FASTA.
+> - **C3 confirmed:** the Methods call the circRNA reference "rn7"; every path
+>   in the circRNA scripts is rn8/GRCr8.
+> - **D3 confirmed:** the Methods already say miRBase, so no correction needed
+>   there; the exact release is still unrecorded.
+> - **New:** the FEELnc classifier window is 200 bp in the Methods and 1 kb in
+>   the filename of the data every stage consumes.
+> - **New:** Figure 3B's lncRNA panel disagrees with both the Results text and
+>   Figure S3C, which agree with each other. The figure is the one that is wrong.
+
 ---
 
 ## A. For Sebastián and Juan Pablo — circRNA branch

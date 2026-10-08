@@ -36,6 +36,7 @@ source(file.path(.here, "lib", "plotting.R"))
 
 base_dir <- normalizePath(.opt$`in-dir`, winslash = "/", mustWork = FALSE)
 out_dir  <- ensure_out_dir(.opt$`out-dir`)
+.suz_out_root <- out_dir   ## [ported] preserved: the body below rebinds out_dir
 png_dpi  <- .opt$dpi
 dpi_png  <- .opt$dpi
 message("[R09] in-dir : ", base_dir)
@@ -48,7 +49,7 @@ suppressPackageStartupMessages({
   library(scales)
 })
 
-out_dir <- "Final_missing_figures_FINAL"
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "Final_missing_figures_FINAL"))  ## [ported] was a CWD-relative path
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 # -----------------------------

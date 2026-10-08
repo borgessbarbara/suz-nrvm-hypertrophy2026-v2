@@ -36,6 +36,7 @@ source(file.path(.here, "lib", "plotting.R"))
 
 base_dir <- normalizePath(.opt$`in-dir`, winslash = "/", mustWork = FALSE)
 out_dir  <- ensure_out_dir(.opt$`out-dir`)
+.suz_out_root <- out_dir   ## [ported] preserved: the body below rebinds out_dir
 png_dpi  <- .opt$dpi
 dpi_png  <- .opt$dpi
 message("[R03] in-dir : ", base_dir)
@@ -671,7 +672,7 @@ library(readr)
 de_6_file  <- "DE_miRNA_All_with_status_NE6.txt"   # archivo 6h
 de_24_file <- "DE_miRNA_All_with_status_NE24.txt"  # archivo 24h
 
-outdir <- "miRNA_temporal_summary"
+outdir <- ensure_out_dir(file.path(.suz_out_root, "miRNA_temporal_summary"))  ## [ported] was a CWD-relative path
 if (!dir.exists(outdir)) dir.create(outdir)
 
 # Si tus txt son tabulados:
@@ -811,7 +812,7 @@ library(UpSetR)
 de_6_file  <- "DE_miRNA_All_with_status_NE6.txt"
 de_24_file <- "DE_miRNA_All_with_status_NE24.txt"
 
-outdir <- "miRNA_volcano_upset"
+outdir <- ensure_out_dir(file.path(.suz_out_root, "miRNA_volcano_upset"))  ## [ported] was a CWD-relative path
 if (!dir.exists(outdir)) dir.create(outdir)
 
 # Si tus archivos son tabulados:
@@ -969,7 +970,7 @@ library(UpSetR)
 de_6_file  <- "DE_miRNA_All_with_status_NE6.txt"
 de_24_file <- "DE_miRNA_All_with_status_NE24.txt"
 
-outdir <- "miRNA_volcano_upset"
+outdir <- ensure_out_dir(file.path(.suz_out_root, "miRNA_volcano_upset"))  ## [ported] was a CWD-relative path
 if (!dir.exists(outdir)) dir.create(outdir)
 
 # Si tus archivos son tabulados:

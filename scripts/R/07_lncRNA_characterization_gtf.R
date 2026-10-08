@@ -161,7 +161,7 @@ p_len <- tx_tbl %>%
   labs(x = NULL, y = "Transcript length (nt)",
        title = "Annotated vs novel lncRNA transcript length") +
   plot_theme + theme(legend.position = "none")
-save_figure(p_len, out_dir, "SuppFig2A_lncRNA_transcript_length_violin",
+save_figure(p_len, out_dir, "FigureS2C_lncRNA_transcript_length_violin",
             width = 6.4, height = 5.1, dpi = opt$dpi)
 
 p_exon <- tx_tbl %>%
@@ -175,7 +175,7 @@ p_exon <- tx_tbl %>%
   labs(x = "Exons per transcript", y = "# transcripts",
        title = "Exon count distribution of annotated vs novel lncRNA transcripts") +
   plot_theme
-save_figure(p_exon, out_dir, "SuppFig2A_lncRNA_exon_count_distribution",
+save_figure(p_exon, out_dir, "FigureS2A_lncRNA_exon_count_distribution",
             width = 6.8, height = 5.1, dpi = opt$dpi)
 
 p_inv <- inventory_summary %>%
@@ -203,7 +203,7 @@ p_iso <- isoform_summary %>%
   labs(x = NULL, y = "# lncRNA genes", fill = "Isoform complexity",
        title = "Isoform complexity per lncRNA gene") +
   plot_theme
-save_figure(p_iso, out_dir, "SuppFig2A_lncRNA_isoform_complexity",
+save_figure(p_iso, out_dir, "FigureS2B_lncRNA_isoform_complexity",
             width = 6.8, height = 5.1, dpi = opt$dpi)
 
 writeLines(c(

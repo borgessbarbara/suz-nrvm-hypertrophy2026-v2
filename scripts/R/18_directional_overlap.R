@@ -36,6 +36,7 @@ source(file.path(.here, "lib", "plotting.R"))
 
 base_dir <- normalizePath(.opt$`in-dir`, winslash = "/", mustWork = FALSE)
 out_dir  <- ensure_out_dir(.opt$`out-dir`)
+.suz_out_root <- out_dir   ## [ported] preserved: the body below rebinds out_dir
 png_dpi  <- .opt$dpi
 dpi_png  <- .opt$dpi
 message("[R18] in-dir : ", base_dir)
@@ -113,7 +114,7 @@ lnc_phase_file <- find_input(
   pattern = "^SUPP_Fig4B2_lncDE_with_phase.*\\.csv$"
 )
 
-out_dir <- "lnc_overlap_out"
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "lnc_overlap_out"))  ## [ported] was a CWD-relative path
 if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 if (!dir.exists(out_dir)) stop("Could not create output directory: ", normalizePath(getwd(), winslash = "/", mustWork = FALSE), "/", out_dir)
 if (file.access(out_dir, 2) != 0) stop("Output directory is not writable: ", out_dir)

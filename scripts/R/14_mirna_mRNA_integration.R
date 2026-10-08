@@ -36,6 +36,7 @@ source(file.path(.here, "lib", "plotting.R"))
 
 base_dir <- normalizePath(.opt$`in-dir`, winslash = "/", mustWork = FALSE)
 out_dir  <- ensure_out_dir(.opt$`out-dir`)
+.suz_out_root <- out_dir   ## [ported] preserved: the body below rebinds out_dir
 png_dpi  <- .opt$dpi
 dpi_png  <- .opt$dpi
 message("[R14] in-dir : ", base_dir)
@@ -51,7 +52,7 @@ suppressPackageStartupMessages({
   library(ggplot2)
 })
 
-out_dir <- "Paper_miRNA_mRNA_AllCombos_Dotplots"
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "Paper_miRNA_mRNA_AllCombos_Dotplots"))  ## [ported] was a CWD-relative path
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 alpha_mirna <- 0.05
@@ -389,7 +390,7 @@ library(stringr)
 # Files
 
 mirbase_fasta <- "mature.fa"
-out_dir <- "miRNA_FASTA_by_condition"
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "miRNA_FASTA_by_condition"))  ## [ported] was a CWD-relative path
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 input_files <- c(
@@ -479,7 +480,7 @@ library(tidyverse)
 feelnc_file <- "lncRNA_classes_CNE624_rn8_8_annotated_1kb_100kb.txt"
 mrna6_file  <- "NE_vs_Ctrl_6h_mRNA_DE.txt"
 mrna24_file <- "NE_vs_Ctrl_24h_mRNA_DE.txt"
-out_dir <- "FEELnc_summary_panels"
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "FEELnc_summary_panels"))  ## [ported] was a CWD-relative path
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 x <- read_tsv(feelnc_file, show_col_types = FALSE) %>%

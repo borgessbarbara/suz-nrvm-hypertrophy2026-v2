@@ -62,6 +62,8 @@ tr -d '\r' < "$SRC" > "$SRC_LF"
 sed -E \
   -e 's@^([[:space:]]*)(base_dir|out_dir)([[:space:]]*)<-[[:space:]]*"?[A-Za-z]:/Users/sebau[^\n]*$@\1## [ported] \2 is set from the CLI in the preamble. Original line:\n\1# &@' \
   -e 's@^([[:space:]]*)out_dir[[:space:]]*<-[[:space:]]*file\.path\(base_dir,[^)]*\)[[:space:]]*$@\1## [ported] out_dir is set from the CLI in the preamble. Original line:\n\1# &@' \
+  -e 's@^([[:space:]]*)(out_dir|outdir|output_dir)([[:space:]]*)<-([[:space:]]*)"([^"/][^"]*)"[[:space:]]*$@\1\2\3<-\4ensure_out_dir(file.path(.suz_out_root, "\5"))  ## [ported] was a CWD-relative path@' \
+  -e "s@^([[:space:]]*)(out_dir|outdir|output_dir)([[:space:]]*)<-([[:space:]]*)file\.path\(getwd\(\),[[:space:]]*'([^']*)'\)[[:space:]]*\$@\1\2\3<-\4ensure_out_dir(file.path(.suz_out_root, '\5'))  ## [ported] was getwd()-relative@" \
   -e 's@base[[:space:]]*=[[:space:]]*"[A-Za-z]:/Users/sebau[^"]*"@base = base_dir@g' \
   -e 's@"[^"]*\([0-9]\)\.(csv|txt|tsv)",[[:space:]]*@@g' \
   -e 's@,[[:space:]]*"[^"]*\([0-9]\)\.(csv|txt|tsv)"@@g' \
@@ -126,6 +128,7 @@ source(file.path(.here, "lib", "plotting.R"))
 
 base_dir <- normalizePath(.opt\$\`in-dir\`, winslash = "/", mustWork = FALSE)
 out_dir  <- ensure_out_dir(.opt\$\`out-dir\`)
+.suz_out_root <- out_dir   ## bodies that rebind out_dir are nested under this
 png_dpi  <- .opt\$dpi
 dpi_png  <- .opt\$dpi
 message("[R${STAGE}] in-dir : ", base_dir)

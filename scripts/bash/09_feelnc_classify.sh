@@ -29,6 +29,14 @@ GTF_FILE="${GTF_FILE:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.115.gtf}"
 GENOME_FASTA="${GENOME_FASTA:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.toplevel.fa}"
 GFFCOMPARE_OUTPUT="${GFFCOMPARE_OUTPUT:-results/07_gffcompare}"
 FEELNC_OUTPUT="${FEELNC_OUTPUT:-results/09_feelnc_classify}"
+# CONFLICT, UNRESOLVED. The manuscript Methods state
+#     "assessed cis-context using a 200 bp to 100 kb window
+#      (--window=200 --maxwindow=100000)"
+# but the classifier output that every downstream stage consumes is named
+#     lncRNA_classes_CNE_6_24_HISAT2_1kb_100kb.txt
+# i.e. a 1 kb window. The filename is evidence of what was actually run; the
+# Methods text says otherwise. The default here follows the DATA (1000).
+# Resolve with S. Urquiza before freezing - see docs/MANUSCRIPT_ALIGNMENT.md.
 FEELNC_WINDOW="${FEELNC_WINDOW:-1000}"
 FEELNC_MAXWINDOW="${FEELNC_MAXWINDOW:-100000}"
 # Dataset prefix. The historical analysis used CNE_6_24_HISAT2 (6 h + 24 h,

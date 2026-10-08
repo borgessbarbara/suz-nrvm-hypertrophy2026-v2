@@ -36,6 +36,7 @@ source(file.path(.here, "lib", "plotting.R"))
 
 base_dir <- normalizePath(.opt$`in-dir`, winslash = "/", mustWork = FALSE)
 out_dir  <- ensure_out_dir(.opt$`out-dir`)
+.suz_out_root <- out_dir   ## [ported] preserved: the body below rebinds out_dir
 png_dpi  <- .opt$dpi
 dpi_png  <- .opt$dpi
 message("[R24] in-dir : ", base_dir)
@@ -66,7 +67,7 @@ suppressPackageStartupMessages({
 # Outputs are Cytoscape-ready CSV node/edge tables.
 # ============================================================
 
-out_dir <- "CytoKEGG_TF11_MFE20"
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "CytoKEGG_TF11_MFE20"))  ## [ported] was a CWD-relative path
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 if (!dir.exists(out_dir)) {
   stop("Could not create output directory: ", out_dir,

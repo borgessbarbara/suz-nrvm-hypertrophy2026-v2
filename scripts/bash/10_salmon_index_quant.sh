@@ -8,6 +8,7 @@ set -euo pipefail
 
 # Source conda activation helper
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 source "$SCRIPT_DIR/_activate_env.sh" env_qc_align
 
 # Configuration (from environment or defaults)
@@ -34,16 +35,59 @@ if [ ! -f "$TRANSCRIPTOME_FASTA" ]; then
   exit 1
 fi
 
-# Build Salmon index if it doesn't exist
+# Build Salmon index if it doesn't exist.
+#
+# The manuscript Methods specify a "genome-aware decoy/gentrome index". That
+# means the index is built from a gentrome -- the transcript FASTA concatenated
+# with the whole genome -- plus a decoy list naming the genome sequences, so
+# that reads originating from unannotated genomic regions are absorbed by the
+# decoys instead of being mis-assigned to transcripts.
+#
+# An earlier version of this stage built a plain transcriptome-only index,
+# which is NOT what the Methods describe and gives different quantifications.
 SALMON_INDEX="$SALMON_OUTPUT/salmon_index"
-if [ ! -d "$SALMON_INDEX" ]; then
-  echo "[INFO] Building Salmon index..."
+GENOME_FASTA="${GENOME_FASTA:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.toplevel.fa}"
+BUILD_DECOY="${BUILD_DECOY:-1}"
 
-  salmon index \
-    -t "$TRANSCRIPTOME_FASTA" \
-    -i "$SALMON_INDEX" \
-    -p "$THREADS" \
-    -k 31
+if [ ! -d "$SALMON_INDEX" ]; then
+  if [ "$BUILD_DECOY" = "1" ]; then
+    if [ ! -f "$GENOME_FASTA" ]; then
+      echo "[ERROR] Genome FASTA not found: $GENOME_FASTA" >&2
+      echo "[ERROR] A decoy-aware index needs the genome. Run stage 00, pass" >&2
+      echo "[ERROR] GENOME_FASTA=..., or set BUILD_DECOY=0 to build a" >&2
+      echo "[ERROR] transcriptome-only index (NOT what the Methods describe)." >&2
+      exit 1
+    fi
+
+    echo "[INFO] Building decoy-aware (gentrome) Salmon index..."
+    DECOY_DIR="$SALMON_OUTPUT/decoy"
+    mkdir -p "$DECOY_DIR"
+
+    # decoy names = every sequence identifier in the genome FASTA
+    grep '^>' "$GENOME_FASTA" | cut -d ' ' -f1 | sed 's/^>//' > "$DECOY_DIR/decoys.txt"
+    echo "[INFO]   decoy sequences: $(wc -l < "$DECOY_DIR/decoys.txt")"
+
+    # gentrome = transcripts first, then genome
+    cat "$TRANSCRIPTOME_FASTA" "$GENOME_FASTA" > "$DECOY_DIR/gentrome.fa"
+
+    salmon index \
+      -t "$DECOY_DIR/gentrome.fa" \
+      -d "$DECOY_DIR/decoys.txt" \
+      -i "$SALMON_INDEX" \
+      -p "$THREADS" \
+      -k 31
+
+    # the gentrome is large and fully regenerable
+    rm -f "$DECOY_DIR/gentrome.fa"
+  else
+    echo "[WARN] BUILD_DECOY=0: building a transcriptome-only index."
+    echo "[WARN] This does NOT match the manuscript Methods."
+    salmon index \
+      -t "$TRANSCRIPTOME_FASTA" \
+      -i "$SALMON_INDEX" \
+      -p "$THREADS" \
+      -k 31
+  fi
 
   echo "[INFO] Salmon index built: $SALMON_INDEX"
 else

@@ -36,6 +36,7 @@ source(file.path(.here, "lib", "plotting.R"))
 
 base_dir <- normalizePath(.opt$`in-dir`, winslash = "/", mustWork = FALSE)
 out_dir  <- ensure_out_dir(.opt$`out-dir`)
+.suz_out_root <- out_dir   ## [ported] preserved: the body below rebinds out_dir
 png_dpi  <- .opt$dpi
 dpi_png  <- .opt$dpi
 message("[R23] in-dir : ", base_dir)
@@ -71,7 +72,7 @@ suppressPackageStartupMessages({
 # and adjusted differential-expression support are more limited.
 # ============================================================
 
-out_dir <- "Figure6A_phase_aware_ceRNA_coherence"
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "FigureS5A_phase_aware_ceRNA_coherence"))  ## [ported] was a CWD-relative path
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 mfe_cutoff <- -20
@@ -416,7 +417,7 @@ p_precise <- ggplot(
   ) +
   base_theme
 
-save_dual(p_precise, "Figure6A_phase_timepoint_ceRNA_coherence_RECOMMENDED", 12, 8)
+save_dual(p_precise, "FigureS5A_phase_timepoint_ceRNA_coherence", 12, 8)
 
 # -----------------------------
 # Plot 2: phase-only overview (Sustained pools node-timepoint observations)
@@ -474,7 +475,7 @@ summary_lines <- c(
   paste0("MFE cutoff: <= ", mfe_cutoff),
   "",
   "Recommended main plot:",
-  "Figure6A_phase_timepoint_ceRNA_coherence_RECOMMENDED.pdf",
+  "FigureS5A_phase_timepoint_ceRNA_coherence.pdf",
   "",
   "Interpretation:",
   "- Early (6 h): triplets whose ncRNA is Early.",

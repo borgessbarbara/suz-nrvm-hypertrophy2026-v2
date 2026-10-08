@@ -19,12 +19,16 @@
 #   * the same UP/DOWN palette from lib/plotting.R;
 #   * top-N labelling per direction.
 #
-# NOTE ON THE lncRNA PANEL'S THRESHOLD
-# ------------------------------------
-# 07_Figure4_clean_volcanoes.R sets `absfc_cutoff <- 0`, i.e. the lncRNA
-# volcanoes call significance on padj ALONE with no fold-change requirement.
-# This script defaults to --lfc-cut 0 for the same reason, so the three S3
-# panels use one rule. Override if the manuscript says otherwise.
+# THRESHOLDS ARE CLASS-SPECIFIC, PER THE MANUSCRIPT METHODS
+# ---------------------------------------------------------
+# "For mRNAs, significance was defined as adjusted p < 0.05 and |log2FC| >= 1;
+#  for lncRNAs and miRNAs, adjusted p < 0.05 and |log2FC| >= 0.5."
+# so the defaults here are 1 for mRNA and 0.5 for miRNA.
+#
+# NOTE the unresolved conflict on the sibling lncRNA panel: its source script
+# 07_Figure4_clean_volcanoes.R sets `absfc_cutoff <- 0`, i.e. it calls
+# significance on padj ALONE with no fold-change requirement, which
+# contradicts the Methods' >= 0.5 for lncRNA. See docs/MANUSCRIPT_ALIGNMENT.md.
 # =============================================================================
 
 suppressPackageStartupMessages({
@@ -46,12 +50,14 @@ opt <- parse_args(OptionParser(
                 default = "results/R17_volcanoes_mRNA_miRNA",
                 help = "[default %default]"),
     make_option("--padj-cut", type = "double", default = 0.05, help = "[default %default]"),
-    make_option("--lfc-cut", type = "double", default = 0,
-                help = "0 matches the lncRNA panel (absfc_cutoff <- 0) [default %default]"),
+    make_option("--lfc-cut-mrna", type = "double", default = 1,
+                help = "|log2FC| threshold for mRNA, per the Methods [default %default]"),
+    make_option("--lfc-cut-mirna", type = "double", default = 0.5,
+                help = "|log2FC| threshold for miRNA, per the Methods [default %default]"),
     make_option("--labels-per-direction", type = "integer", default = 6,
-                help = "matches R15 [default %default]"),
+                help = "matches R16 [default %default]"),
     make_option("--dpi", type = "integer", default = 600, help = "[default %default]")),
-  description = paste("\nR16: Figure S3A-B mRNA and miRNA volcano plots.",
+  description = paste("\nR17: Figure S3A-B mRNA and miRNA volcano plots.",
                       "\nNEW - extracted from the historical scripts (audit item S3_MRNA_MIRNA).")))
 
 out_dir <- ensure_out_dir(opt$`out-dir`)
@@ -93,9 +99,10 @@ de <- bind_rows(lapply(seq_len(nrow(spec)), function(i)
 
 de <- de %>%
   filter(!is.na(log2FC)) %>%
-  mutate(direction = case_when(
-           !is.na(padj) & padj < opt$`padj-cut` & log2FC >   opt$`lfc-cut` ~ "UP",
-           !is.na(padj) & padj < opt$`padj-cut` & log2FC < - opt$`lfc-cut` ~ "DOWN",
+  mutate(lfc_cut = ifelse(rna == "mRNA", opt$`lfc-cut-mrna`, opt$`lfc-cut-mirna`),
+         direction = case_when(
+           !is.na(padj) & padj < opt$`padj-cut` & log2FC >=  lfc_cut ~ "UP",
+           !is.na(padj) & padj < opt$`padj-cut` & log2FC <= -lfc_cut ~ "DOWN",
            TRUE ~ "NS"),
          neglog10padj = -log10(pmax(padj, .Machine$double.xmin)),
          timepoint = factor(timepoint, levels = c("6h", "24h")))
@@ -113,14 +120,15 @@ lab <- de %>%
 for (r in unique(de$rna)) {
   d <- de %>% filter(rna == r)
   l <- lab %>% filter(rna == r)
+  cut_r <- if (r == "mRNA") opt$`lfc-cut-mrna` else opt$`lfc-cut-mirna`
   p <- ggplot(d, aes(x = log2FC, y = neglog10padj, colour = direction)) +
     geom_point(data = d %>% filter(direction == "NS"),
                colour = suz_direction_colours[["NS"]], alpha = 0.45, size = 0.8) +
     geom_point(data = d %>% filter(direction != "NS"), alpha = 0.8, size = 1.1) +
     geom_hline(yintercept = -log10(opt$`padj-cut`), linetype = "dashed",
                colour = "grey40", linewidth = 0.3) +
-    { if (opt$`lfc-cut` > 0)
-        geom_vline(xintercept = c(-opt$`lfc-cut`, opt$`lfc-cut`), linetype = "dashed",
+    { if (cut_r > 0)
+        geom_vline(xintercept = c(-cut_r, cut_r), linetype = "dashed",
                    colour = "grey40", linewidth = 0.3) else NULL } +
     ggrepel::geom_text_repel(data = l, aes(label = label_name), size = 2.6,
                              max.overlaps = 25, min.segment.length = 0,
@@ -129,10 +137,8 @@ for (r in unique(de$rna)) {
     facet_wrap(~ timepoint, nrow = 1, scales = "free") +
     labs(x = expression(log[2]~fold~change), y = expression(-log[10]~adjusted~p),
          title = paste0("Figure S3A-B - ", r, " differential expression"),
-         subtitle = sprintf("padj < %.2g%s", opt$`padj-cut`,
-                            if (opt$`lfc-cut` > 0)
-                              sprintf(" and |log2FC| > %.2g", opt$`lfc-cut`)
-                            else "  (no fold-change cutoff, matching the lncRNA panel)")) +
+         subtitle = sprintf("padj < %.2g and |log2FC| >= %.2g",
+                            opt$`padj-cut`, cut_r)) +
     suz_theme(base_size = 11) +
     theme(legend.position = "bottom")
 

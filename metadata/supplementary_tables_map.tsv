@@ -1,0 +1,20 @@
+sheet	content	producing_stage	producing_output	status	notes
+README_Submission	Workbook cover sheet	(manual)		OK
+S1A_RNA_temporal	RNA-class temporal summaries (Early/Sustained/Late per class)	R09_de_counts_heatmaps_gba.R	Figure1_DE_counts_by_rna_time_direction.csv + the per-class temporal tables	VERIFY	Cited by Figure 3 legend and the Results text. mRNA/miRNA/circRNA counts reconcile with Figure S3C; the lncRNA counts do not reconcile with Figure 3B.
+S1B_direction_switch	Features that reverse direction between states	R09_de_counts_heatmaps_gba.R	Figure2_direction_switch_features_excluded_from_directional_bars.csv	OK	Published: 2 mRNAs and 3 lncRNAs. Matches Figure S3C off-diagonals.
+S2_KEGG_GSEA	Complete curated KEGG GSEA output	R05_tf_kegg_integration.R	SUPP_Fig5_full_KEGG_stats_wide.csv and the GSEA result tables	OK	Figure 4A source. NOTE the Figure 4 legend cites "Supplementary Tables 4-5"; the Results text cites S2. The Results text is correct.
+S3A_TF_pathway	TF-by-pathway representation	R05_tf_kegg_integration.R	SUPP_TF_* tables	OK	Figure 4B source.
+S3B_TF_rankings	State-specific TF rankings	R05_tf_kegg_integration.R	SUPP_TF_* tables	OK	Published: SP1 98 DE targets / 22 pathways at 6 h; 121 / 24 at 24 h.
+S4_lncRNA_summary	lncRNA inventory and structural summaries	R07_lncRNA_characterization_gtf.R	lncRNA_inventory_summary.tsv, lncRNA_isoform_complexity_summary.tsv, lncRNA_gene_characterization_from_GTF.tsv, lncRNA_transcript_characterization_from_GTF.tsv	OK	Figure 2C and Figure S2 source.
+S5A_corr_summary	lncRNA-mRNA correlation summary	R09_de_counts_heatmaps_gba.R	correlation summary tables	OK	rho >= 0.8, p < 0.05.
+S5B_exact_GBA	Exact lncRNA-mRNA-pathway guilt-by-association mappings	R09_de_counts_heatmaps_gba.R	Figure3_GBA_exact_lncRNA_mRNA_KEGG_mapping.csv	OK	Figure 5A source.
+S5C_pathway_repr	Curated KEGG pathway representation audit	R09_de_counts_heatmaps_gba.R	pathway representation table	OK	Figure S4 source. Published counts verified against the Results text.
+S5D_top_lncRNAs	State-specific lncRNA hub prioritisation	R15_lncRNA_hubs.R	SUPP_Fig4E_top_hubs_by_time.csv	VERIFY	The Results text cites "state-specific hub prioritization is reported in Supplementary Table 5"; confirm which stage produced the deposited sheet.
+S6A_unique_pairs	Unique state-specific miRNA-mRNA pairs	R14_mirna_mRNA_integration.R	miRNA-mRNA pair tables	OK	Published: 6 pairs at 6 h, 26 at 24 h.
+S6B_final_KEGG	miRNA-mRNA pairs retained after curated KEGG mapping	R14_mirna_mRNA_integration.R	curated KEGG mapping tables	OK	Published: 2 of 6 at 6 h, 22 of 26 at 24 h. Figure 5B-C source.
+S6C_pathway_summary	miRNA-pathway summary	R14_mirna_mRNA_integration.R		OK
+S7A_circRNA_DE	circRNA locus-level DE results	R20_circRNA_volcanoes.R	circRNA_full_DESeq2_results_{6h,24h}_all_rows.csv	BLOCKED	Depends on the RECONSTRUCTED R04 stage. See docs/OPEN_ITEMS.md.
+S7B_temporal_summary	circRNA temporal summary	R13_figure3C_circRNA_heatmap.R	00_circRNA_temporal_classification.csv, 01_circRNA_temporal_phase_counts.csv	BLOCKED	Same dependency.
+S8A_strict_triplets	Complete strict ceRNA triplet list	R21 + R22	HIGH_CONFIDENCE_ceRNA_triplets_E_le_minus20.csv, 12_STRICT_DE_coherent_circRNA_triplets.csv	OK	Published: 2,593 total (2,584 lncRNA + 9 circRNA).
+S8B_phase_summary	Phase summaries for the strict triplets	R23_ceRNA_phase_aware_plots.R	03_phase_timepoint_triplet_counts.csv, 04_phase_only_pooled_summary_median_IQR.csv	OK	Figure S5A source.
+S8C_trajectory	Trajectory summaries	R23_ceRNA_phase_aware_plots.R	02_phase_timepoint_trajectory_summary_median_IQR.csv	OK

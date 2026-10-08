@@ -36,6 +36,7 @@ source(file.path(.here, "lib", "plotting.R"))
 
 base_dir <- normalizePath(.opt$`in-dir`, winslash = "/", mustWork = FALSE)
 out_dir  <- ensure_out_dir(.opt$`out-dir`)
+.suz_out_root <- out_dir   ## [ported] preserved: the body below rebinds out_dir
 png_dpi  <- .opt$dpi
 dpi_png  <- .opt$dpi
 message("[R05] in-dir : ", base_dir)
@@ -73,7 +74,7 @@ kegg_only6_path  <- "KEGG_6h_vs_24h_Only6h_long_format_SYMBOLS.txt"
 kegg_only24_path <- "KEGG_6h_vs_24h_Only24h_long_format_SYMBOLS.txt"
 kegg_shared_path <- "KEGG_6h_vs_24h_Shared_long_format_SYMBOLS.txt"
 
-out_dir <- "Paper_Fig4_Fig5_FINAL_ONE_SCRIPT"
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "Paper_Fig4_Fig5_FINAL_ONE_SCRIPT"))  ## [ported] was a CWD-relative path
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 alpha <- 0.05
@@ -546,7 +547,7 @@ early_path <- "early_mRNA.csv"
 late_path  <- "late_mRNA.csv"
 sustained_path <- "sustained_mRNA.csv"
 
-out_dir <- "TF_panels_out_DE_phase"
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "TF_panels_out_DE_phase"))  ## [ported] was a CWD-relative path
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 # Parameters
@@ -997,7 +998,7 @@ sustained_path <- "sustained_mRNA.csv"
 # IMPORTANTE: este archivo debe venir del script Fig5
 pathways_selected_path <- file.path("Paper_Fig4_Fig5_FINAL_ONE_SCRIPT", "pathways_selected_for_TF.csv")
 
-out_dir <- "Fig6_TF_panels_out_FINAL"
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "Fig6_TF_panels_out_FINAL"))  ## [ported] was a CWD-relative path
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 alpha <- 0.05

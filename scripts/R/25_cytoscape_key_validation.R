@@ -36,6 +36,7 @@ source(file.path(.here, "lib", "plotting.R"))
 
 base_dir <- normalizePath(.opt$`in-dir`, winslash = "/", mustWork = FALSE)
 out_dir  <- ensure_out_dir(.opt$`out-dir`)
+.suz_out_root <- out_dir   ## [ported] preserved: the body below rebinds out_dir
 png_dpi  <- .opt$dpi
 dpi_png  <- .opt$dpi
 message("[R25] in-dir : ", base_dir)
@@ -111,7 +112,7 @@ node_ids <- unique(nodes$node_id)
 missing_in_nodes <- setdiff(edge_ids, node_ids)
 unused_nodes <- setdiff(node_ids, edge_ids)
 
-out_dir <- "Cytoscape_import_safe"
+out_dir <- ensure_out_dir(file.path(.suz_out_root, "Cytoscape_import_safe"))  ## [ported] was a CWD-relative path
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 write_tsv(nodes, file.path(out_dir, "ALL_MFE20_nodes_CYTOSCAPE_SAFE.tsv"), na = "")

@@ -36,6 +36,7 @@ source(file.path(.here, "lib", "plotting.R"))
 
 base_dir <- normalizePath(.opt$`in-dir`, winslash = "/", mustWork = FALSE)
 out_dir  <- ensure_out_dir(.opt$`out-dir`)
+.suz_out_root <- out_dir   ## [ported] preserved: the body below rebinds out_dir
 png_dpi  <- .opt$dpi
 dpi_png  <- .opt$dpi
 message("[R12] in-dir : ", base_dir)
@@ -223,7 +224,7 @@ lnc_file <- find_input(
   pattern = '^SUPP_Fig4B2_lncDE_with_phase.*\\.csv$'
 )
 
-out_dir <- file.path(getwd(), 'Figure_lncRNA_temporal_heatmaps_MSTRG_FIXED')
+out_dir <- ensure_out_dir(file.path(.suz_out_root, 'Figure_lncRNA_temporal_heatmaps_MSTRG_FIXED'))  ## [ported] was getwd()-relative
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 message('Using input: ', lnc_file)

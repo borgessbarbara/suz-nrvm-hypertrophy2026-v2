@@ -1,0 +1,76 @@
+# R environment for analysis stages R01-R25.
+#
+# Package list derived mechanically from every source script we ported, see
+# metadata/R_package_inventory.tsv (60 packages across 47 source files).
+# Packages used only by scripts that were archived rather than ported
+# (ggalluvial, ggcharts, plotrix, wrMisc, Rmisc, calibrate, gplots, reshape,
+# viridis, ggplotify, devtools) are NOT installed here; they are listed in the
+# inventory for the record only.
+#
+# optparse and R.utils are new: every stage in this repository exposes a
+# --help CLI, and the frozen inputs under data/frozen/ are gzipped.
+name: suz_r
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - r-base=4.6
+  # --- CLI and IO ----------------------------------------------------------
+  - r-optparse
+  - r-r.utils
+  - r-readr
+  - r-readxl
+  - r-data.table
+  # --- tidyverse core ------------------------------------------------------
+  - r-tidyverse
+  - r-dplyr
+  - r-tidyr
+  - r-stringr
+  - r-tibble
+  - r-purrr
+  - r-forcats
+  - r-magrittr
+  - r-rlang
+  # --- plotting ------------------------------------------------------------
+  - r-ggplot2
+  - r-ggrepel
+  - r-scales
+  - r-rcolorbrewer
+  - r-viridislite
+  - r-pheatmap
+  - r-cowplot
+  - r-gridextra
+  - r-patchwork
+  - r-ggnewscale
+  - r-upsetr
+  - r-ggvenn
+  - r-circlize
+  - r-cairo
+  - r-mass
+  - r-hmisc
+  - r-reshape2
+  # --- Bioconductor --------------------------------------------------------
+  - bioconductor-deseq2
+  - bioconductor-apeglm
+  - bioconductor-tximport
+  - bioconductor-biomart
+  - bioconductor-rtracklayer
+  - bioconductor-genomicranges
+  - bioconductor-biostrings
+  - bioconductor-biobase
+  - bioconductor-annotationdbi
+  - bioconductor-org.rn.eg.db
+  - bioconductor-clusterprofiler
+  - bioconductor-enrichplot
+  - bioconductor-dose
+  - bioconductor-complexheatmap
+  - bioconductor-enhancedvolcano
+  - bioconductor-mfuzz
+  - bioconductor-genefilter
+  - bioconductor-vsn
+  # sva/ComBat_seq is used ONLY by the historical circRNA notebooks under
+  # provenance/. Whether it belongs in the final circRNA DE branch is an OPEN
+  # item (docs/OPEN_ITEMS.md); it is installed so the provenance can be
+  # re-executed for comparison, not because the pipeline calls it.
+  - bioconductor-sva

@@ -1,0 +1,395 @@
+---
+title: "ciriquant"
+author: "jp"
+date: "27-11-2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(forcats)
+library(viridisLite)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(reshape)
+library(pheatmap)
+library(vsn)
+library(DESeq2)
+library(data.table)
+library(Rmisc)
+library(gridExtra)
+library(plotrix)
+library(wrMisc)
+library(ggcharts)
+library(Cairo)
+library(magrittr)
+library(Hmisc)
+library(sva)
+library(ggrepel)
+
+```
+
+```{r}
+#listar los archivos
+#ubicación de los archivos 
+path <- "D:/45_circRNAs_seba/02_ciriquant/all_ciriquant_files/"
+list.files(path)
+ciriq_files <- sort(list.files(path,pattern= "ciriquant" ,full.names=TRUE))
+
+ciriq_files_list <- list()
+
+#poner los archivos en una lista
+for (i in 1:length(ciriq_files)){
+  bsjbgi <- read.csv( as.character(ciriq_files[i]) , sep= "\t", header = TRUE)
+  ciriq_files_list[[as.character(basename(ciriq_files[i]))]] <- bsjbgi
+}
+```
+
+```{r}
+
+path <- "D:/45_circRNAs_seba/02_ciriquant/"
+
+tabla_readnum2 <- data.frame()
+for (i in 1:length(ciriq_files)){
+  tabla<-as.data.frame((ciriq_files_list[[i]]$circRNA_ID))
+  tabla[,2]<-as.data.frame((ciriq_files_list[[i]]$X.junction_reads))
+  tabla[,3]<-(basename(names(ciriq_files_list[i])))
+  tabla[,4] <- as.data.frame((ciriq_files_list[[i]]$external_gene_name))
+  tabla_readnum2<-rbind(tabla,tabla_readnum2)
+}
+
+
+# reordena la tabla
+tabla_readnum_4 <-tabla_readnum2[,c(3,1,2,4)]
+#renombra las columnas de la tabla 
+colnames(tabla_readnum_4) <- c("sample","circRNA_ID","readNumber","geneName")
+
+tabla_readnum_5 <- tabla_readnum_4[,c(2,4)]
+tabla_readnum_6 <- tabla_readnum_5[!duplicated(tabla_readnum_5$circRNA_ID),]
+
+tabla_readnum_7 <- tabla_readnum_6[,1]
+
+write.table(tabla_readnum_6,paste0(path,"ciri_DEseq2_comparison_results/circRNA_ID_ciri_geneName.txt"), sep="\t",quote=FALSE,col.names = T,row.names = F)
+
+write.table(tabla_readnum_7,paste0(path,"ciri_DEseq2_comparison_results/circRNA_ID_ciri.txt"), sep="\t",quote=FALSE,col.names = T,row.names = F)
+
+
+tabla_readnum2 <-tabla_readnum2[,c(3,1,2)]
+tabla_readnum2[,1] <- (tabla_readnum2[,1])
+tabla_readnum2 <- tabla_readnum2[order(tabla_readnum2[,1]),]
+#renombra las columnas de la tabla 
+colnames(tabla_readnum2) <- c("sample","circRNA_ID","readNumber")
+
+df <- tabla_readnum2 
+df <- df[df$readNumber > 2,]
+
+#CIRI_circs<- unique(as.character(df[,2]))
+#length(unique(as.character(df[,2])))
+
+df <- df[,c(2,3,1)]
+repeted<-df[duplicated(df[,c('circRNA_ID',"sample")]),]
+df<-df[!duplicated(df[,c('circRNA_ID',"sample","readNumber")]),]
+
+df_wide <- reshape(df, idvar = "circRNA_ID", timevar = "sample", direction = "wide")
+df_wide[is.na(df_wide)] <- 0
+
+df_wide2 <- df_wide[,-1]
+rownames(df_wide2) <- df_wide[,1]
+df_wide2<-df_wide2+1
+
+# Ordenar las muestras por condición
+colnames(df_wide2) <- c("c24_1","c24_2","c24_3","c24_4","c6_1","c6_2","c6_3","c6_4","n24_1","n24_2","n24_3","n24_4","n6_1","n6_2","n6_3","n6_4")
+
+cm_6_c_n <- df_wide2[,c(5,6,7,8,13,14,15,16)]
+cm_24_c_n <- df_wide2[,c(1,2,3,4,9,10,11,12)]
+
+dir.create(paste0(path,"/ciri_DEseq2_comparison_results"))
+write.table(df_wide2,paste0(path,"/ciri_DEseq2_comparison_results/count_matrix_ciri.txt"), sep="\t", quote = FALSE)
+```
+
+```{r}
+# Assign condition (affected versus unaffected), you can assign any name, just keep the number of conditions
+stimulus <- factor(rep(c("c6","n6"), each = 4))
+# set a datframe with factors
+batch = factor(c("Batch1", "Batch2", "Batch3", "Batch4", "Batch1", "Batch2", "Batch3", "Batch4"))
+
+# Crear coldata con condición y batch
+coldata = data.frame(row.names = colnames(cm_6_c_n), stimulus, batch)
+coldata
+
+#devtools::install_github("zhangyuqing/sva-devel")
+library(sva)
+combat_counts <- ComBat_seq(counts = as.matrix(cm_6_c_n), batch = coldata$batch, group = stimulus)
+
+```
+
+
+```{r}
+library(DESeq2)
+
+stimulus <- factor(rep(c("c6","n6"), each = 4))
+# set a datframe with factors
+targets <- data.frame(stimulus)
+
+dds=DESeqDataSetFromMatrix(combat_counts,coldata,design=~stimulus)
+
+# Look the factors and columns
+colData(dds)[1:8,]
+dds$stimulus = relevel(dds$stimulus, "c6")
+
+dds <- DESeq(dds) 
+resultsNames(dds)
+
+#Get_Normalized_counts
+dds2 <- estimateSizeFactors(dds)
+dds2_norm<- counts(dds2, normalized=TRUE)
+dds2_norm<-as.data.frame(dds2_norm)
+setDT(dds2_norm, keep.rownames = TRUE)[]
+write.table(dds2_norm,paste0(path,"/ciri_DEseq2_comparison_results/normalized_deseq2_count_matrix_ciri_c6.txt"), sep="\t", quote = FALSE,row.names = F)
+
+Res1 = results(dds, contrast=c("stimulus","n6","c6"))
+Res2 <- as.data.frame(Res1)
+Res2<-na.omit(Res2)
+setDT(Res2, keep.rownames = TRUE)[]
+
+library(dplyr)
+Res3 <- mutate(Res2 ,Regulation = 
+                 ifelse(Res2$pvalue < 0.05 & Res2$log2FoldChange > 1,"Up",
+                        ifelse(Res2$pvalue < 0.05 & Res2$log2FoldChange < -1,"Down","Unchanged"
+                        )))
+
+library(ggplot2)
+Grafico1 <-ggplot(Res3, aes(x= log2FoldChange, 
+                            y= -log10(pvalue), 
+                            colour=Regulation)) +
+  geom_point(alpha=0.7, size=2) +
+  xlab(paste("log2(FoldChange)")) +
+  ylab("-log10(pval)") +
+  xlim(c(-5, 5)) + 
+  ylim(c(0, 5)) +
+      ggtitle("NE_stimulus_6")+
+  scale_colour_manual(values = c("Up"= "red","Down"="blue","Unchanged"="darkgray"))+
+  guides(color = guide_legend(reverse = TRUE))+
+  labs(fill = "Regulation")+
+  theme_bw()
+
+print(Grafico1)
+
+cm_6_c_n_DE <- Res3
+tabla_readnum_8 <- tabla_readnum_4[,c(2,4)]
+tabla_readnum_8 <- tabla_readnum_8[!duplicated(tabla_readnum_8$circRNA_ID),]
+
+cm_6_c_n_DE_ann <- merge(cm_6_c_n_DE,tabla_readnum_8,by.x="rn", by.y="circRNA_ID",all.x=T)
+cm_6_c_n_DE_ann_2 <- cm_6_c_n_DE_ann[order(cm_6_c_n_DE_ann$log2FoldChange, decreasing = T),]
+cm_6_c_n_DE_ann_3 <- cm_6_c_n_DE_ann_2[cm_6_c_n_DE_ann_2$Regulation!="Unchanged",]
+
+cm_6_c_n_DE_ann_3_top <- cm_6_c_n_DE_ann_3 %>% arrange(pvalue) %>% slice_head(n=10)
+cm_6_c_n_DE_ann_3_top$circname <- paste0(cm_6_c_n_DE_ann_3_top$rn," | ",cm_6_c_n_DE_ann_3_top$geneName)
+
+
+Grafico2 <-ggplot(cm_6_c_n_DE_ann, aes(x= log2FoldChange, 
+                            y= -log10(pvalue), 
+                            colour=Regulation)) +
+  geom_point(alpha=0.7, size=2) +
+  geom_label_repel(data = cm_6_c_n_DE_ann_3_top, aes(label = cm_6_c_n_DE_ann_3_top$circname), max.overlaps = Inf, size=2,force = 15, box.padding = 0.5) +#+
+  xlab(paste("log2(FoldChange)")) +
+  ylab("-log10(pval)") +
+  xlim(c(-5, 5)) + 
+  ylim(c(0, 5)) +
+  ggtitle("NE_stimulus_6")+
+
+  scale_colour_manual(values = c("Up"= "red","Down"="blue","Unchanged"="darkgray"))+
+  guides(color = guide_legend(reverse = TRUE))+
+  labs(fill = "Regulation")+
+  theme_bw()
+
+print(Grafico2)
+
+cm_6_c_n_DE_ann_4<- as.data.frame(table(cm_6_c_n_DE_ann_3$Regulation))
+
+
+#Save_table
+write.table(cm_6_c_n_DE_ann_2,paste0(path,"/ciri_DEseq2_comparison_results/6_c_n_DE_ann.txt"), sep="\t",quote=FALSE,col.names = T,row.names = F)
+write.table(cm_6_c_n_DE_ann_3,paste0(path,"/ciri_DEseq2_comparison_results/6_c_n_only_DE_ann.txt"), sep="\t",quote=FALSE,col.names = T,row.names = F)
+write.table(cm_6_c_n_DE_ann_4,paste0(path,"/ciri_DEseq2_comparison_results/6_c_n_only_DE_ann_numbers.txt"), sep="\t",quote=FALSE,col.names = T,row.names = F)
+
+#Save Volcano
+cairo_pdf(paste0(path,"/ciri_DEseq2_comparison_results/Volcano_c6_n6.pdf"),width = 6,height = 6)
+print(Grafico1)
+dev.off()
+
+cairo_pdf(paste0(path,"/ciri_DEseq2_comparison_results/Volcano_c6_n6_labeled.pdf"),width = 6,height = 6)
+print(Grafico2)
+dev.off()
+```
+
+```{r}
+# Assign condition (affected versus unaffected), you can assign any name, just keep the number of conditions
+stimulus <- factor(rep(c("c24","n24"), each = 4))
+# set a datframe with factors
+batch = factor(c("Batch1", "Batch2", "Batch3", "Batch4", "Batch1", "Batch2", "Batch3", "Batch4"))
+
+# Crear coldata con condición y batch
+coldata = data.frame(row.names = colnames(cm_24_c_n), stimulus, batch)
+coldata
+
+#devtools::install_github("zhangyuqing/sva-devel")
+library(sva)
+combat_counts <- ComBat_seq(counts = as.matrix(cm_24_c_n), batch = coldata$batch, group = stimulus)
+
+```
+
+```{r}
+library(DESeq2)
+
+stimulus <- factor(rep(c("c24","n24"), each = 4))
+# set a datframe with factors
+targets <- data.frame(stimulus)
+
+dds=DESeqDataSetFromMatrix(combat_counts,coldata,design=~stimulus)
+
+# Look the factors and columns
+colData(dds)[1:8,]
+dds$stimulus = relevel(dds$stimulus, "c24")
+
+dds <- DESeq(dds) 
+resultsNames(dds)
+
+#Get_Normalized_counts
+dds2 <- estimateSizeFactors(dds)
+dds2_norm<- counts(dds2, normalized=TRUE)
+dds2_norm<-as.data.frame(dds2_norm)
+setDT(dds2_norm, keep.rownames = TRUE)[]
+write.table(dds2_norm,paste0(path,"/ciri_DEseq2_comparison_results/normalized_deseq2_count_matrix_ciri_24.txt"), sep="\t", quote = FALSE,row.names = F)
+
+Res1 = results(dds, contrast=c("stimulus","n24","c24"))
+Res2 <- as.data.frame(Res1)
+Res2<-na.omit(Res2)
+setDT(Res2, keep.rownames = TRUE)[]
+
+library(dplyr)
+Res3 <- mutate(Res2 ,Regulation = 
+                 ifelse(Res2$pvalue < 0.05 & Res2$log2FoldChange > 1,"Up",
+                        ifelse(Res2$pvalue < 0.05 & Res2$log2FoldChange < -1,"Down","Unchanged"
+                        )))
+
+library(ggplot2)
+Grafico1 <-ggplot(Res3, aes(x= log2FoldChange, 
+                            y= -log10(pvalue), 
+                            colour=Regulation)) +
+  geom_point(alpha=0.7, size=2) +
+  xlab(paste("log2(FoldChange)")) +
+  ylab("-log10(pval)") +
+  xlim(c(-5, 5)) + 
+  ylim(c(0, 10)) +
+      ggtitle("NE_stimulus_24")+
+  scale_colour_manual(values = c("Up"= "red","Down"="blue","Unchanged"="darkgray"))+
+  guides(color = guide_legend(reverse = TRUE))+
+  labs(fill = "Regulation")+
+  theme_bw()
+
+print(Grafico1)
+
+cm_24_c_n_DE <- Res3
+tabla_readnum_8 <- tabla_readnum_4[,c(2,4)]
+tabla_readnum_8 <- tabla_readnum_8[!duplicated(tabla_readnum_8$circRNA_ID),]
+cm_24_c_n_DE_ann <- merge(cm_24_c_n_DE,tabla_readnum_8,by.x="rn", by.y="circRNA_ID",all.x=T)
+cm_24_c_n_DE_ann_2 <- cm_24_c_n_DE_ann[order(cm_24_c_n_DE_ann$log2FoldChange, decreasing = T),]
+cm_24_c_n_DE_ann_3 <- cm_24_c_n_DE_ann_2[cm_24_c_n_DE_ann_2$Regulation!="Unchanged",]
+
+cm_24_c_n_DE_ann_3_top <- cm_24_c_n_DE_ann_3 %>% arrange(pvalue) %>% slice_head(n=10)
+cm_24_c_n_DE_ann_3_top$circname <- paste0(cm_24_c_n_DE_ann_3_top$rn," | ",cm_24_c_n_DE_ann_3_top$geneName)
+
+
+Grafico2 <-ggplot(cm_24_c_n_DE_ann, aes(x= log2FoldChange, 
+                            y= -log10(pvalue), 
+                            colour=Regulation)) +
+  geom_point(alpha=0.7, size=2) +
+  geom_label_repel(data = cm_24_c_n_DE_ann_3_top, 
+                   aes(label = cm_24_c_n_DE_ann_3_top$circname), 
+                   max.overlaps = Inf, 
+                   size=2,
+                   force = 100, 
+                   box.padding = 0.5,
+                   #xlim=c(-5,5), 
+                   #ylim=c(4,7.5),
+                   force_pull = 5)+#+
+  xlab(paste("log2(FoldChange)")) +
+  ylab("-log10(pval)") +
+  xlim(c(-5, 5)) + 
+  ylim(c(0,7.5 )) +
+  ggtitle("NE_stimulus_24")+
+
+  scale_colour_manual(values = c("Up"= "red","Down"="blue","Unchanged"="darkgray"))+
+  guides(color = guide_legend(reverse = TRUE))+
+  labs(fill = "Regulation")+
+  theme_bw()
+
+print(Grafico2)
+
+
+cm_24_c_n_DE_ann_4<- as.data.frame(table(cm_24_c_n_DE_ann_3$Regulation))
+
+#Save_table
+write.table(cm_24_c_n_DE_ann_2,paste0(path,"/ciri_DEseq2_comparison_results/24_c_n_DE_ann.txt"), sep="\t",quote=FALSE,col.names = T,row.names = F)
+write.table(cm_24_c_n_DE_ann_3,paste0(path,"/ciri_DEseq2_comparison_results/24_c_n_only_DE_ann.txt"), sep="\t",quote=FALSE,col.names = T,row.names = F)
+write.table(cm_24_c_n_DE_ann_4,paste0(path,"/ciri_DEseq2_comparison_results/24_c_n_only_DE_ann_numbers.txt"), sep="\t",quote=FALSE,col.names = T,row.names = F)
+
+#Save Volcano
+cairo_pdf(paste0(path,"/ciri_DEseq2_comparison_results/Volcano_c24_n24.pdf"),width = 6,height = 6)
+print(Grafico1)
+dev.off()
+
+cairo_pdf(paste0(path,"/ciri_DEseq2_comparison_results/Volcano_c24_n24_labeled.pdf"),width = 6,height = 6)
+print(Grafico2)
+dev.off()
+
+
+```
+
+```{r}
+cq_24<- read.table("D:/45_circRNAs_seba/02_ciriquant/ciri_DEseq2_comparison_results/24_c_n_DE_ann.txt",header = T,sep = "\t")
+
+
+cq_24_2 <- cq_24 %>% arrange(pvalue) %>% slice_head(n=10)
+cq_24_2$circname <- paste0(cq_24_2$rn," | ",cq_24_2$geneName)
+
+
+Grafico2 <-ggplot(cq_24, aes(x= log2FoldChange, 
+                            y= -log10(pvalue), 
+                            colour=Regulation)) +
+  geom_point(alpha=0.5, size=1) +
+  geom_text_repel(data = cq_24_2, 
+                   aes(label = cq_24_2$circname), 
+                   max.overlaps = Inf, 
+                   size=3,
+                   force = 100, 
+                   box.padding = 0.5,
+                   color="black",
+                   #xlim=c(-5,5), 
+                   #ylim=c(4,7.5),
+                   force_pull = 5)+#+
+  xlab(paste("log2 FoldChange")) +
+  geom_vline(xintercept = -log2(2), linetype = "dashed") +
+  geom_hline(yintercept = -log2(2), linetype = "dashed") +
+  geom_vline(xintercept = log2(2), linetype = "dashed") +
+  geom_hline(yintercept = log2(2), linetype = "dashed") +
+  ylab("-log10 pvalue ") +
+  xlim(c(-5, 5)) + 
+  ylim(c(0,7.5 )) +
+  ggtitle("")+
+
+  scale_colour_manual(values = c("Up"= "red","Down"="blue","Unchanged"="darkgray"))+
+  guides(color = guide_legend(reverse = TRUE))+
+  labs(fill = "Regulation")+
+  theme_classic()
+
+print(Grafico2)
+library(Cairo)
+
+cairo_pdf(paste0("D:/45_circRNAs_seba/02_ciriquant/ciri_DEseq2_comparison_results/Volcano_c24_n24_labeled_new.pdf"),width = 7,height = 6)
+print(Grafico2)
+dev.off()
+```
+

@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+# Stage 09d: pull full records out of the merged annotated GTF for each
+# transcript-ID list produced by stage 09c.
+#
+# Ported from provenance/babi_preprocessing/subset_merged_gtfs.sh (B. Borges).
+# The subsetting itself is unchanged — grep -F against a pattern file of
+# literal `transcript_id "<ID>"` lines — which pulls both the transcript line
+# and its exon lines, with the full gffcompare attribute set (xloc, class_code,
+# cmp_ref, tss_id). That is exactly what R01 needs and what the exon-only
+# inputs do not carry.
+#
+# WHAT CHANGED
+# ------------
+#  * The original had a hard-coded 12-arm `case` mapping each ID-file basename
+#    to a merged GTF. It had NO arm for "CNE_24_STAR.annotated" — only the
+#    misspelled "CNE24_STAR.annotated" that matched an odd filename in exons/.
+#    Any file renamed to the consistent form fell through to `*)` and was
+#    skipped with nothing but a warning. The mapping is now derived from the
+#    basename, so there is no list to fall off.
+#  * MAIN_DIR=/home/vmaracaja/shared-projects/SUZ_sr_2025 is now --work-dir.
+#  * set -euo pipefail added, and an empty output is now a hard error rather
+#    than a zero-byte file.
+#
+# Only the HISAT2 branch is carried forward (S. Urquiza, WhatsApp: "Si, solo
+# com hisat2"). The STAR half of the original mapping is intentionally gone.
+
+set -euo pipefail
+
+EXONS_DIR="${EXONS_DIR:-results/09b_exons}"
+MERGED_DIR="${MERGED_DIR:-results/07_gffcompare}"
+TRANSCRIPTS_DIR="${TRANSCRIPTS_DIR:-results/09d_transcripts}"
+LOG_DIR="${LOG_DIR:-results/logs}"
+MERGED_GTF_NAME="${MERGED_GTF_NAME:-merged.annotated.gtf}"
+
+usage() {
+  cat <<'EOF'
+Usage: 09d_subset_merged_gtfs.sh [options]
+
+  --exons-dir DIR        stage 09c output     (default results/09b_exons)
+  --merged-dir DIR       gffcompare output    (default results/07_gffcompare)
+  --merged-gtf NAME      merged GTF basename  (default merged.annotated.gtf)
+  --transcripts-dir DIR  output               (default results/09d_transcripts)
+  --log-dir DIR          default results/logs
+
+For each <base>_IDs.txt in --exons-dir, writes <base>_tx.gtf into
+--transcripts-dir, containing the full records for those transcript IDs.
+EOF
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --exons-dir)       EXONS_DIR="$2";       shift 2 ;;
+    --merged-dir)      MERGED_DIR="$2";      shift 2 ;;
+    --merged-gtf)      MERGED_GTF_NAME="$2"; shift 2 ;;
+    --transcripts-dir) TRANSCRIPTS_DIR="$2"; shift 2 ;;
+    --log-dir)         LOG_DIR="$2";         shift 2 ;;
+    --help|-h)         usage; exit 0 ;;
+    *) echo "[ERROR] unknown argument: $1" >&2; usage >&2; exit 1 ;;
+  esac
+done
+
+MERGED_GTF="$MERGED_DIR/$MERGED_GTF_NAME"
+if [ ! -f "$MERGED_GTF" ]; then
+  echo "[ERROR] merged annotated GTF not found: $MERGED_GTF" >&2
+  exit 1
+fi
+
+mkdir -p "$TRANSCRIPTS_DIR" "$LOG_DIR"
+LOG_FILE="$LOG_DIR/gtf_subset_$(date +%Y%m%d_%H%M%S).log"
+log() { echo "$1" | tee -a "$LOG_FILE"; }
+
+log "=== GTF subsetting (stage 09d) ==="
+log "Started at : $(date)"
+log "Merged GTF : $MERGED_GTF"
+log "Output dir : $TRANSCRIPTS_DIR"
+log ""
+
+shopt -s nullglob
+id_files=("$EXONS_DIR"/*_IDs.txt)
+if [ ${#id_files[@]} -eq 0 ]; then
+  echo "[ERROR] no *_IDs.txt in $EXONS_DIR — run stage 09c first." >&2
+  exit 1
+fi
+
+for id_file in "${id_files[@]}"; do
+  base="$(basename "$id_file" _IDs.txt)"
+  out_gtf="$TRANSCRIPTS_DIR/${base}_tx.gtf"
+  n_ids=$(wc -l < "$id_file")
+
+  log "Processing : $base"
+  log "  IDs      : $n_ids"
+
+  pattern_file="$(mktemp)"
+  # shellcheck disable=SC2001
+  sed 's/.*/transcript_id "&"/' "$id_file" > "$pattern_file"
+
+  grep -F -f "$pattern_file" "$MERGED_GTF" > "$out_gtf" || true
+  rm -f "$pattern_file"
+
+  n_lines=$(wc -l < "$out_gtf")
+  n_tx=$(grep -o 'transcript_id "[^"]*"' "$out_gtf" | sort -u | wc -l)
+  log "  -> $(basename "$out_gtf"): $n_lines lines, $n_tx transcripts"
+
+  if [ "$n_lines" -eq 0 ]; then
+    echo "[ERROR] $out_gtf is empty. The transcript IDs in $id_file do not appear in $MERGED_GTF." >&2
+    exit 1
+  fi
+  if [ "$n_tx" -ne "$n_ids" ]; then
+    log "  WARNING: recovered $n_tx of $n_ids transcripts."
+  fi
+  log ""
+done
+
+log "Completed at: $(date)"
+echo "[INFO] stage 09d complete. Log: $LOG_FILE"
+echo "[INFO] Next: scripts/bash/09e_filter_out_lncRNAs.sh"

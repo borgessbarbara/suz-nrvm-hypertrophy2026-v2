@@ -1,0 +1,10 @@
+category	item	evidence	action
+REFERENCE	Resolve circRNA reference provenance	Raw circRNA scripts contain rn8/GRCr8.114-era annotation/config names, while the project final lock is GRCr8 primary assembly + release-115 GTF.	Compare checksums / rerun validation; do not silently rewrite provenance scripts.
+BSJ_FILTER	Confirm BSJ threshold	Coauthor methods say >=2 BSJ reads, but both historical Rmd notebooks filter readNumber > 2 (i.e. >=3).	Confirm which rule generated the deposited final circRNA inventory.
+CIRCRNA_DE	Confirm final circRNA DE derivation	Historical notebooks use ComBat_seq and |log2FC|>1, while final manuscript/figure script uses nominal p<0.05 and |log2FC|>=0.5.	Identify the exact final count table and whether ComBat_seq was retained.
+SAMPLES	Confirm final circRNA replicate inclusion	Historical notebooks construct 4+4 samples per state; final volcano script currently selects three controls and three NE samples.	Document any excluded replicate and ensure Figure 3/S3 counts match.
+CIRI_AS	Complete reconstruction sample coverage	Supplied CIRI2/CIRI-AS shell loop covers SQ13-SQ16 only.	Parameterize generic command for the full sample sheet only if that reflects the actual analysis; otherwise recover missing batch commands.
+FINAL_TABLE_TRACE	Document final circRNA table lineage	03_tool_comparation.Rmd contains merge logic, but exact production of raw_count_matrix_all_6/24 and 06/07_circRNA_sequences_*_DE_complete_table.txt is not fully explicit.	Add a small consolidated curation script or provenance note mapping source outputs to these final files.
+FIG3C_CIRC	Isolate Figure 3C circRNA temporal heatmap code	No exact standalone final script identified.	Create small plotting script from final circRNA temporal table.
+S3_MRNA_MIRNA	Isolate final S3 mRNA/miRNA volcano+overlap code	Final code remains embedded in larger historical scripts.	Extract into compact plotting script.
+MANUAL_ARTIFACTS	Add manual-layout source artifacts if available	Affinity composites and Cytoscape layouts were manually adjusted.	Add .afdesign/SVG/PDF and .cys/node coordinates; analytical workflow remains valid without pixel-identical layout.

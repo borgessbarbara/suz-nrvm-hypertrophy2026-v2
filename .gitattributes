@@ -1,0 +1,29 @@
+# This pipeline is Linux-first. A shell script checked out with CRLF endings
+# fails on Linux with "bad interpreter: /usr/bin/env bash^M", so force LF for
+# everything executable or parsed, regardless of the checkout platform.
+* text=auto eol=lf
+
+*.sh      text eol=lf
+*.bash    text eol=lf
+*.R       text eol=lf
+*.Rmd     text eol=lf
+*.qmd     text eol=lf
+*.py      text eol=lf
+*.pl      text eol=lf
+*.yml     text eol=lf
+*.yaml    text eol=lf
+*.md      text eol=lf
+*.tsv     text eol=lf
+*.csv     text eol=lf
+*.txt     text eol=lf
+
+# Binary - never touch
+*.gz      binary
+*.gtf.gz  binary
+*.png     binary
+*.pdf     binary
+
+# The archive is a verbatim record. Mark it so a reviewer sees that any diff
+# against it is the ported stage's doing, not a line-ending artifact.
+archive/**     linguist-vendored
+provenance/**  linguist-vendored

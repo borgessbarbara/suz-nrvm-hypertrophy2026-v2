@@ -1,0 +1,43 @@
+# circRNA detection, quantification and reconstruction.
+# Covers bash stages 13-15.
+#
+# This environment did not exist in the previous repository: the circRNA branch
+# was archived there. It was reintroduced as an independent module on
+# 31 Jul 2026 (NE_NRVM_circRNA_repo_addendum_v1).
+#
+# NOMENCLATURE WARNING
+# --------------------
+# The manuscript methods text says "CIRCexplorer3 v1.0.0". The recovered shell
+# scripts actually invoke `CIRCexplorer2 parse` and `CIRCexplorer2 annotate`
+# together with CLEAR's run3.py and circ_quant.py. CLEAR is the package that
+# provides the circexplorer3-era workflow. Both are pinned below; see
+# docs/METHODS_NOTES.md before changing the methods text either way.
+name: suz_circrna
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.8
+  # --- alignment used by the circRNA branches ------------------------------
+  - hisat2=2.2.1
+  - star=2.7.11b
+  - bwa                 # run with -T 19 in CIRI_2_run_all_seba.sh; version not recorded
+  - samtools=1.21
+  - fastp=0.22.0
+  # --- CIRCexplorer / CLEAR branch ----------------------------------------
+  - circexplorer2
+  - clear                # provides run3.py and circ_quant.py
+  # --- CIRIquant / CIRI2 / CIRI-AS branch ---------------------------------
+  - ciriquant=1.1
+  # CIRI2 2.0.6 and CIRI-AS 1.2 are standalone Perl scripts, not conda
+  # packages. Version is known only from the original path string
+  # /media/storage2/jpablo/CIRI2/CIRI_v2.0.6/. Provide them via
+  # --ciri2-path and --ciri-as-path on stage 15, or vendor them under
+  # tools/ and record the checksums.
+  - perl
+  - perl-bioperl
+  - openjdk             # CIRI-vis (optional, not part of the pipeline)
+  - bedtools
+  - gawk
+  - coreutils

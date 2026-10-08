@@ -1,0 +1,41 @@
+# QC, trimming, alignment, assembly, annotation, quantification.
+# Covers bash stages 01-10 and the Babi preprocessing chain 09b-09e.
+#
+# Versions follow metadata/software_tool_inventory.tsv. Where the inventory
+# says TO_FILL the pin is left open here too; replace with the exported
+# version once the environment that produces the deposited results is built
+# (`conda env export --no-builds > envs/environment_qc_align.lock.yml`).
+name: suz_qc_align
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  # --- QC and trimming -----------------------------------------------------
+  - fastqc
+  - fastp=0.22.0
+  - multiqc
+  # --- alignment and BAM handling -----------------------------------------
+  - hisat2=2.2.1
+  - samtools=1.21
+  # --- assembly and annotation --------------------------------------------
+  - stringtie=3.0.0
+  - gffcompare=0.12.9
+  - gffread
+  # --- lncRNA identification ----------------------------------------------
+  - feelnc=0.2
+  # --- quantification ------------------------------------------------------
+  - salmon=1.10.3
+  # --- shell utilities the ported scripts depend on ------------------------
+  # gawk is REQUIRED, not optional: the original
+  # transcripts/filter_out_lncRNAs.sh uses GNU awk's three-argument match(),
+  # which mawk and BSD awk do not implement. Without gawk, stage 09e produces
+  # silently wrong output.
+  - gawk
+  - grep
+  - sed
+  - coreutils
+  - pigz
+  - curl
+  - wget

@@ -1,0 +1,13 @@
+file	role	recommended_repo_treatment	observed_logic	important_note
+CIRCexp3_run_all_2023_SebaNECardio.sh	CIRCexplorer branch H1-H4	RAW PROVENANCE -> CONSOLIDATE	Covers H1-H4. fastp -> CLEAR/run3.py (HISAT2) -> STAR chimeric mapping -> CIRCexplorer2 parse/annotate -> circ_quant.py.	Hard-coded paths; rn8/refFlat/index names; do not run as-is.
+CIRCexp3_run_all_2023_SebaNECardio_2.sh	CIRCexplorer branch SQ1-SQ8	RAW PROVENANCE -> CONSOLIDATE	Covers SQ1-SQ8 with same workflow.	Consolidate with other two into one sample-sheet-driven script.
+CIRCexp3_run_all_2023_SebaNECardio_3.sh	CIRCexplorer branch SQ13-SQ16	RAW PROVENANCE -> CONSOLIDATE	Covers SQ13-SQ16 with same workflow.	Consolidate with other two.
+CIRIquant_all_run_2023_Seba_NE_Cardio_1.sh	CIRIquant branch H1-H4	RAW PROVENANCE -> CONSOLIDATE	fastp followed by CIRIquant using rn8.yml.	rn8.yml was not supplied and must be recreated/documented.
+CIRIquant_all_run_2023_Seba_NE_Cardio_2.sh	CIRIquant branch SQ1-SQ8	RAW PROVENANCE -> CONSOLIDATE	Same CIRIquant workflow for SQ1-SQ8.	Consolidate.
+CIRIquant_all_run_2023_Seba_NE_Cardio_3.sh	CIRIquant branch SQ13-SQ16	RAW PROVENANCE -> CONSOLIDATE	Same CIRIquant workflow for SQ13-SQ16.	Consolidate.
+CIRI_2_run_all_seba.sh	BWA-MEM + CIRI2 + CIRI-AS reconstruction	RAW PROVENANCE -> PARAMETERIZE	Explicitly runs bwa mem -T 19, CIRI2.pl and CIRI_AS_v1.2.pl.	Supplied loop covers SQ13-SQ16 only; use as command template and confirm how other samples were reconstructed.
+vis_run_ciri2_seba.sh	CIRI-vis visualization	ARCHIVE OPTIONAL	Historical CIRI-vis plotting utility.	Not required for final manuscript figures.
+00_annotation_biomart.Rmd	Gene annotation of CIRCexplorer/CIRIquant outputs	ARCHIVE / EXTRACT LOGIC	Uses live biomaRt and hard-coded Windows paths; comments say not to rerun.	For reproducibility, prefer fixed annotation resource or freeze downloaded mapping table.
+01_circexp3.Rmd	CIRCexplorer count matrix + historical DESeq2	ARCHIVE / EXTRACT INPUT-CURATION LOGIC	Builds 16-sample count matrix; filters readNumber > 2; uses ComBat_seq then DESeq2.	Historical DE section uses |log2FC|>1 and differs from final manuscript threshold; do not reuse it unchanged.
+02_ciriquant.Rmd	CIRIquant count matrix + historical DESeq2	ARCHIVE / EXTRACT INPUT-CURATION LOGIC	Builds 16-sample count matrix; filters readNumber > 2; uses ComBat_seq then DESeq2.	Same historical-threshold caveat.
+03_tool_comparation.Rmd	Merge/compare CIRCexplorer and CIRIquant calls	KEY CURATION LOGIC -> CONSOLIDATE	Merges calls by genomic coordinates, labels software support, combines DE/annotation/sequence/count information.	Likely bridge toward final circRNA tables, but exact derivation of final raw_count_matrix_all_6/24 and 06/07 complete tables should be documented.

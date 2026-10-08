@@ -1,0 +1,54 @@
+# References (large; fetched by stage 00 or supplied via --genome-fasta/--gtf)
+references/*.fa
+references/*.fa.gz
+references/*.fasta
+references/*.fasta.gz
+references/*.gtf
+references/*.gtf.gz
+references/*.refflat*
+references/*.yml
+!references/README.md
+
+# Sequencing data (server + external drive; see metadata/fastq_manifest.tsv)
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.bam
+*.bai
+*.sam
+*.cram
+
+# Pipeline outputs
+results/
+output/
+*.log
+
+# Frozen inputs are COMMITTED on purpose - do not ignore data/frozen/.
+# They are gzipped; see data/frozen/README.md.
+
+# R session artifacts
+.Rhistory
+.RData
+.Rdata
+.Ruserdata
+.Rproj.user/
+*.Rproj
+
+# Quarto / knitr
+.quarto/
+*_files/
+*_cache/
+
+# Conda
+.conda/
+condaenv.txt
+
+# Editors and OS
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

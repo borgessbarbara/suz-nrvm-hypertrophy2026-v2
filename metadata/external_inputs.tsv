@@ -1,0 +1,25 @@
+filename	produced_by	status	consumed_by	notes
+miR.Counts_C6_NE6_3v3_new.csv	miRge3.0 (bash stage 11)	NOT SUPPLIED	R03	Count matrix for the 6 h small-RNA libraries. NOTE the "3v3" in the filename: the miRNA analysis is three-vs-three. No 6 h miRge command survives in provenance/mirge/miRge_3.txt - only the 24 h one.
+miR.Counts_C24_NE24_3v3_new.csv	miRge3.0 (bash stage 11)	NOT SUPPLIED	R03	Count matrix for the 24 h small-RNA libraries.
+DESmetadata_24h.csv	hand-authored for miRge3.0 -dex	NOT SUPPLIED	bash 11	Referenced by the miRge command as -mdt. Absent from every package received.
+mature.fa	miRBase	NOT SUPPLIED	R14	miRBase mature sequences, used to build the miRNA FASTAs for IntaRNA. Exact release is an open item.
+miRWalk_miRNA_Targets_3UTR_UP6.csv	miRWalk v3.0 (web)	NOT SUPPLIED	R14, R24	One of twelve miRWalk target files: {3UTR,5UTR,CDS} x {UP,DOWN} x {6,24}.
+miRWalk_miRNA_Targets_3UTR_DOWN6.csv	miRWalk v3.0 (web)	NOT SUPPLIED	R14, R24
+miRWalk_miRNA_Targets_5UTR_UP6.csv	miRWalk v3.0 (web)	NOT SUPPLIED	R14, R24
+miRWalk_miRNA_Targets_5UTR_DOWN6.csv	miRWalk v3.0 (web)	NOT SUPPLIED	R14, R24
+miRWalk_miRNA_Targets_CDS_UP6.csv	miRWalk v3.0 (web)	NOT SUPPLIED	R14, R24
+miRWalk_miRNA_Targets_CDS_DOWN6.csv	miRWalk v3.0 (web)	NOT SUPPLIED	R14, R24
+miRWalk_miRNA_Targets_3UTR_UP24.csv	miRWalk v3.0 (web)	NOT SUPPLIED	R14, R24
+miRWalk_miRNA_Targets_3UTR_DOWN24.csv	miRWalk v3.0 (web)	NOT SUPPLIED	R14, R24
+miRWalk_miRNA_Targets_5UTR_UP24.csv	miRWalk v3.0 (web)	NOT SUPPLIED	R14, R24
+miRWalk_miRNA_Targets_5UTR_DOWN24.csv	miRWalk v3.0 (web)	NOT SUPPLIED	R14, R24
+miRWalk_miRNA_Targets_CDS_UP24.csv	miRWalk v3.0 (web)	NOT SUPPLIED	R14, R24
+miRWalk_miRNA_Targets_CDS_DOWN24.csv	miRWalk v3.0 (web)	NOT SUPPLIED	R14, R24
+TFLink_All.tsv	TFLink	NOT SUPPLIED	R05	TF-target interactions. Too large to email; path and checksum still TO_FILL in reference_manifest.tsv.
+GRN_NE06_NORA_only_6h_GO_default_edge.csv	Cytoscape export (manual)	NOT SUPPLIED	R05	Manually exported GRN edge table. Not reproducible from the pipeline.
+GRN_NE24_NORA_only_24h_go_default_edge.csv	Cytoscape export (manual)	NOT SUPPLIED	R05
+Merged_Network_6_24_default_edge.csv	Cytoscape export (manual)	NOT SUPPLIED	R05
+merged_annotated_rn8_CNE624_8_H.fa	gffread (bash stage 08)	derived	R19	Transcript FASTA of the reconstructed transcriptome.
+all_transcripts.fa	gffread (bash stage 08)	derived	R19
+merged_lncRNAs.fa	gffread (bash stage 08)	derived	R19
+lncRNA_gene_to_transcript_map_from_classes.csv	derived from the FEELnc classes	derived	R19	Built from lncRNA_classes_*.txt.

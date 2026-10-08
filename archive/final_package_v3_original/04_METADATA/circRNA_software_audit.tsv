@@ -1,0 +1,14 @@
+tool	version_or_setting	evidence	action
+HISAT2	2.2.1	Explicit in shell PATH / coauthor methods	KEEP
+STAR	2.7.11b	Coauthor methods; shell command itself has no version string	CONFIRM ENV
+CIRCexplorer3	1.0.0	Coauthor methods	CONFIRM PACKAGE/ENV
+CIRCexplorer2 parse/annotate	invoked inside supplied shell scripts	Observed command	NOTE: historical scripts call CIRCexplorer2 subcommands within the CIRCexplorer workflow
+CIRIquant	1.1	Coauthor methods	CONFIRM ENV
+BWA-MEM	version not present	Observed command uses -T 19	ADD VERSION FROM ENV/HISTORY
+CIRI2	2.0.6	Visible in historical path	PROVENANCE
+CIRI-AS	1.2	Explicit CIRI_AS_v1.2.pl	KEEP/CONFIRM
+CIRI-vis	1.4	Explicit jar filename	OPTIONAL
+fastp	0.22.0 expected from project preprocessing	Historical circRNA scripts call local fastp without version	CONFIRM SAME BINARY
+IntaRNA	3.4.1 expected from project record	Exact commands now supplied	KEEP/CONFIRM
+DESeq2	version to freeze from final environment	Historical notebooks use DESeq2	CONFIRM
+sva / ComBat_seq	version to freeze if final circRNA DE used this step	Observed in historical notebooks	RESOLVE WHETHER FINAL PIPELINE USES IT

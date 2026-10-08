@@ -1,0 +1,8 @@
+resource	value_or_name	evidence	repository_note
+Genome FASTA	Rattus_norvegicus.GRCr8.dna.primary_assembly.fa / rat_primary_assembly_orderr8.fa	Project final lock says GRCr8 primary assembly; historical circRNA shell uses rat_primary_assembly_orderr8.fa	Likely same assembly family, but verify checksum/file identity.
+GTF annotation	Rattus_norvegicus.mRatBN7.2.115.gtf	Project final lock	Use as canonical final annotation only after validating circRNA outputs.
+Historical CIRI2 GTF	Rattus_norvegicus.GRCr8.114.gtf	Observed in CIRI_2_run_all_seba.sh	Do not silently replace in provenance; determine whether final circRNA outputs came from this historical run or a later release-115 rerun.
+CIRCexplorer refFlat	rn8.refflat.nochr.txt	Observed in CIRCexplorer shell	Need to recreate from the final annotation or preserve exact historical file/checksum.
+HISAT2 index	Rn8	Observed path	Rebuild from chosen canonical FASTA for clean workflow.
+STAR index	STAR_rn8	Observed path	Rebuild from chosen canonical FASTA/annotation.
+CIRIquant config	rn8.yml	Observed path; file not included	Must be recreated or recovered and committed as small config.

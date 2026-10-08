@@ -1,0 +1,12 @@
+pathway_id	pathway	kegg_program	source	notes
+rno04060	Cytokine-cytokine receptor interaction	6 h state-only	curated by S. Urquiza	Lifted verbatim from the selected_kegg tribble at 35_FINAL_missing_figures_miRNA_heatmap_DE_GBA.R:30
+rno04510	Focal adhesion	6 h state-only	curated by S. Urquiza
+rno04350	TGF-beta signaling pathway	6 h state-only	curated by S. Urquiza
+rno04390	Hippo signaling pathway	Shared	curated by S. Urquiza
+rno04670	Leukocyte transendothelial migration	Shared	curated by S. Urquiza
+rno04141	Protein processing in endoplasmic reticulum	Shared	curated by S. Urquiza
+rno04530	Tight junction	Shared	curated by S. Urquiza
+rno04110	Cell cycle	24 h state-only	curated by S. Urquiza
+rno04820	Cytoskeleton in muscle cells	24 h state-only	curated by S. Urquiza
+rno00565	Ether lipid metabolism	24 h state-only	curated by S. Urquiza
+rno03320	PPAR signaling pathway	24 h state-only	curated by S. Urquiza

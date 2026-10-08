@@ -1,0 +1,20 @@
+input_role	expected_filename_or_pattern	file_type	produced_by	priority	status	notes
+circRNA raw count matrix 6h	raw_count_matrix_all_6.txt	count matrix	R04_circRNA_merge_export.R	required	RECONSTRUCTED	No original script produces this. Rebuilt from 03_tool_comparation.Rmd logic. Needs confirmation.
+circRNA raw count matrix 24h	raw_count_matrix_all_24.txt	count matrix	R04_circRNA_merge_export.R	required	RECONSTRUCTED	As above.
+circRNA DE complete table 6h	06_circRNA_sequences_de6_DE_complete_table.txt	annotated DE table	R04_circRNA_merge_export.R	required	RECONSTRUCTED	Read by R13, R20, R21, R22.
+circRNA DE complete table 24h	07_circRNA_sequences_de24_DE_complete_table.txt	annotated DE table	R04_circRNA_merge_export.R	required	RECONSTRUCTED	Read by R13, R20, R21, R22. NOTE 12_..._ALL_RECORDS_FINAL.R also references a 06_*_de24_* name, which looks like a typo for 07_.
+circRNA IntaRNA target FASTA	circRNA_{UP,DOWN}_{6,24}h_all_records.fa	FASTA	R04_circRNA_merge_export.R	required	RECONSTRUCTED	Four files. Not flagged by the original audit; bash stage 16 cannot run without them.
+circRNA-miRNA IntaRNA output	Interact_circ{UP,DOWN}_mi{DOWN,UP}_{6,24}h_all_modeM.csv	IntaRNA CSV	bash 16_circrna_intarna.sh	required	OK	Four files. Names must match the Interact_*.csv glob in R21.
+lncRNA-miRNA IntaRNA output	Interact_Lnc{UP,DOWN}_mi{DOWN,UP}_{6,24}h_modeM.csv	IntaRNA CSV	bash 12_intarna_run.sh	required	OK	Four files.
+miRNA DE with status 6h	DE_miRNA_All_with_status_NE6.txt	DE table	R03_mirna_deseq2.R	required	OK
+miRNA DE with status 24h	DE_miRNA_All_with_status_NE24.txt	DE table	R03_mirna_deseq2.R	required	OK
+mRNA DE 6h / 24h	NE_vs_Ctrl_{6h,24h}_mRNA_DE.txt	DE table	R02_deseq2_mRNA_lncRNA.R	required	OK
+lncRNA triplets	COHERENT_lncRNA_miRNA_mRNA_triplets.csv	triplet table	R21_ceRNA_coherent_pairs_triplets.R	required	OK
+priority ceRNA triplets	PRIORITY_ceRNA_triplets_best_per_ncRNA_miRNA_mRNA.csv	triplet table	R21_ceRNA_coherent_pairs_triplets.R	recommended	OK
+strict circRNA triplets	12_STRICT_DE_coherent_circRNA_triplets.csv	triplet table	R22_circRNA_cross_reference.R	required	ORDERING FIXED	The original 31_ and 32f_ read this as an orphan input. It is in fact output 12_ of the cross-reference stage, so R22 now runs before R23/R24 consume it.
+gene annotation	hisat2_6_24_meta_ann.csv	annotation table	data/frozen/	recommended	FROZEN	Maps mRNA IDs to symbols. Ensembl release 114. See data/frozen/README.md.
+miRWalk targets	miRWalk_miRNA_Targets_{3UTR,5UTR,CDS}_{UP,DOWN}{6,24}.csv	target table	EXTERNAL (miRWalk v3.0 web)	required	NOT SUPPLIED	Twelve files. Not in any package received.
+miRDB correlation table	miRDB target prediction data_4miRNAs_correlation.xls.xlsx	spreadsheet	EXTERNAL (miRDB)	optional	NOT SUPPLIED	Only Excel input in the corpus; note the doubled .xls.xlsx extension.
+CIRIquant config	rn8.yml	YAML config	EXTERNAL	required	NOT SUPPLIED	Observed in the CIRIquant shell scripts. Must be recovered or recreated and committed.
+CIRCexplorer refFlat	rn8.refflat.nochr.txt	refFlat	EXTERNAL	required	NOT SUPPLIED	Referenced by all three CIRCexplorer scripts.
+circRNA genome FASTA	rat_primary_assembly_orderr8.fa	FASTA	EXTERNAL	required	VERIFY	Likely the same GRCr8 assembly as the project lock; verify by checksum.

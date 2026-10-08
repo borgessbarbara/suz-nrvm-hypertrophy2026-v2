@@ -1,0 +1,3 @@
+figure_scope	software	manual_step	reproducibility_implication	recommended_artifact
+Multiple main/supplementary figures	Affinity	Final multi-panel assembly/cosmetic editing	Script-generated source panels may not be pixel-identical to manuscript composites.	If available, deposit editable Affinity source files or final SVG/PDF plus a panel-source manifest.
+Figure 6B-F; Figure S5	Cytoscape v3.10.3	Network layout manually adjusted	Node/edge tables reproduce network content but not exact final positions.	Deposit final .cys session or exported x/y node coordinates and visual style if available.

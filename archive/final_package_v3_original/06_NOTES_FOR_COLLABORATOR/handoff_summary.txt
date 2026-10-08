@@ -1,0 +1,14 @@
+Attachment contents to mention to the collaborator:
+- final manuscript-aligned R scripts,
+- recovered raw CIRCexplorer/CIRIquant/CIRI-AS provenance scripts,
+- exact eight IntaRNA commands,
+- final figure-to-script map,
+- audit of reference/BSJ/sample/DE discrepancies,
+- explicit notes about Affinity assembly and manual Cytoscape layout.
+
+Highest-priority validation items:
+1. GRCr8/release-115 reference lock versus historical rn8/GRCr8.114 circRNA records.
+2. BSJ threshold: prose >=2 versus code >2.
+3. CircRNA DE provenance: historical ComBat_seq/|LFC|>1 versus final nominal p<0.05/|LFC|>=0.5.
+4. Three-versus-four replicate selection in final circRNA volcano script.
+5. Final circRNA count/sequence table lineage.

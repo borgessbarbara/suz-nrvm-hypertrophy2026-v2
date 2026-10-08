@@ -1,0 +1,28 @@
+figure	panel	content	script_or_source	repo_action	manual_or_reproducibility_note
+Figure 1	A-D	Experimental workflow, IF, area/perimeter	Experimental source data / manual assembly	Not part of transcriptomic scripts	Affinity/manual multi-panel assembly may cause final appearance to differ from source plots.
+Figure 2	A	Integrated bioinformatic workflow	Manual diagram	No executable figure script expected	Preserve editable diagram source if available.
+Figure 2	B	RNA-class inventory incl. circRNA loci	26_transcriptome_overview_with_circRNA.R	SEND/UPDATE	Final composite may have Affinity edits.
+Figure 2	C	Annotated vs novel lncRNA genes/transcripts	15_lncRNA_characterization_from_GTF.R	SEND/UPDATE	Also supplies S2 source data.
+Figure 3	A	DE counts for mRNA/lncRNA/miRNA/circRNA	35_FINAL_missing_figures_miRNA_heatmap_DE_GBA.R	SEND/UPDATE	Affinity may alter panel layout only.
+Figure 3	B	Early/Sustained/Late stacked bars	36b_Figure3_panelB_DOWN_bottom_UP_top.R	SEND/UPDATE	Final DOWN-bottom/UP-top version.
+Figure 3	C mRNA	Temporal heatmap	05_Figure3_mRNA_programs.R	SEND/COMPARE	Analytical panel source; final assembly may differ.
+Figure 3	C lncRNA	Temporal heatmap	37c_lncRNA_temporal_heatmaps_annotated_novel_MSTRG_FIXED.R	SEND/UPDATE	MSTRG/StringTie treated as novel.
+Figure 3	C miRNA	Temporal heatmap	35_FINAL_missing_figures_miRNA_heatmap_DE_GBA.R	SEND/UPDATE	Analytical source.
+Figure 3	C circRNA	Exploratory temporal heatmap	Exact standalone script not isolated	OPEN	Repository may need a small dedicated script from the final circRNA DE/temporal table.
+Figure 4	A-B	Curated KEGG + TF-pathway integration	script_final_depurado_TF_KEGG.R	SEND/COMPARE	Internal historical figure numbers should be renamed.
+Figure 5	A	lncRNA GBA	35_FINAL_missing_figures_miRNA_heatmap_DE_GBA.R	SEND/UPDATE	Final selected KEGG mapping.
+Figure 5	B-C	miRNA-mRNA curated pathway maps	script_miRNA_mRNA_6_24.R	SEND/COMPARE	6 h and 24 h panels.
+Figure 6	A	Phase-aware ceRNA coherence trajectories	31_phase_aware_ceRNA_coherence_plots.R	SEND/UPDATE	Final plot source.
+Figure 6	B-F	Five phase-by-axis ceRNA networks	12_ceRNA_coherent_pairs_and_triplets_ALL_RECORDS_FINAL.R + repo R15 + 32f_export_ceRNA_cytoscape_TF11_curatedKEGG_MFE20.R + 33_validate_fix_cytoscape_import_keys.R	SEND/UPDATE + ALREADY R15	Cytoscape layout was manually adjusted; exact pixel layout requires .cys or node coordinates.
+Figure S1	A-E	Phenotypic/qPCR/WB validation	Experimental source data	Not part of transcriptomic scripts	Affinity/manual assembly.
+Figure S2	A-C	lncRNA exon/isoform/length characterization	15_lncRNA_characterization_from_GTF.R	SEND/COMPARE	Only the retained A-C characterization panels are required.
+Figure S3	A-B lncRNA	Volcano plots	07_Figure4_clean_volcanoes.R	SEND/COMPARE	Final composite may differ after Affinity.
+Figure S3	A-B circRNA	Exploratory nominal-p volcanoes	25_recreate_circRNA_volcanoes_with_all_NS.R	SEND/UPDATE	Final manuscript uses nominal p<0.05 and |log2FC|>=0.5; sample inclusion still needs audit.
+Figure S3	A-B mRNA/miRNA	Volcano plots	Final standalone scripts not isolated	OPEN	Code exists in larger historical scripts; collaborator should extract/parameterize only final plotting logic.
+Figure S3	C lncRNA	Directional-overlap matrices	39e_lncRNA_directional_overlap_barplot_UP_top_DOWN_bottom_FINAL.R	SEND/UPDATE	Final corrected version.
+Figure S3	C circRNA	Directional overlap	repo R15 cross-reference outputs / final circRNA temporal table	ALREADY/OPEN	Verify exact plotting source.
+Figure S3	C mRNA/miRNA	Directional-overlap matrices	Exact standalone script not isolated	OPEN	Create small consolidated script from final DE status tables.
+Figure S4	A	Top TF rankings	script_final_depurado_TF_KEGG.R	SEND/COMPARE	Source plot.
+Figure S4	B	Positive/negative lncRNA-mRNA pair counts by KEGG	35_FINAL_missing_figures_miRNA_heatmap_DE_GBA.R	SEND/UPDATE	Source plot.
+Figure S4	C	Top lncRNA hubs	06_Figure4_refine_heatmap_hubs.R	SEND/COMPARE	Source plot.
+Figure S5	A-B	Expanded strict ceRNA networks	12_ceRNA... + repo R15 + 32f... + 33...	SEND/UPDATE + ALREADY R15	Cytoscape layout manually adjusted; final .cys/node coordinates are desirable.

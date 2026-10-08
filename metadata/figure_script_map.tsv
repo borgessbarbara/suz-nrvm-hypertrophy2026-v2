@@ -1,0 +1,27 @@
+figure	panel	content	pipeline_stage	source_script	manual_or_reproducibility_note
+Figure 1	A-D	Experimental workflow, IF, area/perimeter	(none)	Experimental source data / manual assembly	Not part of the transcriptomic scripts. Affinity multi-panel assembly.
+Figure 2	A	Integrated bioinformatic workflow	(none)	Manual diagram	No executable figure script expected. Preserve the editable diagram source if available.
+Figure 2	B	RNA-class inventory incl. circRNA loci	R06_transcriptome_overview.R	26_transcriptome_overview_with_circRNA.R	Reads the frozen hisat2_6_24_meta_* inputs. Final composite may have Affinity edits.
+Figure 2	C	Annotated vs novel lncRNA genes/transcripts	R07_lncRNA_characterization_gtf.R	15_lncRNA_characterization_from_GTF.R	Also supplies the S2 source data.
+Figure 3	A	DE counts for mRNA/lncRNA/miRNA/circRNA	R09_de_counts_heatmaps_gba.R	35_FINAL_missing_figures_miRNA_heatmap_DE_GBA.R	Affinity may alter panel layout only.
+Figure 3	B	Early/Sustained/Late stacked bars	R10_figure3B_temporal_programs.R	36b_Figure3_panelB_DOWN_bottom_UP_top.R	Final DOWN-bottom/UP-top version.
+Figure 3	C mRNA	Temporal heatmap	R11_figure3C_mRNA_heatmap.R	05_Figure3_mRNA_programs.R	Analytical panel source; final assembly may differ.
+Figure 3	C lncRNA	Temporal heatmap	R12_figure3C_lncRNA_heatmap.R	37c_lncRNA_temporal_heatmaps_annotated_novel_MSTRG_FIXED.R	MSTRG/StringTie transcripts treated as novel.
+Figure 3	C circRNA	Exploratory temporal heatmap	R13_figure3C_circRNA_heatmap.R	NEW - no standalone original existed (audit item FIG3C_CIRC)	Built from the final circRNA DE/temporal table. circRNA trajectories remain exploratory.
+Figure 4	A-B	Curated KEGG + TF-pathway integration	R05_tf_kegg_integration.R	script_final_depurado_TF_KEGG.R	Internal historical figure numbers renamed to the final scheme.
+Figure 5	A	lncRNA guilt-by-association	R09_de_counts_heatmaps_gba.R	35_FINAL_missing_figures_miRNA_heatmap_DE_GBA.R	Uses metadata/curated_kegg_allowlist.tsv.
+Figure 5	B-C	miRNA-mRNA curated pathway maps	R14_mirna_mRNA_integration.R	script_miRNA_mRNA_6_24.R	6 h and 24 h panels.
+Figure 6	A	Phase-aware ceRNA coherence trajectories	R23_ceRNA_phase_aware_plots.R	31_phase_aware_ceRNA_coherence_plots.R	Four panels: Early 6h / Sustained 6h / Sustained 24h / Late 24h. Sustained measurements are deliberately not pooled.
+Figure 6	B-F	Five phase-by-axis ceRNA networks	R21 + R22 + R23 + R24	12_ceRNA_coherent_pairs_and_triplets_ALL_RECORDS_FINAL.R, 32f_export_ceRNA_cytoscape_TF11_curatedKEGG_MFE20.R, 33_validate_fix_cytoscape_import_keys.R, 24_FINAL_circRNA_lncRNA_miRNA_mRNA_cross_reference.R	Cytoscape v3.10.3 layout was manually adjusted; pixel-identical reproduction needs the .cys or node coordinates.
+Figure S1	A-E	Phenotypic/qPCR/WB validation	(none)	Experimental source data	Not part of the transcriptomic scripts.
+Figure S2	A-C	lncRNA exon/isoform/length characterization	R07_lncRNA_characterization_gtf.R	15_lncRNA_characterization_from_GTF.R	Only the retained A-C characterization panels are required.
+Figure S3	A-B lncRNA	Volcano plots	R16_volcanoes_lncRNA.R	07_Figure4_clean_volcanoes.R	Note absfc_cutoff is 0 in the original: significance is padj-only for lncRNA volcanoes.
+Figure S3	A-B mRNA/miRNA	Volcano plots	R17_volcanoes_mRNA_miRNA.R	NEW - extracted from Integrated_Bulk_v3_6_24h.R and miRNAs_6_24.R (audit item S3_MRNA_MIRNA)	Final code was embedded in the large historical scripts; extracted into a compact plotting stage.
+Figure S3	A-B circRNA	Exploratory nominal-p volcanoes	R20_circRNA_volcanoes.R	25_recreate_circRNA_volcanoes_with_all_NS.R	nominal p<0.05 and |log2FC|>=0.5. Sample inclusion (3v3 vs 4v4) is an OPEN item.
+Figure S3	C lncRNA	Directional-overlap matrices	R18_directional_overlap.R	39e_lncRNA_directional_overlap_barplot_UP_top_DOWN_bottom_FINAL.R	Final corrected version.
+Figure S3	C mRNA/miRNA	Directional-overlap matrices	R18_directional_overlap.R	NEW - consolidated from the final DE status tables (audit item S3C)
+Figure S3	C circRNA	Directional overlap	R22_circRNA_cross_reference.R	24_FINAL_circRNA_lncRNA_miRNA_mRNA_cross_reference.R	Outputs 19_ and 20_ of that stage.
+Figure S4	A	Top TF rankings	R05_tf_kegg_integration.R	script_final_depurado_TF_KEGG.R	Source plot.
+Figure S4	B	Positive/negative lncRNA-mRNA pair counts by KEGG	R09_de_counts_heatmaps_gba.R	35_FINAL_missing_figures_miRNA_heatmap_DE_GBA.R	Source plot.
+Figure S4	C	Top lncRNA hubs	R15_lncRNA_hubs.R	06_Figure4_refine_heatmap_hubs.R	Source plot.
+Figure S5	A-B	Expanded strict ceRNA networks	R21 + R22 + R23 + R24	same as Figure 6B-F	Cytoscape layout manually adjusted; final .cys/node coordinates are desirable.

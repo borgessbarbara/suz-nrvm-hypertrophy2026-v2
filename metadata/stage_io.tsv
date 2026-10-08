@@ -1,0 +1,160 @@
+stage	direction	filename	note
+01	out	hisat2_6_24_meta_ann.csv	written as <prefix>_meta_ann.csv; the frozen Ensembl-114 copy lives in data/frozen/
+01	out	hisat2_6_24_meta_novel_lncRNA.csv	written as <prefix>_meta_novel_lncRNA.csv
+01	out	hisat2_6_24_exon_lengths.csv
+01	out	hisat2_6_24_feelnc_validated.csv
+01	out	hisat2_6_24_incompatible_lncRNA.csv
+01	out	hisat2_6_24.compatible.gtf
+01	out	hisat2_6_24_final_annotated.gtf	into gtf_outputs/
+02	out	NE_vs_Ctrl_6h_mRNA_DE.txt
+02	out	NE_vs_Ctrl_24h_mRNA_DE.txt
+02	out	NE_vs_Ctrl_6h_lncRNA_DE.txt
+02	out	NE_vs_Ctrl_24h_lncRNA_DE.txt
+02	out	early_mRNA.csv
+02	out	sustained_mRNA.csv
+02	out	late_mRNA.csv
+02	out	early_lncRNA.csv
+02	out	sustained_lncRNA.csv
+02	out	late_lncRNA.csv
+02	out	early_novel_lncRNA.csv
+02	out	sustained_novel_lncRNA.csv
+02	out	late_novel_lncRNA.csv
+02	out	reversal_circRNA.csv	temporal reversal class, read by R20
+02	out	cor_early_annotated.csv
+02	out	cor_late_annotated.csv
+02	out	cor_sustained_annotated.csv
+02	out	correlations_gained_at_24h.csv
+02	out	correlations_lost_after_6h.csv
+02	out	correlations_late_only.csv
+02	out	correlations_early_only.csv
+02	out	correlations_stable_6h_24h.csv
+02	out	correlation_summary_counts.csv
+02	out	lncRNA_hubs_by_time.csv
+02	out	KEGG_6h_vs_24h_Only6h_long_format_SYMBOLS.txt
+02	out	KEGG_6h_vs_24h_Only24h_long_format_SYMBOLS.txt
+02	out	KEGG_6h_vs_24h_Shared_long_format_SYMBOLS.txt
+02	out	tx2gene.tsv
+03	out	DE_miRNA_All_with_status_NE6.txt
+03	out	DE_miRNA_All_with_status_NE24.txt
+03	out	DE_miRNA_Up_NE6.txt
+03	out	DE_miRNA_Down_NE6.txt
+03	out	DE_miRNA_Up_NE24.txt
+03	out	DE_miRNA_Down_NE24.txt
+03	out	DE_miRNA_Significant_only_NE6.txt
+03	out	miRNA_temporal_summary_table.csv
+03	out	miRNA_temporal_MEGA_TABLE.csv
+03	out	miRNA_DE_NE_vs_Ctrl_6h_for_miRWalk.txt
+03	out	miRNA_DE_NE_vs_Ctrl_24h_for_miRWalk.txt
+06	out	transcriptome_overview_with_circRNA_counts.csv	Figure 2B source data
+07	out	lncRNA_transcript_characterization_from_GTF.tsv
+07	out	lncRNA_gene_characterization_from_GTF.tsv
+07	out	lncRNA_inventory_summary.tsv
+07	out	lncRNA_isoform_complexity_summary.tsv
+08	out	FEELnc_best_only_unique_lncRNA_gene.tsv
+09	out	Figure1_DE_counts_by_rna_time_direction.csv
+09	out	Figure3_GBA_exact_lncRNA_mRNA_KEGG_mapping.csv
+09	out	Figure2_direction_switch_features_excluded_from_directional_bars.csv
+10	out	Figure3B_temporal_programs_all_RNAs_with_labels.csv
+10	out	input_manifest.csv
+11	out	SUPP_Fig3_mRNA_programs_wide.csv
+11	out	SUPP_Fig3C_top_mRNAs_for_heatmap.csv
+12	out	00_lncRNA_temporal_heatmap_input_table.csv
+13	out	00_circRNA_temporal_classification.csv
+13	out	02_circRNA_temporal_heatmap_table.csv
+05	out	SUPP_Fig4B2_lncDE_with_phase.csv	read by R12, R15, R18
+05	out	SUPP_Fig4C2_hubs_early_vs_late.csv
+05	out	pathways_selected_for_TF.csv	optional cross-stage input to R13
+14	out	miRNAs_UP_6hr.fa	IntaRNA query, bash stages 12 and 16
+14	out	miRNAs_DOWN_6hr.fa
+14	out	miRNAs_UP_24hr.fa
+14	out	miRNAs_DOWN_24hr.fa
+14	out	miRNAs_UP_6hr.txt
+14	out	miRNAs_DOWN_6hr.txt
+14	out	miRNAs_UP_24hr.txt
+14	out	miRNAs_DOWN_24hr.txt
+15	out	SUPP_Fig4D_top_lnc_for_heatmap.csv
+15	out	SUPP_Fig4E_top_hubs_by_time.csv
+16	out	SUPP_FigS3AB_lnc_volcano_data.csv
+17	out	SUPP_FigS3AB_mRNA_miRNA_volcano_data.csv
+18	out	00_lncRNA_gene_level_states.csv
+18	out	01_overlap_counts_all_lncRNAs.csv
+19	out	Candidates_lncRNA_6h_UP.fa	IntaRNA target, bash stage 12
+19	out	Candidates_lncRNA_6h_DOWN.fa
+19	out	Candidates_lncRNA_24h_UP.fa
+19	out	Candidates_lncRNA_24h_DOWN.fa
+19	out	lncRNA_DE_with_phase_and_transcriptID.csv
+19	out	PRIORITY_top25_lncRNAs_per_group_for_IntaRNA.csv
+04	out	raw_count_matrix_all_6.txt	RECONSTRUCTED stage
+04	out	raw_count_matrix_all_24.txt	RECONSTRUCTED stage
+04	out	06_circRNA_sequences_de6_DE_complete_table.txt	RECONSTRUCTED stage
+04	out	07_circRNA_sequences_de24_DE_complete_table.txt	RECONSTRUCTED stage
+04	out	circRNA_UP_6h_all_records.fa	RECONSTRUCTED; needs CIRI-AS sequences
+04	out	circRNA_DOWN_6h_all_records.fa	RECONSTRUCTED; needs CIRI-AS sequences
+04	out	circRNA_UP_24h_all_records.fa	RECONSTRUCTED; needs CIRI-AS sequences
+04	out	circRNA_DOWN_24h_all_records.fa	RECONSTRUCTED; needs CIRI-AS sequences
+04	out	all_circrnas.csv
+20	out	circRNA_full_DESeq2_results_6h_all_rows.csv
+20	out	circRNA_full_DESeq2_results_24h_all_rows.csv
+20	out	SUMMARY_circRNA_full_volcano_counts.csv
+21	out	COHERENT_lncRNA_miRNA_pairs.csv
+21	out	COHERENT_lncRNA_miRNA_mRNA_triplets.csv	read by R22
+21	out	COHERENT_circRNA_miRNA_pairs_locus_collapsed.csv
+21	out	COHERENT_circRNA_miRNA_mRNA_triplets_locus_collapsed.csv
+21	out	PRIORITY_ceRNA_triplets_best_per_ncRNA_miRNA_mRNA.csv	read by R22
+21	out	HIGH_CONFIDENCE_ceRNA_triplets_E_le_minus20.csv
+21	out	Fig8_priority_ceRNA_triplets.txt	read by R23, R24, R22
+23	out	01_phase_aware_unique_node_values.csv
+23	out	02_phase_timepoint_trajectory_summary_median_IQR.csv
+24	out	ALL_MFE20_nodes.csv	read by R23
+24	out	ALL_MFE20_edges.csv	read by R23
+24	out	01_ALL_filtered_triplets_with_phase_curatedKEGG_annotations.csv
+24	out	01C3_selected_KEGG_allowlist_used.csv	cross-check against metadata/curated_kegg_allowlist.tsv
+24	out	02_EXPORT_manifest.csv
+25	out	ALL_MFE20_nodes_CYTOSCAPE_SAFE.tsv
+25	out	ALL_MFE20_edges_CYTOSCAPE_SAFE.tsv
+25	out	ALL_MFE20_edges_MINIMAL.tsv
+22	out	03_HC_circRNA_miRNA_duplexes_locus_collapsed.csv
+22	out	08_CROSS_ncRNA_convergent_modules.csv
+22	out	12_STRICT_DE_coherent_circRNA_triplets.csv	read by R23 and R24 - this is why R22 runs before them
+22	out	13_SHARED_with_lncRNA_triplet_axes.csv
+22	out	14_NEW_strict_circRNA_triplets_not_in_lncRNA_analysis.csv
+22	out	17_CYTOSCAPE_cross_ncRNA_nodes.csv
+22	out	18_CYTOSCAPE_cross_ncRNA_edges.csv
+22	out	19_circRNA_temporal_direction_by_locus.csv	Figure S3C circRNA
+22	out	20_circRNA_directional_overlap_counts.csv	Figure S3C circRNA
+22	out	22_RUN_summary_counts.csv
+26	out	MASTER_results_report.md
+26	out	MASTER_results_report.txt
+26	out	selected_input_files.tsv
+bash07	out	merged.annotated.gtf	gffcompare
+bash07	out	CNE_6_24_HISAT2.tmap	gffcompare
+bash09	out	lncRNA_classes_CNE_6_24_HISAT2_1kb_100kb.txt	FEELnc classifier
+bash09d	out	CNE_6_24_HISAT2.annotated.lncRNA_tx.gtf
+bash09e	out	filtered_merged_CNE_6_24_HISAT2.annotated.gtf
+bash12	out	Interact_LncUP_miDOWN_6h_modeM.csv
+bash12	out	Interact_LncDOWN_miUP_6h_modeM.csv
+bash12	out	Interact_LncUP_miDOWN_24h_modeM.csv
+bash12	out	Interact_LncDOWN_miUP_24h_modeM.csv
+bash16	out	Interact_circUP_miDOWN_6h_all_modeM.csv
+bash16	out	Interact_circDOWN_miUP_6h_all_modeM.csv
+bash16	out	Interact_circUP_miDOWN_24h_all_modeM.csv
+bash16	out	Interact_circDOWN_miUP_24h_all_modeM.csv
+bash07	out	merged_CNE_6_24_HISAT2.annotated.gtf	historical alias of merged.annotated.gtf
+bash09	out	lncRNA_classes_CNE624_rn8_8_annotated_1kb_100kb.txt	historical alias of lncRNA_classes_CNE_6_24_HISAT2_1kb_100kb.txt
+02	out	res_NE_vs_Ctrl_6h.csv	alias emitted by the DESeq2 stage
+02	out	res_NE_vs_Ctrl_6h.txt	alias
+02	out	res_NE_vs_Ctrl_24h.csv	alias
+02	out	res_NE_vs_Ctrl_24h.txt	alias
+02	out	NE_vs_Ctrl_6h_mRNA_full_with_NS.txt	full DE table including non-significant rows
+02	out	NE_vs_Ctrl_24h_mRNA_full_with_NS.txt	full DE table including non-significant rows
+21	out	Figure7_priority_ceRNA_triplets.csv	historical alias of Fig8_priority_ceRNA_triplets.txt
+21	out	MAIN_FIGURE_ceRNA_triplets.csv	historical alias of Fig8_priority_ceRNA_triplets.txt
+04	out	06_circRNA_sequences_de24_DE_complete_table.txt	misnamed fallback the ceRNA stage tries after 07_; see docs/OPEN_ITEMS.md
+04	out	README_RECONSTRUCTION.txt	
+13	out	early_circRNA.csv	circRNA temporal phase list
+13	out	sustained_circRNA.csv	circRNA temporal phase list
+13	out	late_circRNA.csv	circRNA temporal phase list
+13	out	reversal_circRNA.csv	circRNA temporal phase list
+02	out	tx2gene_fixed.tsv	written then re-read by the same stage
+02	out	KEGG_6h_vs_24h_Shared_with_core_symbols.txt	
+04	out	_LOCI_ONLY.tsv	fallback written when no CIRI-AS sequences are available

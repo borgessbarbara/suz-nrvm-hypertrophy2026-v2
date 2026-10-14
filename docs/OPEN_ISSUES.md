@@ -38,7 +38,7 @@ miRWalk files and miRBase `mature.fa`
 
 | Blocked | By |
 |---|---|
-| The entire circRNA module, and with it Figure 2B's circRNA bar (8,736 loci), every circRNA panel in Figures 3 and S3, Supplementary Tables S7A-B, and the 9 circRNA triplets in Figure 6B | §7.4 |
+| The entire circRNA module, and with it Figure 2B's circRNA bar (8,736 loci), every circRNA panel in Figures 3 and S3, Supplementary Tables S7A-B, and the 9 circRNA triplets in Figure 6B | §7.4 (4 of 6 resources outstanding; the STAR index and refFlat are now built by stage 12b) |
 | Figure 4A-B and S4A | §6.1 |
 | Figure 5B-C | §6.2 |
 | Treating any circRNA count as final | §7.1, §7.2 |
@@ -216,19 +216,19 @@ FASTAs, and through them bash 16.
 **Needed:** either the missing batch commands, or confirmation that
 reconstruction genuinely only ever covered SQ13-SQ16.
 
-### 7.4 Six external resources, none supplied
+### 7.4 External resources the circRNA module needs
 
-Nothing in any package received contains these, and the whole circRNA module
-is blocked on them.
+None of these was in any package received. Two are now built rather than
+supplied; four are still outstanding.
 
-| Resource | Needed by | Note |
+| Resource | Needed by | Status |
 |---|---|---|
-| `rn8.yml` — CIRIquant config | bash 14 | the stage refuses to guess |
-| `rn8.refflat.nochr.txt` | bash 13 | |
-| STAR index `STAR_rn8/` | bash 13 | |
-| `rat_primary_assembly_orderr8.fa` | bash 13, 15 | verify by checksum — §3.3 |
-| `CIRI2.pl` v2.0.6 | bash 15 | not a conda package |
-| `CIRI_AS_v1.2.pl` | bash 15 | not a conda package |
+| STAR index `STAR_rn8/` | bash 13 | **Resolved.** Stage 12b runs `STAR --runMode genomeGenerate` on the stage 00 primary assembly. No build command was ever recorded, so this is new code, not a recovery |
+| `rn8.refflat.nochr.txt` | bash 13 | **Resolved.** Stage 12b derives the refFlat from the Ensembl GTF with `gtfToGenePred`. Ensembl names carry no `chr` prefix, which is what "nochr" recorded |
+| `rn8.yml` — CIRIquant config | bash 14 | Outstanding. The stage refuses to guess. Every field in it names something the pipeline already builds, so it is derivable |
+| `rat_primary_assembly_orderr8.fa` | bash 13, 15 | Outstanding, and unverifiable — see §3.3 |
+| `CIRI2.pl` v2.0.6 | bash 15 | Outstanding. Not a conda package, but freely downloadable |
+| `CIRI_AS_v1.2.pl` | bash 15 | Outstanding. Same |
 
 ### 7.5 The circRNA reconstruction is unconfirmed
 

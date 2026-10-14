@@ -416,10 +416,12 @@ node x/y coordinates plus the visual style.
 | # | Item |
 |---|---|
 | 15.1 | All `checksum` cells in `metadata/reference_manifest.tsv` are `TO_FILL` (§3.2) |
-| 15.2 | Conda environments are templates. Several versions are `TO_FILL`, matching `metadata/software_tool_inventory.tsv`. Replace with `conda env export --no-builds` once the environment that produces the deposited results is built |
+| 15.2 | **The environments pin no versions**, so `bash scripts/commands/create_envs.sh` installs current releases rather than the versions the Methods record (those are trailing comments in the `.yml` files). This is deliberate — the pipeline is being re-run at Ensembl 115 — but it means the Methods' tool versions must be rewritten from `envs/*.lock.yml` once the environments are built, and `metadata/software_tool_inventory.tsv` updated with them. Several rows there are still `TO_FILL` |
 | 15.3 | `sessionInfo()` from the machine that produces the deposited figures is not recorded |
 | 15.4 | **No full pipeline run has been executed.** The repository is verified structurally by the eight self-checks, and numerically only for Figure 2B |
 | 15.5 | 16 small-RNA rows in `metadata/fastq_manifest.tsv` are `TO_FILL` (§5.2) |
+| 15.6 | **CLEAR has no conda package** and installs from source into `env_circrna` (`git clone` + `python ./setup.py install`). Nothing pins or checksums it, so the version used is whatever `master` is on the day it is installed. Record the commit hash |
+| 15.7 | **The environments have never been solved.** `clear` was listed as a bioconda dependency and does not exist there, and `mirge3=3.0` pinned a version that does not exist — both would have failed `conda env create`. Fixed, but no solve has been run, so more may surface. `bash scripts/commands/create_envs.sh --dry-run` solves without installing |
 
 ---
 

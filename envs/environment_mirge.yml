@@ -1,8 +1,20 @@
 # miRge3.0 small-RNA pipeline. Covers bash stage 11.
 #
+# Versions are UNPINNED so the solver takes the current release. Capture what
+# resolved with:
+#     conda env export --no-builds -n env_mirge > envs/environment_mirge.lock.yml
+#
+# PACKAGE VERSIONING IS CONFUSING HERE. The tool is branded "miRge3.0" and the
+# Methods call it version 3.0, but the bioconda package `mirge3` is versioned
+# independently and is currently at 0.1.4. Do not pin `mirge3=3.0`; no such
+# version exists and the solve fails.
+#
 # The run used `-db mirbase`, not miRGeneDB (confirmed by S. Urquiza,
 # 2 Jul 2026). The exact miRBase release is unrecorded; see
 # docs/OPEN_ISSUES.md section 5.1.
+#
+# The miRge3 library itself is a separate download, not a conda package. Point
+# stage 11 at it with MIRGE_LIB.
 #
 # Recorded parameters from archive/raw_scripts_original/miRge_scripts/miRge_3.txt:
 #   -lib <miRge3_Lib> -on rat -db mirbase
@@ -12,15 +24,15 @@
 #
 # Only the 24 h command survives; there is no recorded 6 h invocation even
 # though R03 consumes a 6 h count matrix. See docs/OPEN_ISSUES.md section 5.1.
-name: suz_mirge
+name: env_mirge
 channels:
   - conda-forge
   - bioconda
-  - defaults
+  - nodefaults
 dependencies:
-  - python=3.8
-  - mirge3=3.0
+  - python
+  - mirge3                # Methods call this "miRge3.0"; bioconda version is 0.1.x
   - bowtie
   - samtools
-  - r-base          # miRge3.0 shells out to R for its -dex differential step
+  - r-base                # miRge3.0 shells out to R for its -dex step
   - curl

@@ -1,21 +1,25 @@
 # IntaRNA duplex prediction. Covers bash stages 12 (lncRNA-miRNA) and
 # 16 (circRNA-miRNA).
 #
-# IntaRNA is kept in its own environment because it pulls a Boost/ViennaRNA
-# stack that conflicts with the alignment environment. The original analysis
-# did the same: archive/raw_scripts_original/intarna_related/command_lines.txt preserves
+# Versions are UNPINNED so the solver takes the current release. Capture what
+# resolved with:
+#     conda env export --no-builds -n env_intarna > envs/environment_intarna.lock.yml
+#
+# IntaRNA stays in its own environment because it pulls a Boost/ViennaRNA stack
+# that conflicts with the alignment environment. The original analysis did the
+# same: archive/raw_scripts_original/intarna_related/command_lines.txt preserves
 #     conda activate IntaRNA_lncRNA
 # which is the only record of the original environment name anywhere in the
 # material received.
 #
 # All eight runs used --mode=M --outMode=C. Downstream the manuscript retains
 # interactions with MFE <= -20 kcal/mol (energy_high in R21).
-name: suz_intarna
+name: env_intarna
 channels:
   - conda-forge
   - bioconda
-  - defaults
+  - nodefaults
 dependencies:
-  - intarna=3.4.1
+  - intarna               # Methods: 3.4.1
   - viennarna
   - coreutils

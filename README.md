@@ -69,12 +69,29 @@ Add `--skip-circrna` to run everything that does not depend on them.
 ## Install and verify
 
 ```bash
-conda env create -f envs/environment_qc_align.yml
-conda env create -f envs/environment_mirge.yml
-conda env create -f envs/environment_intarna.yml
-conda env create -f envs/environment_circrna.yml
-conda env create -f envs/environment_r.yml
+bash scripts/commands/create_envs.sh            # all five, then verify and lock
+bash scripts/commands/create_envs.sh --dry-run  # solve only, change nothing
 ```
+
+That creates `env_qc_align`, `env_mirge`, `env_intarna`, `env_circrna` and
+`env_r`, sets the strict channel priority bioconda requires, checks that every
+binary the stages call is on `PATH` inside each environment, and writes
+`envs/*.lock.yml`. Or create one at a time:
+
+```bash
+conda env create -f envs/environment_qc_align.yml   # -> env_qc_align
+```
+
+**The environment files pin no versions**, so you get current releases; the
+version each tool had in the manuscript Methods is a trailing comment on its
+line. The `.lock.yml` files are the version record — update
+`metadata/software_tool_inventory.tsv` from them once the environments are
+built.
+
+**Three tools are not conda packages.** CLEAR (`run3.py`, `circ_quant.py`)
+installs from source into `env_circrna`; CIRI2 and CIRI-AS are standalone Perl
+scripts passed to stage 15 with `--ciri2-path` and `--ciri-as-path`. See the
+header of `envs/environment_circrna.yml`.
 
 Then confirm the repository is internally consistent. All of these run in
 seconds and need no data:
@@ -106,7 +123,11 @@ Whole pipeline:
 
 Just the R analysis, or a slice of it:
 
+The bash stages activate their own environment. The R stages do not, so
+activate `env_r` first:
+
 ```bash
+conda activate env_r
 bash scripts/bash/_run_r_analysis.sh --results results --dpi 600
 bash scripts/bash/_run_r_analysis.sh --stages 5-13          # a range
 bash scripts/bash/_run_r_analysis.sh --stages 21,22,24      # a selection
@@ -228,7 +249,7 @@ suz-nrvm-hypertrophy2026/
 ├── docs/
 │   ├── CHANGES_FROM_ORIGINALS.md every change to the original scripts
 │   └── OPEN_ISSUES.md            what is unresolved
-├── envs/                         5 conda environments
+├── envs/                         5 conda environments (+ .lock.yml after setup)
 ├── metadata/                     12 tables: sample sheets, manifests,
 │                                 the figure map, the stage I/O contract,
 │                                 the reference lock, checksums

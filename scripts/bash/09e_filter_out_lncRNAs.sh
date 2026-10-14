@@ -49,6 +49,9 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/_activate_env.sh" env_qc_align
+
 # --- hard requirement: GNU awk with 3-argument match() ----------------------
 AWK_BIN="${AWK_BIN:-}"
 if [ -z "$AWK_BIN" ]; then

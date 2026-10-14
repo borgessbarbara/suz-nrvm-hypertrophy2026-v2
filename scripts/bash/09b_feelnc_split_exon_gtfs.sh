@@ -62,6 +62,8 @@ for f in "$CANDIDATES" "$CODPOT_LNC" "$CODPOT_MRNA"; do
   fi
 done
 
+source "$SCRIPT_DIR/_activate_env.sh" env_qc_align
+
 mkdir -p "$EXONS_DIR"
 
 OUT_ALL="$EXONS_DIR/${PREFIX}.annotated.gtf"

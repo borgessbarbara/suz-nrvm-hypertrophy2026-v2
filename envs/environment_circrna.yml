@@ -1,39 +1,57 @@
 # circRNA detection, quantification and reconstruction.
 # Covers bash stages 13-15.
 #
-# NOMENCLATURE WARNING
-# --------------------
-# The manuscript methods text says "CIRCexplorer3 v1.0.0". The recovered shell
-# scripts actually invoke `CIRCexplorer2 parse` and `CIRCexplorer2 annotate`
-# together with CLEAR's run3.py and circ_quant.py. CLEAR is the package that
-# provides the circexplorer3-era workflow. Both are pinned below; see
-# docs/CHANGES_FROM_ORIGINALS.md before changing the methods text either way.
-name: suz_circrna
+# Versions are UNPINNED so the solver takes the current release; the trailing
+# comments record what the manuscript Methods state. Capture what resolved:
+#     conda env export --no-builds -n env_circrna > envs/environment_circrna.lock.yml
+#
+# THREE TOOLS ARE NOT CONDA PACKAGES AND MUST BE INSTALLED BY HAND
+# ----------------------------------------------------------------
+# 1. CLEAR (run3.py, circ_quant.py) has no bioconda package. Install it from
+#    source INTO this environment, after creating it:
+#        conda activate env_circrna
+#        git clone https://github.com/YangLab/CLEAR
+#        cd CLEAR && python ./setup.py install
+#    Its requirements - CIRCexplorer2 >=2.3.6, HISAT2 >=2.0.5, StringTie >1.3.6,
+#    pysam >=0.8.4, pybedtools - are all listed below, so the build finds them.
+#    Pass the checkout to stage 13 with --clear-src.
+#
+# 2. CIRI2 (CIRI2.pl) and 3. CIRI-AS (CIRI_AS_v1.2.pl) are standalone Perl
+#    scripts. The Methods record CIRI2 2.0.6 and CIRI-AS 1.2; those numbers come
+#    only from the original path string /media/storage2/jpablo/CIRI2/CIRI_v2.0.6/.
+#    Supply them with --ciri2-path and --ciri-as-path on stage 15, or vendor them
+#    under tools/ and record their checksums.
+#
+# NOMENCLATURE
+# ------------
+# The Methods say "CIRCexplorer3 v1.0.0". The recovered scripts invoke
+# CIRCexplorer2 parse/annotate together with CLEAR's run3.py and circ_quant.py;
+# CLEAR is the package that provides the circexplorer3-era workflow. See
+# docs/CHANGES_FROM_ORIGINALS.md before changing the Methods text either way.
+name: env_circrna
 channels:
   - conda-forge
   - bioconda
-  - defaults
+  - nodefaults
 dependencies:
-  - python=3.8
+  - python
   # --- alignment used by the circRNA branches ------------------------------
-  - hisat2=2.2.1
-  - star=2.7.11b
-  - bwa                 # run with -T 19 in CIRI_2_run_all_seba.sh; version not recorded
-  - samtools=1.21
-  - fastp=0.22.0
-  # --- CIRCexplorer / CLEAR branch ----------------------------------------
-  - circexplorer2
-  - clear                # provides run3.py and circ_quant.py
-  # --- CIRIquant / CIRI2 / CIRI-AS branch ---------------------------------
-  - ciriquant=1.1
-  # CIRI2 2.0.6 and CIRI-AS 1.2 are standalone Perl scripts, not conda
-  # packages. Version is known only from the original path string
-  # /media/storage2/jpablo/CIRI2/CIRI_v2.0.6/. Provide them via
-  # --ciri2-path and --ciri-as-path on stage 15, or vendor them under
-  # tools/ and record the checksums.
+  - hisat2                # Methods: 2.2.1   (CLEAR needs >=2.0.5)
+  - star                  # Methods: 2.7.11b
+  - bwa                   # run with -T 19 -t 20; version never recorded
+  - samtools              # Methods: 1.21
+  - fastp                 # Methods: 0.22.0
+  # --- CIRCexplorer2, and the CLEAR build requirements --------------------
+  - circexplorer2         # noarch, no python constraint (CLEAR needs >=2.3.6)
+  - stringtie             # required by CLEAR (>1.3.6), not just by stage 06
+  - pysam                 # CLEAR build requirement (>=0.8.4)
+  - pybedtools            # CLEAR build requirement
+  # --- CIRIquant ------------------------------------------------------------
+  - ciriquant             # Methods: 1.1  (1.1.3 is current and needs python>=3)
+  # --- CIRI2 / CIRI-AS runtime (the .pl scripts come from outside conda) ---
   - perl
   - perl-bioperl
-  - openjdk             # CIRI-vis (optional, not part of the pipeline)
+  # --- shared utilities -----------------------------------------------------
   - bedtools
   - gawk
   - coreutils

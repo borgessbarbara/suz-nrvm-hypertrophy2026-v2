@@ -36,6 +36,8 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+source "$SCRIPT_DIR/_activate_env.sh" env_qc_align
+
 if [ ! -d "$EXONS_DIR" ]; then
   echo "[ERROR] exons directory not found: $EXONS_DIR" >&2
   echo "[ERROR] run scripts/bash/09b_feelnc_split_exon_gtfs.sh first." >&2

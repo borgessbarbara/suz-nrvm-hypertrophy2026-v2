@@ -47,6 +47,9 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/_activate_env.sh" env_qc_align
+
 MERGED_GTF="$MERGED_DIR/$MERGED_GTF_NAME"
 if [ ! -f "$MERGED_GTF" ]; then
   echo "[ERROR] merged annotated GTF not found: $MERGED_GTF" >&2

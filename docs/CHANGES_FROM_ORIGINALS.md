@@ -117,7 +117,55 @@ current working directory instead of `--out-dir`. All now nest under
 and `<stem>_<dpi>dpi.png`, default 600 dpi. The originals mixed formats, dpi
 and devices.
 
-## 1.8 Line endings
+## 1.8 The conda environments
+
+The original material records only one environment name, `IntaRNA_lncRNA`, in
+`archive/raw_scripts_original/intarna_related/command_lines.txt`. Everything
+else about the software stack had to be reconstructed from the commands and
+version strings in the scripts, which is what
+`metadata/software_tool_inventory.tsv` holds.
+
+Five environments, matching the names the stages activate:
+
+| File | Environment | Stages |
+|---|---|---|
+| `envs/environment_qc_align.yml` | `env_qc_align` | bash 01-10, 09b-09e |
+| `envs/environment_mirge.yml` | `env_mirge` | bash 11 |
+| `envs/environment_intarna.yml` | `env_intarna` | bash 12, 16 |
+| `envs/environment_circrna.yml` | `env_circrna` | bash 13-15 |
+| `envs/environment_r.yml` | `env_r` | all 27 R stages |
+
+They are split rather than merged because the splits are forced: IntaRNA pulls
+a Boost/ViennaRNA stack that conflicts with the aligners (and was separate in
+the original analysis too), and the R/Bioconductor stack shares nothing with
+the command-line tools.
+
+**No version is pinned.** The solver takes the current release and the version
+the Methods record sits in a trailing comment on each line, so nothing is lost.
+`scripts/commands/create_envs.sh` writes `envs/*.lock.yml` from what actually
+resolved, and that export — not the `.yml` — is the version record. This is a
+deliberate consequence of re-running at Ensembl 115: see
+[`OPEN_ISSUES.md`](OPEN_ISSUES.md) §15.2.
+
+Four defects were fixed in the environment files themselves, none of which
+would have survived a single `conda env create`:
+
+| Defect | Fix |
+|---|---|
+| Every file declared `name: suz_<x>` while all 16 bash stages run `conda activate env_<x>`. **Nothing would have activated.** | Renamed to `env_<x>`, matching both the activation call and the error message `_activate_env.sh` prints. `create_envs.sh` now refuses to build a file whose `name:` does not match |
+| `clear` was listed as a bioconda dependency. **It does not exist there** (404). CLEAR installs from source | Removed from `dependencies`, and its build requirements added instead — CIRCexplorer2, HISAT2, **StringTie** (which was missing), pysam, pybedtools. The `git clone` + `setup.py install` command is in the file header and `create_envs.sh` prints it |
+| `mirge3=3.0` pinned a version that does not exist. The tool is branded miRge3.0 but the bioconda package is versioned independently, currently 0.1.4 | Unpinned, with the discrepancy explained in the header so nobody re-pins it |
+| All five listed the `defaults` channel alongside conda-forge and bioconda, which breaks bioconda's required channel order and can fail outright on Anaconda's terms of service | `conda-forge`, `bioconda`, `nodefaults`. `create_envs.sh` also sets `channel_priority strict`, which bioconda requires and a YAML file cannot express |
+
+Also: `openjdk` was dropped from the circRNA environment — it was there only
+for CIRI-vis, which the same comment called "not part of the pipeline".
+
+**Stages 09b-09e did not activate any environment**, although the chain's whole
+reason for pinning `gawk` is that stage 09e needs GNU awk's three-argument
+`match()`. All four now activate `env_qc_align`, after argument parsing so
+`--help` still works without conda.
+
+## 1.9 Line endings
 
 `.gitattributes` forces LF on every script. The pipeline is Linux-first and
 CRLF breaks shebang lines.

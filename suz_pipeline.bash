@@ -110,7 +110,7 @@ export FASTQ_MANIFEST GENOME_FASTA GTF_FILE="$GTF" THREADS
 export RESULTS_DIR="$OUT"
 
 # stage number -> script
-declare -a ORDER=(00 01 02 03 04 05 06 07 08 09 09b 09c 09d 09e 10 11 12 13 14 15 16)
+declare -a ORDER=(00 01 02 03 04 05 06 07 08 09 09b 09c 09d 09e 10 11 12 12b 13 14 15 16)
 declare -A SCRIPT=(
   [00]=00_download_references.sh      [01]=01_qc_raw.sh
   [02]=02_trim_fastp.sh               [03]=03_qc_trimmed.sh
@@ -120,11 +120,12 @@ declare -A SCRIPT=(
   [09b]=09b_feelnc_split_exon_gtfs.sh [09c]=09c_extract_transcript_ids.sh
   [09d]=09d_subset_merged_gtfs.sh     [09e]=09e_filter_out_lncRNAs.sh
   [10]=10_salmon_index_quant.sh       [11]=11_mirge3_run.sh
-  [12]=12_intarna_run.sh              [13]=13_circrna_circexplorer.sh
+  [12]=12_intarna_run.sh              [12b]=12b_circrna_star_index.sh
+  [13]=13_circrna_circexplorer.sh
   [14]=14_circrna_ciriquant.sh        [15]=15_circrna_ciri_as.sh
   [16]=16_circrna_intarna.sh
 )
-CIRC=" 13 14 15 16 "
+CIRC=" 12b 13 14 15 16 "
 NEEDS_ARGS=" 13 14 15 "   # require resources this repo cannot supply
 
 num_of() { echo "${1%%b*}" | sed 's/^0*//;s/^$/0/'; }

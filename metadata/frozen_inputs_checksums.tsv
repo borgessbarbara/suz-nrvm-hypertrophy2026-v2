@@ -93,7 +93,7 @@ data/frozen/README.md	3414	a4e5448495a0575a82161a593164c0ae
 data/frozen/hisat2_6_24_meta_ann.csv.gz	2867529	d1cce96c2f57db43fecbf3d13a9589a7
 data/frozen/hisat2_6_24_meta_novel_lncRNA.csv.gz	66174	6ce30006c8eca8df2a8c86d84379ed72
 metadata/curated_kegg_allowlist.tsv	911	20d9b2c990e4bc2eac0669e6c81164be
-metadata/external_inputs.tsv	3272	01d8ca9085ee50077d2c25b2e7ba9249
+metadata/external_inputs.tsv	3593	ebeae0b5d3c47205996b84a1704ab5cd
 metadata/fastq_manifest.tsv	11122	99b48da4d54cf10e2cbebf49f153a93c
 metadata/figure_script_map.tsv	7211	678c9de5e2c73c909fe37776b8080510
 metadata/longRNA_samples.tsv	5829	e777f790498e3e83b86ae3ea964ccc6b

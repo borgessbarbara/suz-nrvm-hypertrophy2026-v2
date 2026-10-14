@@ -53,5 +53,6 @@ dependencies:
   - perl-bioperl
   # --- shared utilities -----------------------------------------------------
   - bedtools
+  - ucsc-gtftogenepred    # GTF -> refFlat for CIRCexplorer2 annotate (stage 12b)
   - gawk
   - coreutils

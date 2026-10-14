@@ -22,12 +22,17 @@
 #    Supply them with --ciri2-path and --ciri-as-path on stage 15, or vendor them
 #    under tools/ and record their checksums.
 #
-# NOMENCLATURE
-# ------------
-# The Methods say "CIRCexplorer3 v1.0.0". The recovered scripts invoke
-# CIRCexplorer2 parse/annotate together with CLEAR's run3.py and circ_quant.py;
-# CLEAR is the package that provides the circexplorer3-era workflow. See
-# docs/CHANGES_FROM_ORIGINALS.md before changing the Methods text either way.
+# CLEAR IS CIRCexplorer3
+# ----------------------
+# They are one tool: the YangLab repository is titled "CLEAR/CIRCexplorer3".
+# There is no separate CIRCexplorer3 binary. CLEAR declares CIRCexplorer2
+# >=2.3.6 as a dependency and invokes its `parse` and `annotate` subcommands,
+# then adds circ_quant for FPBcirc / FPBlinear / CIRCscore. So circexplorer2
+# below is a CLEAR requirement, not an alternative to it, and the Methods are
+# right to say CIRCexplorer3.
+#
+# CLEAR publishes no version number, so the Methods' "v1.0.0" is invented.
+# Cite Ma et al. 2019 (doi:10.1101/668657) and the installed commit instead.
 name: env_circrna
 channels:
   - conda-forge

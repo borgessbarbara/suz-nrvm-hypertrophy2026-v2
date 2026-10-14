@@ -462,11 +462,34 @@ and were unsafe to run concurrently.
 The commands themselves are kept verbatim: `CIRCexplorer2 parse`,
 `CIRCexplorer2 annotate`, and CLEAR's `run3.py` and `circ_quant.py`.
 
-**Manuscript:** says "CIRCexplorer3 v1.0.0". The string `circexplorer3` appears
-only as a directory name. Describing CIRCexplorer2 + CLEAR that way is
-defensible — CLEAR provides the circexplorer3-era workflow — but the Methods
-should name what ran. Both packages are pinned in
-`envs/environment_circrna.yml`.
+**Manuscript: the Methods are right, and an earlier version of this document
+was wrong to question them.** It said the Methods should "name what ran",
+implying CIRCexplorer3 was a misnomer for CIRCexplorer2. It is not.
+
+**CLEAR and CIRCexplorer3 are the same tool.** The YangLab repository is
+titled "CLEAR/CIRCexplorer3". There is no separate CIRCexplorer3 binary to
+invoke: CLEAR declares CIRCexplorer2 >= 2.3.6 as a dependency and calls its
+`parse` and `annotate` subcommands itself, then adds `circ_quant` for FPBcirc,
+FPBlinear and CIRCscore. The original script makes this plain — it runs
+`.../CIRCexp3/CLEAR/src/run3.py` and `.../CIRCexp3/CLEAR/src/circ_quant.py`
+around the two CIRCexplorer2 calls.
+
+So seeing `CIRCexplorer2` in the commands is what using CIRCexplorer3 looks
+like, and the pipeline is already doing it.
+
+Two real defects remain in that Methods sentence:
+
+- **"v1.0.0" is invented.** CLEAR publishes no version number at all. Replace
+  it with the citation and the installed commit, which the image records at
+  `/opt/CLEAR/INSTALLED_COMMIT`.
+- **The CLEAR paper is not cited.** Ma XK, Wang MR, Liu CX, Dong R, Carmichael
+  GG, Chen LL, Yang L. *A CLEAR pipeline for direct comparison of circular and
+  linear RNA expression.* doi:10.1101/668657.
+
+One note for the Methods, not a defect: `circ_quant` is run, so FPBcirc,
+FPBlinear and CIRCscore are computed, but differential expression uses the raw
+`readNumber` back-splice counts from `annotate`. A reader told the pipeline is
+CLEAR will expect CIRCscore to appear somewhere; it does not.
 
 ### Stage 14 — `14_circrna_ciriquant.sh`
 
@@ -920,7 +943,7 @@ one pass. "Follows" is what this repository does.
 | 6 | 09 | three modules, `--monoex=1` | agrees | as recorded | OK |
 | 7 | 10 | decoy/gentrome index | agrees (`:232-235`) | gentrome, `--decoys`, `-k 31` | **the Methods were right**; this repository was wrong and is fixed |
 | 8 | 11 | "(`-lib` and `-rat`)" | `-lib … -on rat -db mirbase` | the real flags | minor; fix the flag names |
-| 9 | 13 | "CIRCexplorer3 v1.0.0" | `CIRCexplorer2 parse`/`annotate` + CLEAR | the real commands | defensible, but name what ran |
+| 9 | 13 | "CIRCexplorer3 v1.0.0" | CLEAR (= CIRCexplorer3) driving `CIRCexplorer2 parse`/`annotate` | the same thing | **the Methods are right**; only "v1.0.0" is invented and the CLEAR citation is missing |
 | 10 | 13-15 | circRNA reference "Ensembl rat **rn7**" | every path is rn8/GRCr8 | GRCr8 | the Methods are wrong; fix the text |
 | 11 | 15 | reconstruction implied for the analysis as a whole | `for m in {13..16}` — SQ13-SQ16 only | SQ13-SQ16, `--all` needs `--yes-widen` | **unresolved** |
 | 12 | 04b | "at least two BSJ counts" | `readNumber > 2` — at least three | 3, via `--bsj-min` | **unresolved, blocking** |
@@ -1000,7 +1023,7 @@ All seven hold.
 | 3 | Historical DE: ComBat_seq + \|LFC\|>1 vs final nominal p + \|LFC\|≥0.5 | Part 4 #13. |
 | 4 | Replicates: notebooks 4+4 vs final 3+3 | Largely resolved — see R02. Every v14 legend says N = 3 and the mRNA/lncRNA and miRNA analyses are 3v3 too; the notebooks are the outlier. Which library "rep3" was is still open. |
 | 5 | CIRI-AS covers SQ13-SQ16 only | Part 2 stage 15. |
-| 6 | CIRCexplorer3 in prose vs CIRCexplorer2 + CLEAR in code | Part 2 stage 13. |
+| 6 | CIRCexplorer3 in prose vs CIRCexplorer2 + CLEAR in code | **Resolved, not a discrepancy.** CLEAR IS CIRCexplorer3; CIRCexplorer2 is its dependency. Part 2 stage 13. |
 | 7 | Final table lineage not explicit | R04 + R04b, labelled RECONSTRUCTED, asserting the recorded counts. |
 
 ## `handoff_summary.txt` — the five priorities

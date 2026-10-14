@@ -16,7 +16,7 @@ what is *not* settled.
 §3.1 release and concatenation order · §3.4 StringTie flags · §4.2 which
 codpot run was final · §7.1 BSJ threshold **(blocking)** · §7.2 ComBat_seq ·
 §7.3 CIRI-AS coverage · §8.1 which library "rep3" was · §12.1 lncRNA volcano
-cutoff · §13.1 "CIRCexplorer3" naming · §14 manuscript fixes
+cutoff · §14 manuscript fixes
 
 **S. Urquiza — inputs to supply**
 §5.1 miRge 6 h command and `DESmetadata_24h.csv` · §5.2 small-RNA FASTQ
@@ -242,17 +242,30 @@ sequences, which §7.3 puts in doubt.
 
 **Needed:** confirmation that the reconstruction matches what was actually run.
 
-### 13.1 "CIRCexplorer3" versus CIRCexplorer2 + CLEAR
+### 13.1 "CIRCexplorer3" — CLOSED, the Methods were right
 
-The Methods say "CIRCexplorer3 v1.0.0". The scripts invoke
-`CIRCexplorer2 parse` and `CIRCexplorer2 annotate` plus CLEAR's `run3.py` and
-`circ_quant.py`; the string `circexplorer3` appears only as a directory name.
+Previously listed here as a naming discrepancy. It is not one.
 
-Defensible as written if CLEAR is what "CIRCexplorer3" means, but the Methods
-should name what ran. Both packages are pinned in
-`envs/environment_circrna.yml`.
+**CLEAR and CIRCexplorer3 are the same tool.** The YangLab repository is
+titled "CLEAR/CIRCexplorer3". There is no separate CIRCexplorer3 binary:
+CLEAR declares CIRCexplorer2 >= 2.3.6 as a dependency and calls its `parse`
+and `annotate` subcommands itself, adding `circ_quant` for FPBcirc, FPBlinear
+and CIRCscore. The original script shows it directly — `CLEAR/src/run3.py` and
+`CLEAR/src/circ_quant.py` wrapped around the two CIRCexplorer2 calls, under a
+directory named `CIRCexp3`.
 
-**Needed:** a decision on the Methods wording.
+Two smaller points survive, folded into §14:
+
+- **"v1.0.0" is invented.** CLEAR carries no version number. Cite the paper and
+  the installed commit instead (§14.14).
+- **The CLEAR paper is not cited** (§14.15): Ma XK, Wang MR, Liu CX, Dong R,
+  Carmichael GG, Chen LL, Yang L. *A CLEAR pipeline for direct comparison of
+  circular and linear RNA expression.* doi:10.1101/668657.
+
+Worth knowing, though not a defect: `circ_quant` runs, so FPBcirc, FPBlinear
+and CIRCscore are produced, but differential expression uses the raw
+`readNumber` back-splice counts from `annotate`. CLEAR's distinguishing output
+is computed and then not used.
 
 ### 13.2 The circRNA branch ran at GRCr8.114
 
@@ -408,6 +421,8 @@ node x/y coordinates plus the visual style.
 | 14.11 | Remove the three Spanish editorial notes; fix "Differential.expression" | — |
 | 14.12 | Fill `[FINAL GITHUB REPOSITORY URL]` ×2 and `[SEQUENCING ACCESSION(S)]` | — |
 | 14.13 | Soften "no additional interaction tiers were used" | §12.2 |
+| 14.14 | **"CIRCexplorer3 v1.0.0" -> drop the version.** CLEAR publishes none; give the installed commit instead | §13.1 |
+| 14.15 | **Cite the CLEAR paper**: Ma XK et al., doi:10.1101/668657 | §13.1 |
 
 ---
 

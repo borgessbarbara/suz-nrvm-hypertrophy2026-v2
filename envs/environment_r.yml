@@ -1,14 +1,17 @@
-# R environment for analysis stages R01-R25.
+# R environment for the 27 analysis stages under scripts/R/.
 #
-# Package list derived mechanically from every source script we ported, see
-# metadata/R_package_inventory.tsv (60 packages across 47 source files).
-# Packages used only by scripts that were archived rather than ported
-# (ggalluvial, ggcharts, plotrix, wrMisc, Rmisc, calibrate, gplots, reshape,
-# viridis, ggplotify, devtools) are NOT installed here; they are listed in the
-# inventory for the record only.
+# The package list is the union of what those stages load. Packages that only
+# the archived, superseded scripts used (ggalluvial, ggcharts, plotrix, wrMisc,
+# Rmisc, calibrate, gplots, reshape, viridis, ggplotify, devtools) are
+# deliberately not installed.
 #
-# optparse and R.utils are new: every stage in this repository exposes a
-# --help CLI, and the frozen inputs under data/frozen/ are gzipped.
+# optparse backs the --help CLI every stage exposes; R.utils reads the gzipped
+# tables under data/frozen/.
+#
+# Versions follow metadata/software_tool_inventory.tsv. Replace this file with
+# an export once the environment that produces the deposited results is built
+# (`conda env export --no-builds > envs/environment_r.lock.yml`), and record
+# sessionInfo() from that machine.
 name: suz_r
 channels:
   - conda-forge

@@ -1,8 +1,8 @@
 # miRge3.0 small-RNA pipeline. Covers bash stage 11.
 #
-# IMPORTANT: the actual run used `-db mirbase`, NOT miRGeneDB. The manuscript
-# Methods text must be corrected accordingly (confirmed by S. Urquiza,
-# 2 Jul 2026). The exact miRBase release is still an OPEN item.
+# The run used `-db mirbase`, not miRGeneDB (confirmed by S. Urquiza,
+# 2 Jul 2026). The exact miRBase release is unrecorded; see
+# docs/OPEN_ISSUES.md section 5.1.
 #
 # Recorded parameters from archive/raw_scripts_original/miRge_scripts/miRge_3.txt:
 #   -lib <miRge3_Lib> -on rat -db mirbase
@@ -11,7 +11,7 @@
 #   -dex -mdt DESmetadata_24h.csv
 #
 # Only the 24 h command survives; there is no recorded 6 h invocation even
-# though miRNAs_6_24.R consumes a 6 h count matrix. See docs/OPEN_ISSUES.md.
+# though R03 consumes a 6 h count matrix. See docs/OPEN_ISSUES.md section 5.1.
 name: suz_mirge
 channels:
   - conda-forge

@@ -9,7 +9,7 @@
 # material received.
 #
 # All eight runs used --mode=M --outMode=C. Downstream the manuscript retains
-# interactions with MFE <= -20 kcal/mol (energy_high in R20).
+# interactions with MFE <= -20 kcal/mol (energy_high in R21).
 name: suz_intarna
 channels:
   - conda-forge

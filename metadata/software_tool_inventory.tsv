@@ -3,22 +3,22 @@ FastQC	TO_FILL	command-line	Raw and trimmed FASTQ QC	bash 01, 03	qc_align	manusc
 fastp	0.22.0	command-line	Adapter/quality trimming	bash 02	qc_align	manuscript methods; invoked in all circRNA shell scripts	Confirm the same binary was used for the long-RNA and circRNA branches.
 HISAT2	2.2.1	command-line	Genome alignment	bash 04, 13, 14	qc_align, circrna	export PATH=$PATH:/media/storage2/software/hisat2-2.2.1 in all six CIRCexplorer/CIRIquant scripts	The only in-script version pin anywhere in the original corpus.
 Samtools	1.21	command-line	SAM/BAM conversion, sorting, indexing	bash 05	qc_align	manuscript methods
-StringTie	3.0.0	command-line	Transcript assembly and merge	bash 06	qc_align	manuscript methods	Guided settings from bash_scripts.txt: -f 0.05 -m 200 --conservative -t -s 3.0 -G <gtf>
+StringTie	3.0.0	command-line	Transcript assembly and merge	bash 06	qc_align	manuscript methods	Reference-guided with -G <gtf>, then --merge. The GRCr8 invocation was never recorded; see docs/OPEN_ISSUES.md section 3.4.
 GffCompare	0.12.9	command-line	Annotate the reconstructed transcriptome against the reference	bash 07	qc_align	manuscript methods	Produces the .tmap consumed by R01.
 gffread	TO_FILL	command-line	GTF to transcript FASTA	bash 08	qc_align	bash_scripts.txt	Verify version.
 Salmon	1.10.3	command-line	Transcript quantification	bash 10	qc_align	manuscript methods
-FEELnc	0.2	command-line/perl	lncRNA filtering, coding potential, classification	bash 09, 09b	qc_align	bash_scripts.txt (FEELnc_filter/codpot/classifier)	Classifier settings: -b transcript_biotype=protein_coding -b transcript_status=KNOWN --mode=intergenic. The exact codpot invocation is an OPEN item.
+FEELnc	0.2	command-line/perl	lncRNA filtering, coding potential, classification	bash 09, 09b	qc_align	bash_scripts.txt (FEELnc_filter/codpot/classifier)	Classifier settings: -b transcript_biotype=protein_coding -b transcript_status=KNOWN --mode=intergenic. The exact codpot invocation was never recorded; see docs/OPEN_ISSUES.md section 4.2.
 gawk	TO_FILL	command-line	GNU awk 3-argument match()	bash 09e	qc_align	transcripts/filter_out_lncRNAs.sh:26	REQUIRED: the original uses gawk-only syntax. mawk and BSD awk fail silently or error.
-miRge3.0	3.0	command-line/python	miRNA identification and quantification	bash 11	mirge	miRge_scripts/miRge_3.txt	Run with -db mirbase, NOT miRGeneDB. The manuscript Methods text must be corrected. Only the 24h command survives.
+miRge3.0	3.0	command-line/python	miRNA identification and quantification	bash 11	mirge	miRge_scripts/miRge_3.txt	Run with -lib <path> -on rat -db mirbase. Only the 24 h command survives; see docs/OPEN_ISSUES.md section 5.1.
 IntaRNA	3.4.1	command-line	lncRNA-miRNA and circRNA-miRNA duplex prediction	bash 12, 16	intarna	circRNA_software_audit.tsv; conda env name IntaRNA_lncRNA recorded in archive/raw_scripts_original/intarna_related/command_lines.txt	--mode=M --outMode=C for all eight runs.
-STAR	2.7.11b	command-line	Unmapped-read realignment for back-splice junction detection	bash 13	circrna	circRNA_software_inventory_addendum.tsv	Absent from the previous repo's tool inventory despite being required by the CIRCexplorer branch.
+STAR	2.7.11b	command-line	Unmapped-read realignment for back-splice junction detection	bash 13	circrna	circRNA_software_inventory_addendum.tsv	Required by the CIRCexplorer branch: --chimSegmentMin 10 --runThreadN 20 on the unmapped reads.
 CIRCexplorer2	TO_FILL	command-line/python	parse and annotate back-splice junctions	bash 13	circrna	CIRCexp3_run_all_2023_SebaNECardio*.sh	The methods text says CIRCexplorer3 v1.0.0; the recovered scripts invoke CIRCexplorer2 parse/annotate. See docs/CHANGES_FROM_ORIGINALS.md.
 CLEAR	TO_FILL	command-line/python	run3.py and circ_quant.py quantification	bash 13	circrna	CIRCexp3_run_all_2023_SebaNECardio*.sh	Ships the circexplorer3/CLEAR workflow referred to in the methods.
-CIRIquant	1.1	command-line/python	circRNA detection and quantification	bash 14	circrna	CIRIquant_all_run_2023_Seba_NE_Cardio_*.sh	Needs the rn8.yml config, which is NOT in any package (OPEN item).
+CIRIquant	1.1	command-line/python	circRNA detection and quantification	bash 14	circrna	CIRIquant_all_run_2023_Seba_NE_Cardio_*.sh	Needs the rn8.yml config, which is in no package received; see docs/OPEN_ISSUES.md section 7.4.
 BWA-MEM	TO_FILL	command-line	Alignment for the CIRI2 branch	bash 15	circrna	CIRI_2_run_all_seba.sh	Run with -T 19. Version not recorded.
 CIRI2	2.0.6	command-line/perl	circRNA calling	bash 15	circrna	path string /media/storage2/jpablo/CIRI2/CIRI_v2.0.6/	Version known only from the directory name.
-CIRI-AS	1.2	command-line/perl	circRNA internal structure and sequence reconstruction	bash 15	circrna	CIRI_AS_v1.2.pl	The original loop covers SQ13-SQ16 only (OPEN item).
+CIRI-AS	1.2	command-line/perl	circRNA internal structure and sequence reconstruction	bash 15	circrna	CIRI_AS_v1.2.pl	The original loop covers SQ13-SQ16 only; see docs/OPEN_ISSUES.md section 7.3.
 CIRI-vis	1.4	command-line/java	Optional circRNA visualisation	(not in pipeline)	circrna	CIRI-vis_v1.4.jar	Optional. The original vis_run_ciri2_seba.sh deletes the PDFs it generates and has a Q13-Q16 typo.
-Cytoscape	3.10.3	desktop app	Network layout for Figure 6B-F and S5	(manual)	(none)	manual_editing_provenance.tsv	Not part of the conda pipeline. R22/R23 emit import-safe node/edge tables; the layout itself was manual.
+Cytoscape	3.10.3	desktop app	Network layout for Figure 6B-F and S5	(manual)	(none)	manual_editing_provenance.tsv	Not part of the conda pipeline. R24 and R25 emit import-safe node/edge tables; the layout itself was manual.
 Affinity	TO_FILL	desktop app	Multi-panel figure assembly	(manual)	(none)	manual_editing_provenance.tsv	Analytical content is reproducible; the final page composition is not.
-R	4.6.1 (this build)	R	DESeq2, enrichment, plotting, all 25 analysis stages	R01-R25	r	this repository	Record sessionInfo() from the machine that produces the deposited figures.
+R	4.6.1	R	DESeq2, enrichment, plotting, every analysis stage	R01-R26	r	this repository	Record sessionInfo() from the machine that produces the deposited figures.

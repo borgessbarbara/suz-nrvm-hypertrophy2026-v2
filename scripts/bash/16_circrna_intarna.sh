@@ -84,7 +84,7 @@ if [ "$missing" -ne 0 ]; then
 The circRNA_{UP,DOWN}_{6,24}h_all_records.fa targets are produced by
 scripts/R/04b_circRNA_de_temporal.R, which is itself a RECONSTRUCTION - no
 script in any package received generates these four files. The miRNA queries
-come from scripts/R/13_mirna_mRNA_integration.R.
+come from scripts/R/14_mirna_mRNA_integration.R.
 
 See metadata/external_inputs.tsv and docs/OPEN_ISSUES.md.
 EOF

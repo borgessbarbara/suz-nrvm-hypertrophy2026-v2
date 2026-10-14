@@ -165,6 +165,37 @@ reason for pinning `gawk` is that stage 09e needs GNU awk's three-argument
 `match()`. All four now activate `env_qc_align`, after argument parsing so
 `--help` still works without conda.
 
+### The container
+
+The README has always said the pipeline is Linux-first and that Windows should
+go through WSL2 or Docker, but no `Dockerfile` existed. There is one now: a
+single image carrying all five environments, with CLEAR built in.
+
+Three choices in it are load-bearing:
+
+- **The base is `condaforge/miniforge3`, not micromamba.**
+  `scripts/bash/_activate_env.sh` calls `conda info --base` and then
+  `conda activate` directly. micromamba provides neither, so every bash stage
+  would fail to activate. miniforge3 also defaults to conda-forge and ships no
+  `defaults` channel, which matches `envs/*.yml`.
+- **`ENV BASH_ENV=/opt/conda/etc/profile.d/conda.sh`** rather than an entrypoint
+  wrapper. `conda activate` does not work in a non-interactive shell unless
+  `conda.sh` has been sourced, and `BASH_ENV` makes every `bash -c` source it.
+  `/etc/bash.bashrc` covers the interactive case.
+- **`--platform linux/amd64`.** bioconda publishes linux-64 only; without it the
+  build silently fails to solve on Apple silicon.
+
+The environments are built from `envs/` *before* the rest of the repository is
+copied, so editing a stage script does not invalidate the expensive
+environment layers. The build then runs the repository's own checks and
+`create_envs.sh --verify-only`, so a broken image fails instead of shipping,
+and finally writes `envs/*.lock.yml` inside the image — the container carries
+its own version manifest.
+
+`archive/` is deliberately **not** in `.dockerignore`: it is 1.5 MB, and 90 of
+the 104 rows in `metadata/frozen_inputs_checksums.tsv` point into it, so
+excluding it would make `make_checksums.sh --verify` fail inside the container.
+
 ## 1.9 Line endings
 
 `.gitattributes` forces LF on every script. The pipeline is Linux-first and

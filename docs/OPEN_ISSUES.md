@@ -422,6 +422,8 @@ node x/y coordinates plus the visual style.
 | 15.5 | 16 small-RNA rows in `metadata/fastq_manifest.tsv` are `TO_FILL` (§5.2) |
 | 15.6 | **CLEAR has no conda package** and installs from source into `env_circrna` (`git clone` + `python ./setup.py install`). Nothing pins or checksums it, so the version used is whatever `master` is on the day it is installed. Record the commit hash |
 | 15.7 | **The environments have never been solved.** `clear` was listed as a bioconda dependency and does not exist there, and `mirge3=3.0` pinned a version that does not exist — both would have failed `conda env create`. Fixed, but no solve has been run, so more may surface. `bash scripts/commands/create_envs.sh --dry-run` solves without installing |
+| 15.8 | **The image has never been built.** `Dockerfile` is statically validated only — every `COPY` source and every script it invokes exists, and all 8 `RUN` blocks parse as shell — but there is no Docker daemon on the machine it was written on. The first `docker build` is the real test |
+| 15.9 | `Dockerfile` uses `condaforge/miniforge3:latest` and CLEAR's `master`, so neither the base image nor CLEAR is pinned. After the first good build, pin both: `docker buildx imagetools inspect` gives the base digest for `--build-arg BASE_IMAGE`, and the image records CLEAR's at `/opt/CLEAR/INSTALLED_COMMIT` for `--build-arg CLEAR_REF` |
 
 ---
 

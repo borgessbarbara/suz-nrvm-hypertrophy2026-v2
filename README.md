@@ -93,6 +93,33 @@ installs from source into `env_circrna`; CIRI2 and CIRI-AS are standalone Perl
 scripts passed to stage 15 with `--ciri2-path` and `--ciri-as-path`. See the
 header of `envs/environment_circrna.yml`.
 
+### Or use Docker
+
+The `Dockerfile` builds one image carrying all five environments, with CLEAR
+already installed. It runs the repository's own checks during the build, so a
+broken image fails rather than ships.
+
+```bash
+docker build --platform linux/amd64 -t suz-nrvm:latest .
+```
+
+`--platform linux/amd64` matters: bioconda publishes linux-64 only, so an
+Apple-silicon Mac has to emulate. Expect a long first build and several GB —
+`--build-arg ENVS="qc_align r"` builds a subset.
+
+```bash
+docker run --rm -it --platform linux/amd64 \
+  --user "$(id -u):$(id -g)" \
+  -v /path/to/fastq:/data/fastq:ro \
+  -v /path/to/references:/data/references:ro \
+  -v "$PWD/results:/opt/suz/results" \
+  suz-nrvm:latest bash
+```
+
+Inside the container everything works exactly as on a host — the stages
+activate their own environments. CIRI2 and CIRI-AS are not redistributable
+through conda, so mount them and pass `--ciri2-path` / `--ciri-as-path`.
+
 Then confirm the repository is internally consistent. All of these run in
 seconds and need no data:
 
@@ -246,6 +273,7 @@ notes. In summary:
 suz-nrvm-hypertrophy2026/
 ├── README.md                     this file
 ├── suz_pipeline.bash             orchestrator
+├── Dockerfile                    one image, all five environments
 ├── docs/
 │   ├── CHANGES_FROM_ORIGINALS.md every change to the original scripts
 │   └── OPEN_ISSUES.md            what is unresolved

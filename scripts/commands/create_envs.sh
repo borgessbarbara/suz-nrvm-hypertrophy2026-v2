@@ -14,6 +14,7 @@
 #   --only NAME[,NAME]  create only these (qc_align mirge intarna circrna r)
 #   --solver SOLVER     conda solver: libmamba (default) or classic
 #   --dry-run           solve without installing, then stop
+#   --verify-only       create nothing; just check the environments that exist
 #   --no-lock           skip writing the .lock.yml files
 #   --force             remove an existing environment first
 #
@@ -32,6 +33,7 @@ ENV_DIR="$REPO_ROOT/envs"
 ONLY=""
 SOLVER="libmamba"
 DRY_RUN=0
+VERIFY_ONLY=0
 WRITE_LOCK=1
 FORCE=0
 
@@ -42,6 +44,7 @@ while [ $# -gt 0 ]; do
     --only)    ONLY="$2"; shift 2 ;;
     --solver)  SOLVER="$2"; shift 2 ;;
     --dry-run) DRY_RUN=1; shift ;;
+    --verify-only) VERIFY_ONLY=1; WRITE_LOCK=0; shift ;;
     --no-lock) WRITE_LOCK=0; shift ;;
     --force)   FORCE=1; shift ;;
     --help|-h) usage; exit 0 ;;
@@ -59,14 +62,20 @@ source "$CONDA_BASE/etc/profile.d/conda.sh"
 CREATE="conda"
 command -v mamba >/dev/null 2>&1 && CREATE="mamba"
 
-echo "== creating pipeline environments =="
+if [ "$VERIFY_ONLY" -eq 1 ]; then
+  echo "== verifying pipeline environments (creating nothing) =="
+else
+  echo "== creating pipeline environments =="
+fi
 echo "   conda      : $(conda --version)"
-echo "   create via : $CREATE"
-echo "   solver     : $SOLVER"
-echo "   channels   : conda-forge, bioconda, nodefaults (set per file)"
-echo ""
-echo "Strict channel priority is required by bioconda. Setting it for this run."
-conda config --set channel_priority strict
+if [ "$VERIFY_ONLY" -eq 0 ]; then
+  echo "   create via : $CREATE"
+  echo "   solver     : $SOLVER"
+  echo "   channels   : conda-forge, bioconda, nodefaults (set per file)"
+  echo ""
+  echo "Strict channel priority is required by bioconda. Setting it for this run."
+  conda config --set channel_priority strict
+fi
 
 # name -> the binaries that must be callable after activation
 binaries_for() {
@@ -110,6 +119,15 @@ for short in $TARGETS; do
     echo "[ERROR] $yml declares 'name: $declared' but the stages activate" >&2
     echo "[ERROR] '$env_name'. Fix the name: field or nothing will activate." >&2
     status=1; continue
+  fi
+
+  if [ "$VERIFY_ONLY" -eq 1 ]; then
+    if conda env list | awk '{print $1}' | grep -qx "$env_name"; then
+      MADE+=("$short")
+    else
+      echo "[ERROR] $env_name does not exist" >&2; status=1
+    fi
+    continue
   fi
 
   if conda env list | awk '{print $1}' | grep -qx "$env_name"; then

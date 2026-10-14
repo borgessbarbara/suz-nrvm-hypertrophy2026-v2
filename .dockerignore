@@ -1,0 +1,33 @@
+# Keep the build context small and the image reproducible.
+# Note: envs/ is COPYed early and deliberately; do not exclude it.
+
+.git
+.gitattributes
+.gitignore
+
+# Downloaded by stage 00 or mounted at run time; multi-GB.
+references/*
+!references/README.md
+
+# Run output. Never bake a previous run into the image.
+results/
+work/
+tmp/
+
+# Lock files are generated inside the image by the build itself.
+envs/*.lock.yml
+
+# Editor and OS noise
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Local Claude Code state
+.claude/
+
+# archive/ is deliberately NOT excluded. It is only 1.5 MB, and 90 of the 104
+# files in metadata/frozen_inputs_checksums.tsv live there - without it
+# `make_checksums.sh --verify` fails inside the container.

@@ -17,8 +17,8 @@ left is blocked on someone else or on executing a run — with two exceptions,
 noted below, deliberately left open.
 
 **Unrecoverable — nobody can supply these**
-§4.1 the `exons/` split command · §4.2 which codpot run was final · §4.3 the
-two server roots · §5.1 the 6 h miRge command and `DESmetadata_24h.csv` ·
+§4.1 the `exons/` split command · §4.2 which codpot run was final ·
+§5.1 the 6 h miRge command and `DESmetadata_24h.csv` ·
 §8.1 which library "rep3" was · §8.2 the notebook variant behind the frozen
 tables
 
@@ -153,13 +153,19 @@ frozen.
 
 ## Stages 09c-09e — the transcript-metadata chain
 
-### 4.3 Two different server roots in one chain
+### 4.3 Two server roots in one chain — CLOSED, same data
 
-Steps C and D ran under `/home/vmaracaja/shared-projects/SUZ_sr_2025`; step E
-under `/home/vmaracaja/shared-projects/sebauz_sr`. The chain as received never
-ran end to end in one place.
+`extract_transcript_ids.sh` and `subset_merged_gtfs.sh` carry
+`/home/vmaracaja/shared-projects/SUZ_sr_2025`; `filter_out_lncRNAs.sh` carries
+`/home/vmaracaja/shared-projects/sebauz_sr`. This was logged as a possible sign
+that the chain had been run in pieces against different data.
 
-**Needed:** confirmation both pointed at the same data generation.
+**Confirmed by B. Borges, 15 Oct 2026: it is one directory that was renamed by
+accident partway through. Same data generation throughout.**
+
+So the chain did run end to end on one set of inputs, and the two paths are the
+same place before and after the rename. Nothing downstream was affected: the
+ported stages 09c-09e already take a single `--work-dir`.
 
 ### 4.4 `isBest == 1` is a no-op — CLOSED, it is a Methods fix
 

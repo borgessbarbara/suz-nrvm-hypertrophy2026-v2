@@ -366,10 +366,12 @@ a 12-arm `case` with no arm for `CNE_24_STAR.annotated`, only the misspelled
 correctly-named file fell through to `*)` and was skipped with a warning only.
 Stage 09d derives the dataset list from the sample sheet instead.
 
-**Changed — one working directory.** The three originals ran under two
-different server roots (`SUZ_sr_2025` for the first two, `sebauz_sr` for the
-third), so the chain as received never ran end to end in one place. All three
-stages now take one `--work-dir`.
+**Changed — one working directory.** The three originals carry two different
+server roots: `SUZ_sr_2025` in the first two, `sebauz_sr` in the third. That
+looked like a sign the chain had been run in pieces against different data, but
+it was not — the directory was renamed by accident partway through, and it is
+one data generation (B. Borges, 15 Oct 2026). All three stages now take one
+`--work-dir`, which is what the originals meant.
 
 **Changed — intermediates go under `results/`.** The `<id>_transcript_ids.txt`
 files and `transcript_extraction_*.log` were written beside their inputs. They

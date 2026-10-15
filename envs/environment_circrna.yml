@@ -53,7 +53,14 @@ dependencies:
   - pybedtools            # CLEAR build requirement
   # --- CIRIquant ------------------------------------------------------------
   - ciriquant             # Methods: 1.1  (1.1.3 is current and needs python>=3)
-  # --- CIRI2 / CIRI-AS runtime (the .pl scripts come from outside conda) ---
+  # --- CIRI2 and CIRI-AS ----------------------------------------------------
+  # bioconda ships both standalone, at exactly the versions the Methods state,
+  # so nothing has to be downloaded by hand. ciri-full also bundles them, but
+  # at its own versions and with a Java dependency, and CIRI-full itself is
+  # commented out in the original script - so the two standalone packages are
+  # both more faithful and smaller.
+  - ciri2                 # Methods: 2.0.6, which is also the current release
+  - ciri-as               # Methods: 1.2,   which is also the current release
   - perl
   - perl-bioperl
   # --- shared utilities -----------------------------------------------------

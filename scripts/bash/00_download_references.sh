@@ -67,6 +67,64 @@ download_file() {
   fi
 }
 
+# Ensembl ships a CHECKSUMS file in every FTP directory, in BSD `sum` format:
+#   <5-digit checksum> <block count> <filename>
+# Caches it per directory and verifies one downloaded file against it.
+# A mismatch is fatal; a missing CHECKSUMS entry only warns, because Ensembl
+# does not list every file in every release.
+CHECKSUM_FAILURES=0
+verify_against_ensembl() {
+  local dir_url="$1" file_path="$2"
+  local base; base="$(basename "$file_path")"
+  local cache="${TMPDIR:-/tmp}/suz_CHECKSUMS_$(echo "$dir_url" | tr -c 'A-Za-z0-9' '_')"
+
+  if [ ! -s "$cache" ]; then
+    download_file "$dir_url/CHECKSUMS" "$cache" >/dev/null 2>&1 || {
+      echo "[WARN] could not fetch $dir_url/CHECKSUMS; skipping verification"
+      return 0; }
+  fi
+
+  local expected
+  expected="$(awk -v f="$base" '$3 == f {print $1" "$2; exit}' "$cache")"
+  if [ -z "$expected" ]; then
+    echo "[WARN] $base is not listed in CHECKSUMS; not verified"
+    return 0
+  fi
+
+  local actual
+  actual="$(sum "$file_path" | awk '{print $1" "$2}')"
+  if [ "$actual" = "$expected" ]; then
+    echo "[INFO]   checksum ok: $base"
+  else
+    echo "[ERROR] CHECKSUM MISMATCH for $base" >&2
+    echo "[ERROR]   Ensembl says : $expected" >&2
+    echo "[ERROR]   downloaded   : $actual" >&2
+    echo "[ERROR] The download is corrupt or truncated. Delete it and rerun." >&2
+    CHECKSUM_FAILURES=$((CHECKSUM_FAILURES + 1))
+    return 1
+  fi
+}
+
+# Record the md5 of a finished reference in metadata/reference_manifest.tsv,
+# matching on the final_file_name column.
+record_manifest_checksum() {
+  local file_path="$1"
+  local manifest="$REPO_ROOT/metadata/reference_manifest.tsv"
+  [ -f "$manifest" ] || return 0
+  command -v md5sum >/dev/null 2>&1 || return 0
+
+  local base md5 tmp
+  base="$(basename "$file_path")"
+  md5="$(md5sum "$file_path" | awk '{print $1}')"
+  tmp="$(mktemp)"
+  awk -F'\t' -v OFS='\t' -v b="$base" -v m="$md5" '
+    NR == 1 { print; next }
+    $3 == b { $NF = m }
+    { print }
+  ' "$manifest" > "$tmp" && mv "$tmp" "$manifest"
+  echo "[INFO]   md5 recorded in reference_manifest.tsv: $md5  $base"
+}
+
 # Download genome FASTA if not present
 if [ ! -f "$GENOME_FASTA" ]; then
   mkdir -p "$(dirname "$GENOME_FASTA")"
@@ -87,7 +145,10 @@ if [ ! -f "$GENOME_FASTA" ]; then
       u="$DNA_BASE/Rattus_norvegicus.GRCr8.dna.primary_assembly.${p}.fa.gz"
       if url_exists "$u"; then
         f="$PARTS_DIR/primary_assembly.${p}.fa.gz"
-        [ -f "$f" ] || download_file "$u" "$f"
+        if [ ! -f "$f" ]; then
+          download_file "$u" "$f"
+          verify_against_ensembl "$DNA_BASE" "$f" || { rm -f "$GENOME_FASTA.tmp"; exit 1; }
+        fi
         echo "[INFO]   + ${p}"
         gunzip -c "$f" >> "$GENOME_FASTA.tmp"
         GOT=$((GOT+1))
@@ -115,6 +176,7 @@ EOF
   fi
 
   echo "[INFO] Sequences in genome FASTA: $(grep -c '^>' "$GENOME_FASTA")"
+  record_manifest_checksum "$GENOME_FASTA"
   echo "[INFO] Genome FASTA ready: $GENOME_FASTA"
 else
   echo "[INFO] Genome FASTA already exists, skipping download."
@@ -125,8 +187,10 @@ if [ ! -f "$GTF_FILE" ]; then
   echo "[INFO] GTF not found, downloading..."
   TEMP_GTF="$GTF_FILE.gz"
   download_file "$ENSEMBL_GTF_URL" "$TEMP_GTF"
+  verify_against_ensembl "$(dirname "$ENSEMBL_GTF_URL")" "$TEMP_GTF" || exit 1
   echo "[INFO] Decompressing GTF..."
   gunzip -v "$TEMP_GTF"
+  record_manifest_checksum "$GTF_FILE"
   echo "[INFO] GTF ready: $GTF_FILE"
 else
   echo "[INFO] GTF already exists, skipping download."

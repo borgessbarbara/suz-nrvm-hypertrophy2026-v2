@@ -197,7 +197,7 @@ script's header. Nothing has a path baked in.
 | 10 | `10_salmon_index_quant.sh` | qc_align | decoy-aware gentrome index, then quant |
 | 11 | `11_mirge3_run.sh` | mirge | miRge3.0, rat miRBase |
 | 12 | `12_intarna_run.sh` | intarna | 4 lncRNA–miRNA duplex runs |
-| 12b | `12b_circrna_star_index.sh` | circrna | STAR index + refFlat for the circRNA branch |
+| 12b | `12b_circrna_references.sh` | circrna | STAR index, refFlat, BWA index and `.fai` for the circRNA branch |
 | 13 | `13_circrna_circexplorer.sh` | circrna | CIRCexplorer2 + CLEAR |
 | 14 | `14_circrna_ciriquant.sh` | circrna | CIRIquant |
 | 15 | `15_circrna_ciri_as.sh` | circrna | BWA-MEM → CIRI2 → CIRI-AS |

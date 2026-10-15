@@ -23,6 +23,11 @@ source(file.path(.here, "lib", "plotting.R"))
                 help = "root directory searched for inputs [default %default]"),
     make_option("--out-dir", type = "character", default = "results/R16_volcanoes_lncRNA",
                 help = "output directory [default %default]"),
+    make_option("--lfc-cut", type = "double", default = 0.5,
+                help = paste("Minimum |log2FC| for significance. 0.5 is the",
+                             "manuscript Methods rule; 0 reproduces the",
+                             "original script, which used padj alone.",
+                             "[default %default]")),
     make_option("--dpi", type = "integer", default = 600,
                 help = "raster figure resolution [default %default]")),
   description = "\nR15: Figure S3A-B lncRNA: volcano plots\nPorted from 07_Figure4_clean_volcanoes.R."))
@@ -50,7 +55,10 @@ dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 dpi_png <- 600
 padj_cutoff <- 0.05
-absfc_cutoff <- 0
+# The manuscript Methods require adjusted p < 0.05 AND |log2FC| >= 0.5 for
+# lncRNAs, and Figure S3's legend says the dashed lines mark "the thresholds
+# used for classification".
+absfc_cutoff <- .opt$`lfc-cut`
 n_labels_per_source_direction <- 6
 
 pdf_device <- function(...) {
@@ -108,7 +116,12 @@ make_lnc_volcano <- function(file_name, time_label) {
   write_csv(df, file.path(out_dir, paste0("SUPP_", time_label, "_lnc_volcano_data.csv")))
 
   p <- ggplot(df, aes(x = log2FC, y = neglog10padj)) +
-    geom_vline(xintercept = c(-1, 1), linetype = 3, color = "grey65") +
+    # Figure S3's legend says the dashed lines mark the thresholds used for
+    # classification, so they track absfc_cutoff rather than a fixed +/-1.
+    {if (absfc_cutoff > 0)
+       geom_vline(xintercept = c(-absfc_cutoff, absfc_cutoff),
+                  linetype = 3, color = "grey65")
+     else NULL} +
     geom_hline(yintercept = -log10(padj_cutoff), linetype = 3, color = "grey65") +
     geom_point(aes(color = direction, shape = source), alpha = 0.75, size = 1.8, stroke = 0.15) +
     ggrepel::geom_text_repel(

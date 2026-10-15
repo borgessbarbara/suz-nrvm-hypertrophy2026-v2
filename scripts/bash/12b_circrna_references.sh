@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# Stage 12b - STAR genome index and refFlat annotation for the circRNA branch.
+# Stage 12b - build every reference the circRNA branch needs.
 #
-# Builds the two references stage 13 consumes but that no received script ever
-# produced:
-#   <star-index>/            STAR genome index   (the historical STAR_rn8/)
-#   <out-dir>/<prefix>.refflat.txt   refFlat annotation for CIRCexplorer2
+# Builds every circRNA-branch reference that no received script ever produced:
+#   <star-index>/                    STAR genome index  (the historical STAR_rn8/)
+#   <refflat>                        refFlat for CIRCexplorer2 annotate (stage 13)
+#   <bwa-index>.{amb,ann,bwt,pac,sa} BWA index for CIRI2 (15) and CIRIquant (14)
+#   <genome>.fai                     samtools index, required by CIRIquant
 #
-# Both derive from the same GRCr8 primary assembly and GTF that stage 00
+# All derive from the same GRCr8 primary assembly and GTF that stage 00
 # produces, so the circRNA branch and the long-RNA branch share one reference.
 #
 # THE INDEX IS BUILT WITHOUT SPLICE JUNCTIONS BY DEFAULT.
@@ -15,9 +16,9 @@
 # run passed no GTF either. Pass --sjdb-gtf to add splice junctions anyway; it
 # changes chimeric detection, so do not do it to match the long-RNA branch.
 #
-# Usage:  bash scripts/bash/12b_circrna_star_index.sh [options]
-#         bash scripts/bash/12b_circrna_star_index.sh --help
-# Env:    GENOME_FASTA, GTF_FILE, STAR_INDEX, REFFLAT_OUT, THREADS,
+# Usage:  bash scripts/bash/12b_circrna_references.sh [options]
+#         bash scripts/bash/12b_circrna_references.sh --help
+# Env:    GENOME_FASTA, GTF_FILE, STAR_INDEX, REFFLAT_OUT, BWA_INDEX, THREADS,
 #         ENSEMBL_RELEASE, STAR_LIMIT_RAM
 #
 # MEMORY: STAR genomeGenerate on a ~2.6 Gb genome needs roughly 32 GB of RAM.
@@ -41,6 +42,7 @@ GENOME_FASTA="${GENOME_FASTA:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.
 GTF_FILE="${GTF_FILE:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.${RELEASE}.gtf}"
 STAR_INDEX="${STAR_INDEX:-$REPO_ROOT/references/STAR_GRCr8_${RELEASE}}"
 REFFLAT_OUT="${REFFLAT_OUT:-$REPO_ROOT/references/GRCr8.${RELEASE}.refflat.txt}"
+BWA_INDEX="${BWA_INDEX:-$REPO_ROOT/references/bwa_GRCr8/GRCr8}"
 THREADS="${THREADS:-8}"
 STAR_LIMIT_RAM="${STAR_LIMIT_RAM:-}"
 SJDB_GTF=0
@@ -48,21 +50,24 @@ SJDB_OVERHANG=149
 FORCE=0
 SKIP_STAR=0
 SKIP_REFFLAT=0
+SKIP_BWA=0
 
 usage() {
   cat <<'EOF'
-Usage: 12b_circrna_star_index.sh [options]
+Usage: 12b_circrna_references.sh [options]
 
   --genome-fasta FILE   GRCr8 primary assembly   (env GENOME_FASTA)
   --gtf FILE            Ensembl GTF              (env GTF_FILE)
-  --star-index DIR      index output directory   (env STAR_INDEX)
+  --star-index DIR      STAR index directory     (env STAR_INDEX)
   --refflat FILE        refFlat output           (env REFFLAT_OUT)
+  --bwa-index PREFIX    BWA index PREFIX, not a directory (env BWA_INDEX)
   --threads N           default 8                (env THREADS)
   --sjdb-gtf            build a splice-aware index (NOT the default; see header)
   --sjdb-overhang N     only with --sjdb-gtf, default 149 (read length - 1)
   --limit-ram BYTES     STAR --limitGenomeGenerateRAM
-  --skip-star           build only the refFlat
-  --skip-refflat        build only the STAR index
+  --skip-star           do not build the STAR index
+  --skip-refflat        do not build the refFlat
+  --skip-bwa            do not build the BWA index or the .fai
   --force               rebuild even if the output already exists
 EOF
 }
@@ -77,8 +82,10 @@ while [ $# -gt 0 ]; do
     --sjdb-gtf)      SJDB_GTF=1; shift ;;
     --sjdb-overhang) SJDB_OVERHANG="$2"; shift 2 ;;
     --limit-ram)     STAR_LIMIT_RAM="$2"; shift 2 ;;
+    --bwa-index)     BWA_INDEX="$2"; shift 2 ;;
     --skip-star)     SKIP_STAR=1; shift ;;
     --skip-refflat)  SKIP_REFFLAT=1; shift ;;
+    --skip-bwa)      SKIP_BWA=1; shift ;;
     --force)         FORCE=1; shift ;;
     --help|-h)       usage; exit 0 ;;
     *) echo "[ERROR] unknown argument: $1" >&2; usage >&2; exit 1 ;;
@@ -92,6 +99,7 @@ echo "[INFO] genome      : $GENOME_FASTA"
 echo "[INFO] GTF         : $GTF_FILE"
 echo "[INFO] STAR index  : $STAR_INDEX"
 echo "[INFO] refFlat     : $REFFLAT_OUT"
+echo "[INFO] BWA index   : $BWA_INDEX"
 echo "[INFO] threads     : $THREADS"
 echo ""
 
@@ -182,7 +190,32 @@ if [ "$SKIP_REFFLAT" -eq 0 ]; then
   fi
 fi
 
+# --- BWA index and samtools faidx -------------------------------------------
+# CIRI2 (stage 15) aligns with bwa mem, and CIRIquant (stage 14) needs both a
+# BWA index prefix and a .fai beside the FASTA.
+if [ "$SKIP_BWA" -eq 0 ]; then
+  if [ -s "${BWA_INDEX}.bwt" ] && [ "$FORCE" -eq 0 ]; then
+    echo "[INFO] BWA index already present, skipping: $BWA_INDEX"
+    echo "[INFO] use --force to rebuild"
+  else
+    echo "[INFO] building the BWA index (slow; single-threaded by design)..."
+    mkdir -p "$(dirname "$BWA_INDEX")"
+    bwa index -p "$BWA_INDEX" "$GENOME_FASTA"
+    echo "[INFO] BWA index written with prefix $BWA_INDEX"
+  fi
+
+  if [ -s "${GENOME_FASTA}.fai" ] && [ "$FORCE" -eq 0 ]; then
+    echo "[INFO] ${GENOME_FASTA##*/}.fai already present"
+  else
+    echo "[INFO] indexing the FASTA with samtools faidx..."
+    samtools faidx "$GENOME_FASTA"
+    echo "[INFO] wrote ${GENOME_FASTA}.fai"
+  fi
+  echo ""
+fi
+
 echo ""
 echo "[INFO] stage 12b complete"
 echo "[INFO] Next: scripts/bash/13_circrna_circexplorer.sh \\"
 echo "[INFO]         --star-index $STAR_INDEX --refflat $REFFLAT_OUT"
+echo "[INFO] Stages 14 and 15 pick up the BWA index and .fai automatically."

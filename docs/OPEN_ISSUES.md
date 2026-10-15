@@ -12,67 +12,90 @@ what is *not* settled.
 
 ## Index by owner
 
-**S. Urquiza — decisions only he can make**
-§3.1 release and concatenation order · §3.4 StringTie flags · §4.2 which
-codpot run was final · §7.1 BSJ threshold **(blocking)** · §7.2 ComBat_seq ·
-§7.3 CIRI-AS coverage · §8.1 which library "rep3" was · §12.1 lncRNA volcano
-cutoff · §14 manuscript fixes
+A round of decisions on 14 Oct 2026 (B. Borges) closed eleven items. What is
+left is blocked on someone else or on executing a run — with two exceptions,
+noted below, deliberately left open.
+
+**Unrecoverable — nobody can supply these**
+§4.1 the `exons/` split command · §4.2 which codpot run was final · §4.3 the
+two server roots · §5.1 the 6 h miRge command and `DESmetadata_24h.csv` ·
+§8.1 which library "rep3" was · §8.2 the notebook variant behind the frozen
+tables
+
+**S. Urquiza — still open by choice**
+§3.4 StringTie flags · §7.2 ComBat_seq
 
 **S. Urquiza — inputs to supply**
-§5.1 miRge 6 h command and `DESmetadata_24h.csv` · §5.2 small-RNA FASTQ
-checksums · §6.1 `TFLink_All.tsv` and the Cytoscape GRN exports · §6.2 the 12
-miRWalk files and miRBase `mature.fa`
+§5.2 small-RNA FASTQ checksums · §6.1 `TFLink_All.tsv` and the three Cytoscape
+GRN exports · §6.2 the 12 miRWalk files and miRBase `mature.fa` · §12.3 the
+Affinity and Cytoscape sources
 
-**J. P. (circRNA upstream) — inputs to supply**
-§7.4 `rn8.yml`, `rn8.refflat.nochr.txt`, the STAR index, `CIRI2.pl`,
-`CIRI_AS_v1.2.pl`, `rat_primary_assembly_orderr8.fa`
+**Needs a run, not a decision**
+§7.5 the circRNA reconstruction · §11.1 the two new panels against the
+published figures · §15 loose ends · "Closes on the re-run" below
 
-**S. Urquiza and B. Borges together — the metadata chain**
-§4.1 the unrecovered `exons/` split · §4.3 two server roots · §4.4 the
-`isBest` no-op
-
-**Not blocking, repository housekeeping**
-§15 loose ends · §16 explicitly out of scope
+**S. Urquiza — manuscript text**
+§14, now twenty items
 
 ### What blocks what
 
 | Blocked | By |
 |---|---|
-| The entire circRNA module, and with it Figure 2B's circRNA bar (8,736 loci), every circRNA panel in Figures 3 and S3, Supplementary Tables S7A-B, and the 9 circRNA triplets in Figure 6B | §7.4 (4 of 6 resources outstanding; the STAR index and refFlat are now built by stage 12b) |
 | Figure 4A-B and S4A | §6.1 |
 | Figure 5B-C | §6.2 |
-| Treating any circRNA count as final | §7.1, §7.2 |
-| The four circRNA IntaRNA target FASTAs | §7.3 |
+| Confirming the two new panels (Fig 3C circRNA, S3A-B mRNA/miRNA) | §11.1 — needs a run |
+| Confirming the circRNA reconstruction | §7.5 — needs a run |
+
+**The circRNA module is no longer externally blocked.** Every resource §7.4
+listed is now either built by the pipeline (STAR index, refFlat, BWA index,
+`.fai`, the CIRIquant config) or installed from bioconda (`ciri2`, `ciri-as`).
+It is gated only on being run.
 
 **Not on this list: the reference release.** Release 115 with the GRCr8 primary
 assembly is a settled forward decision (B. Borges, 8 Oct 2026). Everything,
 including the circRNA analysis, will be re-run at 115 and the results compared.
 
+**Also not on this list: the three accepted analysis changes.** §7.1 (BSJ ≥ 2),
+§7.3 (CIRI-AS on all samples) and §12.1 (lncRNA fold-change cutoff) are
+decided, but they change published numbers — see each one for what has to be
+re-read off the new run.
+
 ---
 
 ## Stage 00 — references
 
-### 3.1 The primary-assembly concatenation order is unrecorded
+### 3.1 and 3.3 — CLOSED by decision: one assembly for every branch
 
-`PRIMARY_PARTS` defaults to `1..20 X Y MT`, with `nonchromosomal` excluded by
-decision. The circRNA filename `rat_primary_assembly_orderr8.fa` implies a
-specific concatenation order that is not recorded anywhere.
+Previously two items: the concatenation order behind
+`rat_primary_assembly_orderr8.fa` was unrecorded (3.1), and that file was never
+supplied so could not be checksum-verified (3.3).
 
-Order affects BAM header order and some tools' output, not alignment itself.
+**Decision (B. Borges, 14 Oct 2026): the circRNA branch uses the stage 00
+primary assembly, the same file as the long-RNA branch.** Stages 12b, 14 and 15
+all default to it, so there is nothing left to reconcile or verify.
 
-**Needed:** confirmation from S. Urquiza, or acceptance that BAM header order
-may differ from the original run.
+What this costs: the original concatenation order is not reproduced, so BAM
+header order may differ from the 2023 run. That affects header order and some
+tools' output listings, **not alignment and not coordinates** — both are GRCr8
+either way. In exchange, every branch is provably on one genome, which is what
+made §3.3 a question in the first place.
 
-### 3.2 All reference checksums are `TO_FILL`
+### 3.2 Reference checksums — CLOSED, verified at download
 
-Every `checksum` cell in `metadata/reference_manifest.tsv`. Fill them once
-stage 00 has run against release 115.
+Previously: every `checksum` cell in `metadata/reference_manifest.tsv` was
+`TO_FILL`, to be filled by hand after a run.
 
-### 3.3 `rat_primary_assembly_orderr8.fa` is unverified
+Stage 00 now does both halves automatically:
 
-The circRNA branch's genome FASTA was not supplied. It must be verified by
-checksum to be the GRCr8 primary assembly before the circRNA results are
-treated as coordinate-compatible with the long-RNA branch.
+- **Verifies each download against Ensembl's own `CHECKSUMS` file**, which
+  every FTP directory carries in BSD `sum` format. A mismatch is fatal with the
+  expected and actual values printed; a filename Ensembl does not list only
+  warns, since not every file appears in every release.
+- **Records the md5** of the finished FASTA and GTF into
+  `reference_manifest.tsv`, matched on `final_file_name`.
+
+So the cells populate on the first run, and a truncated download now fails
+loudly instead of producing a silently short genome.
 
 ## Stage 06 — StringTie
 
@@ -138,13 +161,16 @@ ran end to end in one place.
 
 **Needed:** confirmation both pointed at the same data generation.
 
-### 4.4 `isBest == 1` is a no-op on the shipped data
+### 4.4 `isBest == 1` is a no-op — CLOSED, it is a Methods fix
 
 Every row of `lncRNA_classes_CNE_6_24_HISAT2_1kb_100kb.txt` has
 `isBest == 1` — 42,040 of 42,040. The filter in R08/R14 is harmless but is
 **not** evidence that filtering occurred.
 
-**Needed:** do not describe it as a filtering step in the Methods.
+This was never an open question; it has a definite answer and only needed
+writing down. Tracked as §14.7: do not describe it as a filtering step. The
+filter stays in the code, because on a different FEELnc run it would do
+something.
 
 ## Stage 11 — miRge3.0
 
@@ -181,11 +207,18 @@ and MD5s. The 32 long-RNA rows are complete.
 inventories, so Figure 2B's 8,736 loci and every circRNA count in Figures 3
 and S3 move with the choice.
 
-`scripts/R/04b_circRNA_de_temporal.R --bsj-min` makes the choice explicit and
-logs it on every run. The default of 3 reproduces the code, not the prose.
+**CLOSED by decision (B. Borges, 14 Oct 2026): use >= 2, the Methods rule.**
+`--bsj-min` now defaults to 2 and logs the choice on every run; `--bsj-min 3`
+reproduces the historical notebook code for comparison.
 
-**Needed:** which rule produced the deposited inventory, and a correction to
-whichever of the two is wrong. This is the top blocking item.
+Reasoning: the published text commits to "at least two", that is the number a
+reader will check, >= 2 is the common convention, and `readNumber > 2` reads
+like an off-by-one against the author's own stated intent rather than a
+deliberate choice.
+
+**Consequence to track:** this changes the circRNA inventory, so Figure 2B's
+8,736 locus count and every circRNA count in Figures 3 and S3 must be re-read
+off the new run, not carried over. No Methods text changes.
 
 ### 7.2 Was ComBat_seq used in the final circRNA DE?
 
@@ -209,12 +242,19 @@ batch-aligned, not random — which matters if ComBat_seq is retained anywhere.
 `CIRI_2_run_all_seba.sh:2` is `for m in {13..16}`. There is no CIRI2/CIRI-AS
 loop for H1-H4 or SQ1-SQ8 anywhere in any package.
 
-`scripts/bash/15_circrna_ciri_as.sh` defaults to those four samples and refuses
-`--all` without `--yes-widen`. This gates the four circRNA IntaRNA target
-FASTAs, and through them bash 16.
+**CLOSED by decision (B. Borges, 14 Oct 2026): run every sample.** Stage 15
+now defaults to the whole sample sheet, and `--only
+SQ13_ln,SQ14_ln,SQ15_ln,SQ16_ln` reproduces the original four-sample loop.
+`--yes-widen` is gone.
 
-**Needed:** either the missing batch commands, or confirmation that
-reconstruction genuinely only ever covered SQ13-SQ16.
+Reasoning: restricting sequence reconstruction to four of sixteen libraries has
+no methodological justification. The loop reads like it was written for one
+batch and never extended, and the Methods describe reconstruction for the
+analysis as a whole.
+
+**Consequence to track:** the four circRNA IntaRNA target FASTAs, and through
+them bash 16 and the circRNA ceRNA triplets, are now built from all samples.
+The Methods sentence on CIRI-AS becomes true as written.
 
 ### 7.4 External resources the circRNA module needs
 
@@ -225,10 +265,18 @@ supplied; four are still outstanding.
 |---|---|---|
 | STAR index `STAR_rn8/` | bash 13 | **Resolved.** Stage 12b runs `STAR --runMode genomeGenerate` on the stage 00 primary assembly. No build command was ever recorded, so this is new code, not a recovery |
 | `rn8.refflat.nochr.txt` | bash 13 | **Resolved.** Stage 12b derives the refFlat from the Ensembl GTF with `gtfToGenePred`. Ensembl names carry no `chr` prefix, which is what "nochr" recorded |
-| `rn8.yml` — CIRIquant config | bash 14 | Outstanding. The stage refuses to guess. Every field in it names something the pipeline already builds, so it is derivable |
-| `rat_primary_assembly_orderr8.fa` | bash 13, 15 | Outstanding, and unverifiable — see §3.3 |
-| `CIRI2.pl` v2.0.6 | bash 15 | Outstanding. Not a conda package, but freely downloadable |
-| `CIRI_AS_v1.2.pl` | bash 15 | Outstanding. Same |
+| `rn8.yml` — CIRIquant config | bash 14 | **Resolved.** With no `--config`, stage 14 generates an equivalent one from the active reference plus the BWA index (12b) and HISAT2 index (04), and prints it. Schema per the CIRIquant cookbook: `bwa_index` and `hisat_index` are prefixes, and the FASTA needs a `.fai` beside it, which 12b writes |
+| `rat_primary_assembly_orderr8.fa` | bash 13, 15 | **Resolved by decision** — every branch uses the stage 00 primary assembly. See §3.1/§3.3 |
+| `CIRI2.pl` v2.0.6 | bash 15 | **Resolved.** bioconda ships `ciri2`, whose current release is 2.0.6 — the exact version the Methods state. Pinned in `envs/environment_circrna.yml`; stage 15 finds it on `PATH` |
+| `CIRI_AS_v1.2.pl` | bash 15 | **Resolved.** bioconda ships `ciri-as`, current release 1.2, again the exact Methods version |
+
+So **nothing external is outstanding for the circRNA module.** It is now gated
+only on running it — see §7.5.
+
+`ciri-full` also bundles CIRI2 and CIRI-AS, but at its own versions and with a
+Java dependency, and CIRI-full itself is commented out in the original script
+(`CIRI_2_run_all_seba.sh:93,95-97`), as is CIRI-vis (`:105`). The two
+standalone packages are both more faithful and smaller.
 
 ### 7.5 The circRNA reconstruction is unconfirmed
 
@@ -273,8 +321,11 @@ is computed and then not used.
 `Rattus_norvegicus.GRCr8.114.gtf` — same assembly as the project lock, one
 annotation release earlier.
 
-**Needed:** this closes when the branch is re-run at 115 as decided. Until
-then, the gap is documented rather than resolved.
+**Not a decision — closes on the re-run.** Release 115 is settled, and the
+circRNA branch is re-run with everything else, at which point this gap simply
+does not exist. Listed under "Closes on the re-run" below.
+
+Nothing to do but note it in the Methods: the published numbers came from 114.
 
 ## R01 — transcriptome metadata
 
@@ -296,10 +347,10 @@ Both releases are GRCr8, so coordinates are unaffected — but gene names and
 biotypes move between releases, and those feed Figure 2B's class counts and the
 annotated-versus-novel lncRNA split.
 
-**Needed when the pipeline is re-run at 115:** regenerate with R01, compare
-against the frozen copies, and re-check Figure 2B's counts, Figure 2C and the
-lncRNA inventory in Figure S2 against the published numbers. Report the delta
-to S. Urquiza before replacing the files.
+**Not a decision — closes on the re-run.** Regenerate with R01, diff against
+the frozen copies, and re-read Figure 2B's counts, Figure 2C and the Figure S2
+lncRNA inventory off the new tables. Report the delta to S. Urquiza before
+replacing `data/frozen/`. Listed under "Closes on the re-run" below.
 
 ## R02 — mRNA/lncRNA DESeq2
 
@@ -367,14 +418,23 @@ Blocks Figures 5B-C.
 | Methods v14 | lncRNAs: adjusted p < 0.05 **and \|log2FC\| ≥ 0.5** |
 | Code | `07_Figure4_clean_volcanoes.R` sets `absfc_cutoff <- 0` — padj alone |
 
-R16 is left as ported, because it produces a published panel and changing the
-threshold would change the figure. The new R17 applies the Methods thresholds
-for mRNA and miRNA, so the three S3 panels currently use two different rules.
+**CLOSED by decision (B. Borges, 14 Oct 2026): apply the Methods rule.**
+R16's `absfc_cutoff` now defaults to 0.5 and is exposed as `--lfc-cut`;
+`--lfc-cut 0` reproduces the original padj-only behaviour.
 
-Figure S3's legend says the dashed lines mark "the thresholds used for
-classification", so the panel and the Methods should be made to agree.
+Reasoning: R17 already applies class-specific thresholds for mRNA and miRNA, so
+leaving R16 on padj alone meant Figure S3's three panels were classified by two
+different rules, and the legend's claim about "the thresholds used for
+classification" was false for one of them.
 
-**Needed:** which rule is intended, and a matching figure legend.
+**A second defect surfaced while making the change.** R16 drew its dashed
+vertical lines at a hard-coded **±1** while the cutoff was 0 — so the lines
+never marked the classification rule at all, under either threshold. They now
+track `absfc_cutoff`, and are omitted entirely when it is 0.
+
+**Consequence to track:** the Figure S3A-B lncRNA panels must be regenerated,
+and their significant-lncRNA counts will drop, since a fold-change requirement
+now applies where none did.
 
 ## R21-R25 — ceRNA networks and export
 
@@ -388,8 +448,11 @@ pairs.
 The **final** networks do use −20, so the figures match the Methods; the
 sentence is just not literally true of the script.
 
-**Needed:** soften the sentence, or state that the tiers exist only as
-intermediate audit output.
+**CLOSED by decision (B. Borges, 14 Oct 2026): keep the tiers, fix the
+sentence.** The tiers produce audit output that is worth having, and nothing
+published depends on the −10 floor. It is a wording fix, now §14.16 — state
+that intermediate audit outputs retain weaker pairs and only the −20 tier
+reaches the figures. No code changes.
 
 ### 12.3 Figures are not pixel-reproducible
 
@@ -423,6 +486,28 @@ node x/y coordinates plus the visual style.
 | 14.13 | Soften "no additional interaction tiers were used" | §12.2 |
 | 14.14 | **"CIRCexplorer3 v1.0.0" -> drop the version.** CLEAR publishes none; give the installed commit instead | §13.1 |
 | 14.15 | **Cite the CLEAR paper**: Ma XK et al., doi:10.1101/668657 | §13.1 |
+| 14.16 | Rewrite "no additional interaction tiers were used" — say intermediate audit outputs retain weaker pairs and only the −20 tier reaches the figures | §12.2 |
+| 14.17 | **Add CIRI2 to the Methods.** The text names CIRI-AS but not CIRI2, and CIRI-AS cannot run without it: `CIRI_2_run_all_seba.sh:90` passes CIRI2's `.ciri` call set via `-C`. Cite Gao et al. 2018 for CIRI2 alongside the existing CIRI-AS citation | new |
+| 14.18 | **`bwa mem -T 19` is attributed to the wrong tool.** The text puts it under CIRIquant; the only recorded `-T 19` is `CIRI_2_run_all_seba.sh:84`, feeding CIRI2/CIRI-AS. CIRIquant runs BWA internally with its own settings | new |
+| 14.19 | Say that circRNA DE uses the raw `readNumber` BSJ counts from CIRCexplorer2 `annotate`. `circ_quant` runs, so CIRCscore is computed, but nothing downstream uses it — a reader told the pipeline is CLEAR will look for it | §13.1 |
+| 14.20 | The circRNA reference was GRCr8.114 in 2023 and is GRCr8.115 on the re-run. One sentence, since both are GRCr8 | §13.2 |
+
+---
+
+## Closes on the re-run
+
+Not decisions and not blockers — they resolve themselves once the pipeline is
+executed at release 115, and are listed only so nobody re-opens them as
+questions.
+
+| # | Item |
+|---|---|
+| §8.3 | The frozen Ensembl-114 metadata tables get regenerated at 115; diff them and re-read Figure 2B / 2C / S2 off the new output |
+| §13.2 | The circRNA branch moves from GRCr8.114 to GRCr8.115 with everything else |
+| §3.2 | `reference_manifest.tsv` checksums populate automatically on the first stage 00 run |
+| §7.1, §7.3, §12.1 | The three accepted analysis changes take effect; the affected figures and counts must be re-read, not carried over |
+| §15.2 | `envs/*.lock.yml` are written by `create_envs.sh`, fixing the tool versions for the Methods |
+| §15.8 | The Docker image gets its first real build |
 
 ---
 

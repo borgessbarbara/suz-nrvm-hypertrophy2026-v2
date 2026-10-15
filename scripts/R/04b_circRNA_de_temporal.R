@@ -9,7 +9,7 @@
 #   circRNA_{UP,DOWN}_{6,24}h_all_records.fa   (requires CIRI-AS sequences)
 #
 # Every contested parameter is a flag, not an edit:
-#   --bsj-min      minimum back-splice reads    (default 3)
+#   --bsj-min      minimum back-splice reads    (default 2)
 #   --replicates   replicate indices to keep    (default 1,2,4)
 #   --use-combat   apply ComBat_seq             (default off)
 #   --alpha        nominal p threshold          (default 0.05)
@@ -43,9 +43,10 @@ opt <- parse_args(OptionParser(
                 help = "stage 15 output, for reconstructed sequences [default %default]"),
     make_option("--out-dir", type = "character", default = "results/R04b_circRNA_de_temporal",
                 help = "[default %default]"),
-    make_option("--bsj-min", type = "integer", default = 3,
-                help = paste("Minimum back-splice reads. 3 reproduces the code",
-                             "(readNumber > 2); 2 reproduces the Methods prose.",
+    make_option("--bsj-min", type = "integer", default = 2,
+                help = paste("Minimum back-splice reads. 2 is the manuscript",
+                             "Methods rule; 3 reproduces the historical",
+                             "notebook code (readNumber > 2).",
                              "[default %default]")),
     make_option("--replicates", type = "character", default = "1,2,4",
                 help = "Replicate indices per group [default %default]"),
@@ -66,8 +67,8 @@ reps <- as.integer(strsplit(opt$replicates, ",")[[1]])
 message("=====================================================================")
 message("[R04b] RECONSTRUCTED STAGE - every parameter below is an OPEN ITEM")
 message("[R04b]   BSJ minimum reads : ", opt$`bsj-min`,
-        if (opt$`bsj-min` == 3) "  (matches the notebook CODE, readNumber > 2)"
-        else if (opt$`bsj-min` == 2) "  (matches the METHODS prose, >= 2)" else "")
+        if (opt$`bsj-min` == 2) "  (the manuscript Methods rule, >= 2)"
+        else if (opt$`bsj-min` == 3) "  (the historical notebook code, readNumber > 2)" else "")
 message("[R04b]   replicates kept   : ", paste(reps, collapse = ", "))
 message("[R04b]   ComBat_seq        : ", if (opt$`use-combat`) "ON (historical)" else "OFF (final manuscript)")
 message("[R04b]   nominal p < ", opt$alpha, ", |log2FC| >= ", opt$`lfc-cut`)
@@ -215,8 +216,8 @@ writeLines(c(
   "Implements stage 5 of repository_merge_plan.md.",
   "",
   paste0("BSJ minimum reads     : ", opt$`bsj-min`,
-         if (opt$`bsj-min` == 3) "   (matches the notebook code)"
-         else if (opt$`bsj-min` == 2) "   (matches the Methods prose)" else ""),
+         if (opt$`bsj-min` == 2) "   (the manuscript Methods rule)"
+         else if (opt$`bsj-min` == 3) "   (the historical notebook code)" else ""),
   paste0("Replicates included   : ", paste(reps, collapse = ", ")),
   paste0("ComBat_seq            : ", if (opt$`use-combat`) "ON" else "OFF"),
   paste0("Nominal p threshold   : ", opt$alpha),

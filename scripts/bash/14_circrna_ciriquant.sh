@@ -3,12 +3,13 @@
 #
 # One sample-sheet-driven loop: fastp, then CIRIquant.
 #
-# Usage:  bash scripts/bash/14_circrna_ciriquant.sh --config rn8.yml [options]
+# Usage:  bash scripts/bash/14_circrna_ciriquant.sh [options]
 #         bash scripts/bash/14_circrna_ciriquant.sh --help
 #
-# Requires the CIRIquant YAML config, which is not in this repository. The
-# stage fails with an explanation rather than guessing; see
-# metadata/external_inputs.tsv.
+# CIRIquant needs a YAML config. The historical rn8.yml was never supplied, but
+# every field in it names something this pipeline already builds, so with no
+# --config the stage writes an equivalent one from the active reference and the
+# indexes from stages 12b and 04, and prints it. Pass --config to override.
 #
 # Next: 15_circrna_ciri_as.sh
 
@@ -27,16 +28,30 @@ CIRIQUANT_CONFIG="${CIRIQUANT_CONFIG:-}"
 CIRC_PRIOR_DIR="${CIRC_PRIOR_DIR:-}"
 ONLY=""
 
+REL_FILE="$REPO_ROOT/metadata/reference_release.tsv"
+RELEASE="${ENSEMBL_RELEASE:-}"
+[ -z "$RELEASE" ] && [ -f "$REL_FILE" ] && \
+  RELEASE="$(awk -F'\t' 'NR>1 && tolower($2) ~ /^(yes|true|1)$/ {print $1; exit}' "$REL_FILE")"
+RELEASE="${RELEASE:-115}"
+GENOME_FASTA="${GENOME_FASTA:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.primary_assembly.fa}"
+GTF_FILE="${GTF_FILE:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.${RELEASE}.gtf}"
+BWA_INDEX="${BWA_INDEX:-$REPO_ROOT/references/bwa_GRCr8/GRCr8}"
+HISAT_INDEX="${HISAT_INDEX:-$REPO_ROOT/references/hisat2_GRCr8/GRCr8}"
+
 usage() {
   cat <<'EOF'
-Usage: 14_circrna_ciriquant.sh --config rn8.yml [options]
+Usage: 14_circrna_ciriquant.sh [options]
 
-Required:
-  --config PATH             CIRIquant YAML config (historically rn8.yml).
-                            NOT SUPPLIED in any package received - must be
-                            recovered or recreated and committed.
+The historical rn8.yml was never supplied. With no --config, this stage
+generates an equivalent one from the active reference and the indexes stage
+12b builds, and prints it.
 
 Options:
+  --config PATH             use this CIRIquant YAML instead of generating one
+  --genome-fasta FILE       default: the stage 00 primary assembly
+  --gtf FILE                default: the active-release Ensembl GTF
+  --bwa-index PREFIX        default: references/bwa_GRCr8/GRCr8   (stage 12b)
+  --hisat-index PREFIX      default: references/hisat2_GRCr8/GRCr8 (stage 04)
   --samples PATH            default metadata/longRNA_samples.tsv
   --manifest PATH           default metadata/fastq_manifest.tsv
   --out-dir DIR             default results/14_ciriquant
@@ -53,7 +68,11 @@ EOF
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --config)    CIRIQUANT_CONFIG="$2"; shift 2 ;;
+    --config)       CIRIQUANT_CONFIG="$2"; shift 2 ;;
+    --genome-fasta) GENOME_FASTA="$2"; shift 2 ;;
+    --gtf)          GTF_FILE="$2"; shift 2 ;;
+    --bwa-index)    BWA_INDEX="$2"; shift 2 ;;
+    --hisat-index)  HISAT_INDEX="$2"; shift 2 ;;
     --samples)   SAMPLE_SHEET="$2";     shift 2 ;;
     --manifest)  FASTQ_MANIFEST="$2";   shift 2 ;;
     --out-dir)   OUT_DIR="$2";          shift 2 ;;
@@ -65,23 +84,51 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-if [ -z "$CIRIQUANT_CONFIG" ] || [ ! -f "$CIRIQUANT_CONFIG" ]; then
-  cat >&2 <<EOF
-[ERROR] CIRIquant config not provided or not found: ${CIRIQUANT_CONFIG:-<unset>}
+# The historical /media/storage2/jpablo/CIRIquant/rn8.yml was never supplied.
+# Every field in it names something this pipeline already builds, so the config
+# is generated rather than demanded. Pass --config to use your own instead.
+if [ -z "$CIRIQUANT_CONFIG" ]; then
+  CIRIQUANT_CONFIG="$OUT_DIR/ciriquant_GRCr8_${RELEASE}.yml"
+  echo "[INFO] no --config given; generating one at $CIRIQUANT_CONFIG"
 
-The historical scripts reference
-    /media/storage2/jpablo/CIRIquant/rn8.yml
-which was never included in any package received from the circRNA co-author.
-It is recorded as a blocking open item:
-    metadata/external_inputs.tsv   (row: CIRIquant config)
-    docs/OPEN_ISSUES.md
+  missing=0
+  for p in "$GENOME_FASTA" "$GTF_FILE"; do
+    [ -f "$p" ] || { echo "[ERROR] reference not found: $p" >&2; missing=1; }
+  done
+  [ -f "${GENOME_FASTA}.fai" ] || {
+    echo "[ERROR] CIRIquant needs ${GENOME_FASTA}.fai beside the FASTA." >&2
+    echo "[ERROR] Run stage 12b, or: samtools faidx $GENOME_FASTA" >&2; missing=1; }
+  [ -s "${BWA_INDEX}.bwt" ] || {
+    echo "[ERROR] BWA index not found at prefix $BWA_INDEX" >&2
+    echo "[ERROR] Run stage 12b, or pass --bwa-index." >&2; missing=1; }
+  [ -s "${HISAT_INDEX}.1.ht2" ] || {
+    echo "[ERROR] HISAT2 index not found at prefix $HISAT_INDEX" >&2
+    echo "[ERROR] Stage 04 builds one; pass --hisat-index to point at it." >&2; missing=1; }
+  [ "$missing" -eq 0 ] || exit 1
 
-Recreating it requires knowing exactly which genome FASTA and GTF the circRNA
-branch used - which is itself an open item, because the circRNA scripts carry
-GRCr8.114 while the project reference lock is GRCr8.115.
+  mkdir -p "$(dirname "$CIRIQUANT_CONFIG")"
+  cat > "$CIRIQUANT_CONFIG" <<EOF
+# Generated by scripts/bash/14_circrna_ciriquant.sh.
+# Replaces the historical rn8.yml, which was never supplied. Schema per the
+# CIRIquant cookbook: bwa_index and hisat_index are PREFIXES, not directories,
+# and reference.fasta must have a .fai beside it.
+name: GRCr8_${RELEASE}
+tools:
+  bwa: $(command -v bwa)
+  hisat2: $(command -v hisat2)
+  stringtie: $(command -v stringtie)
+  samtools: $(command -v samtools)
 
-Pass --config once that is resolved.
+reference:
+  fasta: ${GENOME_FASTA}
+  gtf: ${GTF_FILE}
+  bwa_index: ${BWA_INDEX}
+  hisat_index: ${HISAT_INDEX}
 EOF
+  echo "[INFO] wrote the CIRIquant config:"
+  sed 's/^/[INFO]   /' "$CIRIQUANT_CONFIG"
+elif [ ! -f "$CIRIQUANT_CONFIG" ]; then
+  echo "[ERROR] --config given but not found: $CIRIQUANT_CONFIG" >&2
   exit 1
 fi
 

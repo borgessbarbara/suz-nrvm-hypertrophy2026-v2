@@ -120,7 +120,7 @@ declare -A SCRIPT=(
   [09b]=09b_feelnc_split_exon_gtfs.sh [09c]=09c_extract_transcript_ids.sh
   [09d]=09d_subset_merged_gtfs.sh     [09e]=09e_filter_out_lncRNAs.sh
   [10]=10_salmon_index_quant.sh       [11]=11_mirge3_run.sh
-  [12]=12_intarna_run.sh              [12b]=12b_circrna_star_index.sh
+  [12]=12_intarna_run.sh              [12b]=12b_circrna_references.sh
   [13]=13_circrna_circexplorer.sh
   [14]=14_circrna_ciriquant.sh        [15]=15_circrna_ciri_as.sh
   [16]=16_circrna_intarna.sh

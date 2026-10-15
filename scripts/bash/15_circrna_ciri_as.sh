@@ -16,34 +16,40 @@ FASTQ_MANIFEST="${FASTQ_MANIFEST:-$REPO_ROOT/metadata/fastq_manifest.tsv}"
 OUT_DIR="${OUT_DIR:-results/15_ciri_as}"
 SCRATCH="${SCRATCH:-results/15_ciri_as/scratch}"
 THREADS="${THREADS:-20}"
-GENOME_FASTA="${CIRC_GENOME_FASTA:-}"
-GTF="${CIRC_GTF:-}"
+REL_FILE="$REPO_ROOT/metadata/reference_release.tsv"
+RELEASE="${ENSEMBL_RELEASE:-}"
+[ -z "$RELEASE" ] && [ -f "$REL_FILE" ] && \
+  RELEASE="$(awk -F'\t' 'NR>1 && tolower($2) ~ /^(yes|true|1)$/ {print $1; exit}' "$REL_FILE")"
+RELEASE="${RELEASE:-115}"
+
+GENOME_FASTA="${CIRC_GENOME_FASTA:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.primary_assembly.fa}"
+GTF="${CIRC_GTF:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.${RELEASE}.gtf}"
+BWA_INDEX="${BWA_INDEX:-$REPO_ROOT/references/bwa_GRCr8/GRCr8}"
 CIRI2_PL="${CIRI2_PL:-}"
 CIRI_AS_PL="${CIRI_AS_PL:-}"
 BWA_MIN_SCORE="${BWA_MIN_SCORE:-19}"   # the original's -T 19
-ONLY="SQ13_ln,SQ14_ln,SQ15_ln,SQ16_ln"
-RUN_ALL=0
-CONFIRM_ALL=0
+ONLY=""
+RUN_ALL=1
 
 usage() {
   cat <<'EOF'
 Usage: 15_circrna_ciri_as.sh --genome-fasta F --gtf F --ciri2 P --ciri-as P [options]
 
-Required:
-  --genome-fasta PATH   historically rat_primary_assembly_orderr8.fa
-  --gtf PATH            historically Rattus_norvegicus.GRCr8.114.gtf
-  --ciri2 PATH          CIRI2.pl        (v2.0.6; not a conda package)
-  --ciri-as PATH        CIRI_AS_v1.2.pl (v1.2;   not a conda package)
+Everything has a default; no argument is required.
 
-Options:
+  --genome-fasta PATH   default: the stage 00 GRCr8 primary assembly
+  --gtf PATH            default: the active-release Ensembl GTF
+  --bwa-index PREFIX    default: references/bwa_GRCr8/GRCr8 (stage 12b)
+  --ciri2 PATH          CIRI2.pl        (default: found on PATH from conda)
+  --ciri-as PATH        CIRI_AS.pl      (default: found on PATH from conda)
   --samples PATH        default metadata/longRNA_samples.tsv
   --manifest PATH       default metadata/fastq_manifest.tsv
   --out-dir DIR         default results/15_ciri_as
   --threads N           default 20
   --bwa-min-score N     bwa mem -T (default 19, as in the original)
-  --only SAMPLE[,...]   default SQ13_ln,SQ14_ln,SQ15_ln,SQ16_ln
-  --all                 run every sample in the sheet (requires --yes-widen)
-  --yes-widen           acknowledge that --all goes beyond what was originally run
+  --only SAMPLE[,...]   restrict to these samples. Default is every sample in
+                        the sheet; pass SQ13_ln,SQ14_ln,SQ15_ln,SQ16_ln to
+                        reproduce the original four-sample loop.
 EOF
 }
 
@@ -58,37 +64,68 @@ while [ $# -gt 0 ]; do
     --out-dir)       OUT_DIR="$2";       shift 2 ;;
     --threads)       THREADS="$2";       shift 2 ;;
     --bwa-min-score) BWA_MIN_SCORE="$2"; shift 2 ;;
+    --bwa-index)     BWA_INDEX="$2";     shift 2 ;;
     --only)          ONLY="$2";          shift 2 ;;
-    --all)           RUN_ALL=1;          shift ;;
-    --yes-widen)     CONFIRM_ALL=1;      shift ;;
+    --all)           ONLY="";            shift ;;
+    --yes-widen)     shift ;;
     --help|-h)       usage; exit 0 ;;
     *) echo "[ERROR] unknown argument: $1" >&2; usage >&2; exit 1 ;;
   esac
 done
 
-for v in GENOME_FASTA GTF CIRI2_PL CIRI_AS_PL; do
-  [ -n "${!v}" ] || { echo "[ERROR] missing required argument for $v (see --help)" >&2; exit 1; }
-done
-for f in "$GENOME_FASTA" "$GTF" "$CIRI2_PL" "$CIRI_AS_PL" "$SAMPLE_SHEET" "$FASTQ_MANIFEST"; do
+# CIRI2 and CIRI-AS come from the bioconda packages ciri2 and ciri-as, at the
+# exact versions the Methods state (2.0.6 and 1.2). Their wrappers are on PATH
+# once env_circrna is active, so neither path has to be supplied; the names
+# have varied across releases, so try the known spellings in turn.
+find_tool() {
+  local out="" c
+  for c in "$@"; do
+    out="$(command -v "$c" 2>/dev/null)" && { echo "$out"; return 0; }
+  done
+  return 1
+}
+if [ -z "$CIRI2_PL" ]; then
+  CIRI2_PL="$(find_tool CIRI2.pl CIRI2 ciri2)" || {
+    echo "[ERROR] CIRI2 not found on PATH. It is the bioconda package 'ciri2'," >&2
+    echo "[ERROR] pinned in envs/environment_circrna.yml. Activate env_circrna," >&2
+    echo "[ERROR] or pass --ciri2 /path/to/CIRI2.pl." >&2; exit 1; }
+fi
+if [ -z "$CIRI_AS_PL" ]; then
+  CIRI_AS_PL="$(find_tool CIRI_AS.pl CIRI_AS_v1.2.pl CIRI_AS ciri-as)" || {
+    echo "[ERROR] CIRI-AS not found on PATH. It is the bioconda package" >&2
+    echo "[ERROR] 'ciri-as', pinned in envs/environment_circrna.yml. Activate" >&2
+    echo "[ERROR] env_circrna, or pass --ciri-as /path/to/CIRI_AS.pl." >&2; exit 1; }
+fi
+echo "[INFO] CIRI2   : $CIRI2_PL"
+echo "[INFO] CIRI-AS : $CIRI_AS_PL"
+
+# A bioconda install may expose a wrapper rather than the raw .pl, and
+# `perl <wrapper>` would fail. Run a .pl through perl, anything else directly.
+run_perl_tool() {
+  local tool="$1"; shift
+  case "$tool" in
+    *.pl) perl "$tool" "$@" ;;
+    *)    "$tool" "$@" ;;
+  esac
+}
+
+[ -s "${BWA_INDEX}.bwt" ] || {
+  echo "[ERROR] BWA index not found at prefix $BWA_INDEX" >&2
+  echo "[ERROR] Run scripts/bash/12b_circrna_references.sh, or --bwa-index." >&2
+  exit 1; }
+
+for f in "$GENOME_FASTA" "$GTF" "$SAMPLE_SHEET" "$FASTQ_MANIFEST"; do
   [ -f "$f" ] || { echo "[ERROR] not found: $f" >&2; exit 1; }
 done
 
-if [ "$RUN_ALL" -eq 1 ] && [ "$CONFIRM_ALL" -ne 1 ]; then
-  cat >&2 <<'EOF'
-[ERROR] --all was given without --yes-widen.
-
-The original CIRI2/CIRI-AS loop covered SQ13-SQ16 only. Running every sample
-produces reconstruction output for samples the published analysis never had,
-which changes what the methods section describes. If that is intended, pass
---yes-widen as well and record the decision in docs/OPEN_ISSUES.md.
-EOF
-  exit 1
-fi
-
 all_samples=$(awk -F'\t' 'NR>1 && $1!="" {print $1}' "$SAMPLE_SHEET")
-if [ "$RUN_ALL" -eq 1 ]; then
+if [ -z "$ONLY" ]; then
   samples="$all_samples"
-  echo "[WARN] running ALL samples - this is wider than the original SQ13-SQ16 loop."
+  echo "[INFO] running every sample in the sheet."
+  echo "[INFO] The original loop was 'for m in {13..16}', i.e. SQ13-SQ16 only."
+  echo "[INFO] Widened by decision (B. Borges): restricting reconstruction to"
+  echo "[INFO] four of sixteen libraries had no methodological justification."
+  echo "[INFO] Use --only to reproduce the original four."
 else
   samples=$(echo "$all_samples" | tr ' ' '\n' | grep -Fx -f <(echo "$ONLY" | tr ',' '\n') || true)
   [ -n "$samples" ] || {
@@ -134,15 +171,20 @@ for sample in $samples; do
   sam="$OUT_DIR/sam_bwa_alignment/${sample}.sam"
   ciri="$OUT_DIR/CIRI2_results/${sample}.ciri"
 
+  # bwa mem takes the index PREFIX, not the FASTA. The original passed the
+  # FASTA because its index had been built in place; stage 12b builds with
+  # -p "$BWA_INDEX", so the prefix is what matches here.
   echo "[INFO] bwa mem -T $BWA_MIN_SCORE"
-  bwa mem -t "$THREADS" -T "$BWA_MIN_SCORE" "$GENOME_FASTA" \
+  bwa mem -t "$THREADS" -T "$BWA_MIN_SCORE" "$BWA_INDEX" \
       "$work/${sample}_1.trimmed.fq" "$work/${sample}_2.trimmed.fq" > "$sam"
 
+  # CIRI2 is a prerequisite, not an alternative: CIRI-AS takes its .ciri call
+  # set through -C and reconstructs structure only for circles CIRI2 found.
   echo "[INFO] CIRI2"
-  perl "$CIRI2_PL" -I "$sam" -O "$ciri" -F "$GENOME_FASTA" -A "$GTF" -T "$THREADS"
+  run_perl_tool "$CIRI2_PL" -I "$sam" -O "$ciri" -F "$GENOME_FASTA" -A "$GTF" -T "$THREADS"
 
   echo "[INFO] CIRI-AS"
-  perl "$CIRI_AS_PL" -S "$sam" -C "$ciri" -F "$GENOME_FASTA" -A "$GTF" \
+  run_perl_tool "$CIRI_AS_PL" -S "$sam" -C "$ciri" -F "$GENOME_FASTA" -A "$GTF" \
        -T "$THREADS" -O "$OUT_DIR/AS_results/${sample}.ASout" -D yes
 
   rm -rf "$work"

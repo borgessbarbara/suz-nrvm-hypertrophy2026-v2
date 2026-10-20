@@ -19,8 +19,7 @@ noted below, deliberately left open.
 **Unrecoverable — nobody can supply these**
 §4.1 the `exons/` split command · §4.2 which codpot run was final ·
 §5.1 the 6 h miRge command and `DESmetadata_24h.csv` ·
-§8.1 which library "rep3" was · §8.2 the notebook variant behind the frozen
-tables
+§8.2 the notebook variant behind the frozen tables
 
 **S. Urquiza — still open by choice**
 §3.4 StringTie flags · §7.2 ComBat_seq
@@ -360,19 +359,58 @@ replacing `data/frozen/`. Listed under "Closes on the re-run" below.
 
 ## R02 — mRNA/lncRNA DESeq2
 
-### 8.1 Which physical library is "rep3"?
+### 8.1 Which physical library is "rep3" — CLOSED
 
 `Integrated_Bulk_v3_6_24h.R` reads Salmon output from directories named
-`Ctrl6_rep1_quant` … `NE24_rep4_quant`. **No file in any package maps those
-aliases to `H1_ln`, `SQ13_ln`, …** So although replicate 3 is demonstrably
-excluded from every final analysis, *which library* that was cannot be stated.
+`Ctrl6_rep1_quant` … `NE24_rep4_quant`, and no file in any package received
+maps those aliases to `H1_ln`, `SQ13_ln`, … The `condition` and `replicate`
+columns of the sample sheets are that mapping, but two incompatible numberings
+were in the repository at once:
 
-`metadata/longRNA_samples.tsv` has a `salmon_quant_alias` column, currently
-`TO_CONFIRM` for every row.
+| Source | Ctrl6 order | Ctrl24 order |
+|---|---|---|
+| `fastq_manifest.tsv`, long-RNA rows | H1, SQ1, SQ5, SQ13 | SQ15, H3, SQ3, SQ7 |
+| `fastq_manifest.tsv`, small-RNA rows | H1, SQ13, SQ1, SQ5 | SQ3, SQ15, H3, SQ7 |
+| `longRNA_samples.tsv` and Seba's 7 Jul starter sheet | H1, SQ13, SQ1, SQ5 | SQ3, SQ15, H3, SQ7 |
 
-**Needed:** the alias → `sample_id` mapping, and confirmation that marking
-those four rows `no_excluded_from_final_DE` is right. Ideally the Methods
-should say which library was excluded and why.
+The manifest disagreed with itself: its long-RNA half used one scheme and its
+small-RNA half the other. "Drop rep3" therefore resolved to two **disjoint**
+sets of libraries.
+
+**Resolved by B. Borges, 19 Oct 2026: the long-RNA block of
+`fastq_manifest.tsv` is authoritative.** Every other sheet has been renumbered
+to it, so all three now agree 16 of 16.
+
+The deciding evidence is that this scheme pairs each control with its
+norepinephrine partner by consecutive sample ID at **both** time points, which
+is what a matched pair from one NRVM isolation looks like:
+
+| | rep1 | rep2 | rep3 | rep4 |
+|---|---|---|---|---|
+| 6 h | H1 / H2 | SQ1 / SQ2 | **SQ5 / SQ6** | SQ13 / SQ14 |
+| 24 h | SQ15 / SQ16 | H3 / H4 | **SQ3 / SQ4** | SQ7 / SQ8 |
+
+The other scheme holds that pattern at 6 h but breaks it at 24 h, pairing SQ15
+with SQ8 and H3 with SQ16.
+
+**The four libraries excluded from the final DE are therefore `SQ5_ln`,
+`SQ6_ln`, `SQ3_ln` and `SQ4_ln`** — not the set the repository previously
+marked. `longRNA_samples.tsv` now carries
+`include_final_analysis = no_excluded_from_final_DE` on exactly those rows.
+
+Two consequences to carry forward:
+
+- **The Methods can now name the excluded libraries** (§14.5), which was the
+  point of this item.
+- **R04/R04b key on `replicate`.** `04_circRNA_annotation_merge.R:181` builds
+  its sample labels from `condition + time + replicate`, and R04b filters with
+  `--replicates 1,2,4`. Under the old numbering that kept a different set of
+  circRNA samples, so **any circRNA output produced before 19 Oct 2026 used the
+  wrong libraries** and must be regenerated.
+
+Still unverified, and not worth holding the item open for: nothing records
+whether whoever created the Salmon quant directories used this numbering. The
+pairing argument is strong but it is an inference, not a document.
 
 ## R05 — TF and KEGG integration
 
@@ -481,7 +519,7 @@ node x/y coordinates plus the visual style.
 | 14.2 | circRNA reference "Ensembl rat rn7 genome" → GRCr8 | stages 13-15 |
 | 14.3 | FEELnc window "200 bp to 100 kb" → "1 kb to 100 kb" | stage 09 |
 | 14.4 | miRge flags "(`-lib` and `-rat`)" → `-lib`, `-on rat`, `-db mirbase` | stage 11 |
-| 14.5 | Say n = 3 per group, and ideally which library was excluded | §8.1 |
+| 14.5 | Say n = 3 per group, and name the excluded libraries: **SQ5_ln, SQ6_ln (6 h) and SQ3_ln, SQ4_ln (24 h)** | §8.1 |
 | 14.6 | Describe circRNA DE as exploratory — nominal p, not FDR | R20 |
 | 14.7 | Do not describe the FEELnc `isBest` filter as a filtering step | §4.4 |
 | 14.8 | **Regenerate Figure 3B's lncRNA panel** — published 145/275/328, correct 148/258/336 | R10 |
@@ -512,6 +550,7 @@ questions.
 | §13.2 | The circRNA branch moves from GRCr8.114 to GRCr8.115 with everything else |
 | §3.2 | `reference_manifest.tsv` checksums populate automatically on the first stage 00 run |
 | §7.1, §7.3, §12.1 | The three accepted analysis changes take effect; the affected figures and counts must be re-read, not carried over |
+| §8.1 | The replicate renumbering changes which libraries R04/R04b keep. Any circRNA output made before 19 Oct 2026 used the wrong four and must be regenerated |
 | §15.2 | `envs/*.lock.yml` are written by `create_envs.sh`, fixing the tool versions for the Methods |
 | §15.8 | The Docker image gets its first real build |
 

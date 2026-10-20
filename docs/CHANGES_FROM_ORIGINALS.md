@@ -588,10 +588,28 @@ internally consistent; the 4v4 historical circRNA notebooks are the outlier.
 `metadata/longRNA_samples.tsv` marks the four replicate-3 rows
 `include_final_analysis = no_excluded_from_final_DE`.
 
-The sample sheets describe 16 long-RNA libraries; 12 were analysed. **Which
-physical library "rep3" was is not recorded anywhere** — no file maps the
-`Ctrl6_rep1`-style Salmon quant aliases to `H1_ln` / `SQ13_ln` / …, so
-`salmon_quant_alias` is `TO_CONFIRM` for every row.
+The sample sheets describe 16 long-RNA libraries; 12 were analysed.
+
+**Changed — one replicate numbering across every sheet.** Two incompatible
+schemes were in `metadata/` at once, and `fastq_manifest.tsv` disagreed with
+itself: its long-RNA rows used one, its small-RNA rows the other, which is also
+the one in `longRNA_samples.tsv` and Seba's starter sheet. Because R04 keys its
+sample labels on `condition + time + replicate` and R04b filters with
+`--replicates`, "drop rep3" resolved to two disjoint sets of libraries.
+
+The long-RNA block of `fastq_manifest.tsv` was confirmed authoritative
+(B. Borges, 19 Oct 2026) and every other sheet renumbered to it. It is the only
+scheme that pairs each control with its norepinephrine partner by consecutive
+sample ID at both time points — 6 h: H1/H2, SQ1/SQ2, SQ5/SQ6, SQ13/SQ14;
+24 h: SQ15/SQ16, H3/H4, SQ3/SQ4, SQ7/SQ8. The other breaks that pattern at
+24 h.
+
+So the excluded libraries are **`SQ5_ln`, `SQ6_ln`, `SQ3_ln` and `SQ4_ln`**,
+and the Methods can name them. Full evidence in
+[`OPEN_ISSUES.md`](OPEN_ISSUES.md) §8.1. `salmon_quant_alias` remains
+`TO_CONFIRM`: nothing records whether the person who made the quant
+directories used this numbering, so the mapping is a strong inference rather
+than a document.
 
 ## R03 — `03_mirna_deseq2.R`
 
@@ -956,7 +974,7 @@ one pass. "Follows" is what this repository does.
 | 17 | 20 | circRNA: nominal p < 0.05, \|log2FC\| ≥ 0.5 | agrees (`:26-27`) | as recorded | OK |
 | 18 | 02 | mRNA: padj < 0.05, \|log2FC\| ≥ 1 | agrees | as recorded | OK |
 | 19 | 02 | Pearson, \|rho\| ≥ 0.8, p < 0.05, VST | agrees | as recorded | OK |
-| 20 | all | N = 3 per condition | agrees — rep 1/2/4 everywhere | n = 3 | consistent; which library "rep3" was is unrecorded |
+| 20 | all | N = 3 per condition | agrees — rep 1/2/4 everywhere | n = 3 | consistent; the excluded libraries are now named (SQ5_ln, SQ6_ln, SQ3_ln, SQ4_ln) |
 
 ### Parameters the Methods omit
 

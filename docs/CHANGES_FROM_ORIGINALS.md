@@ -585,6 +585,13 @@ replicates per group, replicate 3 excluded.** That holds across the whole
 corpus: the miRNA matrices are `*_3v3_new.csv` and the final circRNA volcano
 script drops `_3`. The manuscript legends say N = 3, so the manuscript is
 internally consistent; the 4v4 historical circRNA notebooks are the outlier.
+
+**But `*_3v3_new.csv` proves only that the miRNA branch used three per group,
+not that it dropped the same libraries.** Total-RNA and small-RNA sequencing
+are separate protocols with separate library preparations and separate QC
+(B. Borges, 20 Oct 2026), so the four libraries missing from the miRNA matrices
+need not be the biological replicates excluded from the long-RNA DE. Which four
+they are is unrecorded — [`OPEN_ISSUES.md`](OPEN_ISSUES.md) §5.3.
 `metadata/longRNA_samples.tsv` marks the four replicate-3 rows
 `include_final_analysis = no_excluded_from_final_DE`.
 

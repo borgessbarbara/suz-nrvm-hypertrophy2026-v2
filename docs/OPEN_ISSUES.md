@@ -25,7 +25,8 @@ noted below, deliberately left open.
 §3.4 StringTie flags · §7.2 ComBat_seq
 
 **S. Urquiza — inputs to supply**
-§5.2 small-RNA FASTQ checksums · §6.1 `TFLink_All.tsv` and the three Cytoscape
+§5.2 small-RNA FASTQ checksums · §5.3 which four small-RNA libraries were
+dropped · §6.1 `TFLink_All.tsv` and the three Cytoscape
 GRN exports · §6.2 the 12 miRWalk files and miRBase `mature.fa` · §12.3 the
 Affinity and Cytoscape sources
 
@@ -198,6 +199,27 @@ miRBase release.
 
 16 rows in `metadata/fastq_manifest.tsv` are still `TO_FILL` — paths, sizes
 and MD5s. The 32 long-RNA rows are complete.
+
+### 5.3 Which four small-RNA libraries were dropped
+
+`metadata/smallRNA_samples.tsv` lists 16 libraries and, in Seba's starter sheet
+and in every version since, marked all 16 `include_final_analysis = yes`. That
+cannot be right: R03 consumes `miR.Counts_C6_NE6_3v3_new.csv` and
+`miR.Counts_C24_NE24_3v3_new.csv`, which are **3 v 3** — 12 libraries. Four
+were dropped and nothing records which.
+
+**Total-RNA and small-RNA sequencing are two distinct protocols**
+(B. Borges, 20 Oct 2026): separate library preparations, separate runs,
+separate QC. So the four dropped here **need not be the same biological
+replicates** as the four excluded from the long-RNA DE (§8.1: SQ5, SQ6, SQ3,
+SQ4). Do not assume the exclusion carries across branches.
+
+The flags are now `TO_CONFIRM` for all 16 rather than a `yes` that contradicts
+the input files.
+
+**Needed:** the four small-RNA libraries dropped from the 3 v 3 matrices, and
+whether the drop was a QC failure in the small-RNA prep or a deliberate match
+to the long-RNA design.
 
 ## Stages 13-16 — the circRNA branch
 

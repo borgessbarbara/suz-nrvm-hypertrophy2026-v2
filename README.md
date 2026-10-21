@@ -26,14 +26,14 @@ the manuscript Methods do not match the code.
 | | |
 |---|---|
 | Genome | `Rattus_norvegicus.GRCr8.dna.primary_assembly.fa` (chromosomes `1..20 X Y MT`, concatenated) |
-| Annotation | `Rattus_norvegicus.GRCr8.115.gtf` |
-| Ensembl release | **115** |
-| biomaRt | `https://sep2025.archive.ensembl.org` (= `ensembl_mart_115`) |
+| Annotation | `Rattus_norvegicus.GRCr8.116.gtf` |
+| Ensembl release | **116**  (114 and 115 also selectable) |
+| biomaRt | `https://jun2026.archive.ensembl.org` (= `ensembl_mart_116`) |
 
 The release is set in **one place**, `metadata/reference_release.tsv`. Its
 `active` column drives the GTF path, the FASTA URLs and the biomaRt archive
 together, so the annotation and the genome can never drift apart. Override for
-a single run with `ENSEMBL_RELEASE=114`.
+a single run with `ENSEMBL_RELEASE=114` or `=115`.
 
 ```bash
 # which release will actually be used, and is the archive reachable?
@@ -180,7 +180,7 @@ script's header. Nothing has a path baked in.
 
 | # | Script | Env | What it does |
 |---|---|---|---|
-| 00 | `00_download_references.sh` | qc_align | GRCr8 primary-assembly FASTA + GRCr8.115 GTF |
+| 00 | `00_download_references.sh` | qc_align | GRCr8 primary-assembly FASTA + GRCr8.116 GTF |
 | 01 | `01_qc_raw.sh` | qc_align | FastQC on raw reads |
 | 02 | `02_trim_fastp.sh` | qc_align | fastp trimming |
 | 03 | `03_qc_trimmed.sh` | qc_align | FastQC on trimmed reads |

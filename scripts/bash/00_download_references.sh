@@ -27,7 +27,7 @@ if [ -n "${ENSEMBL_RELEASE:-}" ]; then
 elif [ -f "$REL_FILE" ]; then
   RELEASE="$(awk -F'\t' 'NR>1 && tolower($2) ~ /^(yes|true|1)$/ {print $1; exit}' "$REL_FILE")"
 fi
-RELEASE="${RELEASE:-115}"
+RELEASE="${RELEASE:-116}"
 echo "[INFO] Ensembl release: $RELEASE  (metadata/reference_release.tsv)"
 GENOME_FASTA="${1:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.dna.primary_assembly.fa}"
 GTF_FILE="${2:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.${RELEASE}.gtf}"

@@ -368,7 +368,7 @@ not preserved.
 This is one of the three reasons `data/frozen/` exists. See
 `data/frozen/README.md`.
 
-### 8.3 The frozen tables are Ensembl 114; the pipeline is pinned to 115
+### 8.3 The frozen tables are Ensembl 114; the pipeline is pinned to 116
 
 Both releases are GRCr8, so coordinates are unaffected — but gene names and
 biotypes move between releases, and those feed Figure 2B's class counts and the
@@ -537,7 +537,7 @@ node x/y coordinates plus the visual style.
 
 | # | Fix | From |
 |---|---|---|
-| 14.1 | `Rattus_norvegicus.mRatBN7.2.115.gtf` → `Rattus_norvegicus.GRCr8.115.gtf` (×2) — the named file has never existed | stage 00 |
+| 14.1 | `Rattus_norvegicus.mRatBN7.2.115.gtf` → **`Rattus_norvegicus.GRCr8.116.gtf`** (×2). The name in the draft has never existed — release 115 has no mRatBN7.2 build — and the re-run is at 116, so give the release actually used, not a corrected 115 | stage 00 |
 | 14.2 | circRNA reference "Ensembl rat rn7 genome" → GRCr8 | stages 13-15 |
 | 14.3 | FEELnc window "200 bp to 100 kb" → "1 kb to 100 kb" | stage 09 |
 | 14.4 | miRge flags "(`-lib` and `-rat`)" → `-lib`, `-on rat`, `-db mirbase` | stage 11 |
@@ -556,20 +556,20 @@ node x/y coordinates plus the visual style.
 | 14.17 | **Add CIRI2 to the Methods.** The text names CIRI-AS but not CIRI2, and CIRI-AS cannot run without it: `CIRI_2_run_all_seba.sh:90` passes CIRI2's `.ciri` call set via `-C`. Cite Gao et al. 2018 for CIRI2 alongside the existing CIRI-AS citation | new |
 | 14.18 | **`bwa mem -T 19` is attributed to the wrong tool.** The text puts it under CIRIquant; the only recorded `-T 19` is `CIRI_2_run_all_seba.sh:84`, feeding CIRI2/CIRI-AS. CIRIquant runs BWA internally with its own settings | new |
 | 14.19 | Say that circRNA DE uses the raw `readNumber` BSJ counts from CIRCexplorer2 `annotate`. `circ_quant` runs, so CIRCscore is computed, but nothing downstream uses it — a reader told the pipeline is CLEAR will look for it | §13.1 |
-| 14.20 | The circRNA reference was GRCr8.114 in 2023 and is GRCr8.115 on the re-run. One sentence, since both are GRCr8 | §13.2 |
+| 14.20 | The circRNA reference was GRCr8.114 in 2023 and is GRCr8.116 on the re-run. One sentence, since both are GRCr8 | §13.2 |
 
 ---
 
 ## Closes on the re-run
 
 Not decisions and not blockers — they resolve themselves once the pipeline is
-executed at release 115, and are listed only so nobody re-opens them as
+executed at release 116, and are listed only so nobody re-opens them as
 questions.
 
 | # | Item |
 |---|---|
-| §8.3 | The frozen Ensembl-114 metadata tables get regenerated at 115; diff them and re-read Figure 2B / 2C / S2 off the new output |
-| §13.2 | The circRNA branch moves from GRCr8.114 to GRCr8.115 with everything else |
+| §8.3 | The frozen Ensembl-114 metadata tables get regenerated at 116; diff them and re-read Figure 2B / 2C / S2 off the new output |
+| §13.2 | The circRNA branch moves from GRCr8.114 to GRCr8.116 with everything else |
 | §3.2 | `reference_manifest.tsv` checksums populate automatically on the first stage 00 run |
 | §7.1, §7.3, §12.1 | The three accepted analysis changes take effect; the affected figures and counts must be re-read, not carried over |
 | §8.1 | The replicate renumbering changes which libraries R04/R04b keep. Any circRNA output made before 19 Oct 2026 used the wrong four and must be regenerated |

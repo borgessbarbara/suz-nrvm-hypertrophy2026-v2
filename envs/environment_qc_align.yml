@@ -16,29 +16,22 @@ name: env_qc_align
 channels:
   - conda-forge
   - bioconda
-  - nodefaults
 dependencies:
-  - python
-  # --- QC and trimming -----------------------------------------------------
-  - fastqc
-  - fastp                 # Methods: 0.22.0
-  - multiqc
-  # --- alignment and BAM handling ------------------------------------------
-  - hisat2                # Methods: 2.2.1
-  - samtools              # Methods: 1.21
-  # --- assembly and annotation ---------------------------------------------
-  - stringtie             # Methods: 3.0.0
-  - gffcompare            # Methods: 0.12.9
-  - gffread
-  # --- lncRNA identification -----------------------------------------------
-  - feelnc                # Methods: 0.2  (bioconda ships 0.2 as noarch only)
-  # --- quantification -------------------------------------------------------
-  - salmon                # Methods: 1.10.3
-  # --- shell utilities the stages depend on --------------------------------
-  - gawk
-  - grep
-  - sed
-  - coreutils
-  - pigz
-  - curl
-  - wget
+  - conda-forge::python=3.15.0rc3
+  - bioconda::fastqc=0.13.0
+  - bioconda::fastp=1.4.0
+  - bioconda::multiqc=1.35
+  - bioconda::hisat2=2.2.3
+  - bioconda::samtools=1.24
+  - bioconda::stringtie=3.0.3
+  - bioconda::gffcompare=0.12.10
+  - bioconda::gffread=0.12.9
+  - bioconda::feelnc=0.2
+  - bioconda::salmon=2.8.0
+  - conda-forge::gawk=5.4.1
+  - conda-forge::grep=3.12
+  - conda-forge::sed=4.10
+  - conda-forge::coreutils=9.12
+  - conda-forge::pigz=2.8
+  - conda-forge::curl=8.23.0
+  - conda-forge::wget=1.25.0

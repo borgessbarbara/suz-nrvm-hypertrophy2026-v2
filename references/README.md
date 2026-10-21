@@ -8,7 +8,7 @@ the files are too large, and they are reproducible from Ensembl.
 | File | Source |
 |---|---|
 | `Rattus_norvegicus.GRCr8.dna.primary_assembly.fa` | Ensembl, concatenated from the per-chromosome files (`1..20 X Y MT`) |
-| `Rattus_norvegicus.GRCr8.115.gtf` | Ensembl release 115 |
+| `Rattus_norvegicus.GRCr8.116.gtf` | Ensembl release 116 (114 and 115 selectable) |
 
 Both are fetched by `scripts/bash/00_download_references.sh`, which reads the
 active release from `metadata/reference_release.tsv`. Names, URLs and checksums

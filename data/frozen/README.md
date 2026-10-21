@@ -21,17 +21,19 @@ MD5 of the uncompressed originals:
 Three reasons, in order of importance.
 
 **1. They were built against Ensembl release 114, and the pipeline is now
-pinned to 115.** The original notebook called
+pinned to 116.** The original notebook called
 `useEnsembl(biomart = "genes", dataset = "rnorvegicus_gene_ensembl", version = 114)`.
 `scripts/R/01_transcriptome_metadata_annotation.R` connects instead to
-`https://sep2025.archive.ensembl.org`, which is release 115 — the release that
-matches `Rattus_norvegicus.GRCr8.115.gtf`, the project's annotation lock.
+`https://jun2026.archive.ensembl.org`, which is release 116 — the release that
+matches `Rattus_norvegicus.GRCr8.116.gtf`, the project's annotation lock.
 
-That change is safe for coordinates: **releases 114 and 115 are both GRCr8**
-(113 and earlier are mRatBN7.2), so nothing shifts position. But gene names and
-biotypes do move between releases, and those feed Figure 2B's class counts and
-the annotated-vs-novel lncRNA split. Regenerating would therefore change
-published numbers.
+That change is safe for coordinates: **releases 114, 115 and 116 are all
+GRCr8** (113 and earlier are mRatBN7.2), so nothing shifts position — the
+per-chromosome primary-assembly checksums are in fact identical between 115 and
+116, so the genome FASTA is byte-identical. But gene names and biotypes do move
+between releases, and those feed Figure 2B's class counts and the
+annotated-vs-novel lncRNA split. Regenerating would therefore change published
+numbers.
 
 **2. The committed notebook is not exactly the code that produced them.**
 The `.Rhistory` of the original analysis shows the session that generated

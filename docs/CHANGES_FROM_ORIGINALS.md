@@ -144,7 +144,7 @@ the command-line tools.
 the Methods record sits in a trailing comment on each line, so nothing is lost.
 `scripts/commands/create_envs.sh` writes `envs/*.lock.yml` from what actually
 resolved, and that export — not the `.yml` — is the version record. This is a
-deliberate consequence of re-running at Ensembl 115: see
+deliberate consequence of re-running at Ensembl 116: see
 [`OPEN_ISSUES.md`](OPEN_ISSUES.md) §15.2.
 
 Four defects were fixed in the environment files themselves, none of which
@@ -223,6 +223,7 @@ sources.
 | 112, 113 | `mRatBN7.2.<rel>.gtf.gz` | mRatBN7.2 (rn7) | — |
 | **114** | `GRCr8.114.gtf.gz` | **GRCr8 (rn8)** | `may2025.archive.ensembl.org` |
 | **115** | `GRCr8.115.gtf.gz` | **GRCr8 (rn8)** | `sep2025.archive.ensembl.org` |
+| **116** | `GRCr8.116.gtf.gz` | **GRCr8 (rn8)** | `jun2026.archive.ensembl.org` |
 
 **Changed — primary assembly, not toplevel.** The stage now builds
 `dna.primary_assembly`, preferring a single published archive and otherwise
@@ -963,7 +964,7 @@ one pass. "Follows" is what this repository does.
 | # | Stage | Methods say | Scripts do | Follows | State |
 |---|---|---|---|---|---|
 | 1 | 00 | `Rattus_norvegicus.mRatBN7.2.115.gtf` | `GRCr8.114.gtf` (`:293`, `:300`, `CIRI_2_run_all_seba.sh:6`) | `GRCr8.${RELEASE}.gtf` | the Methods filename is impossible; fix the text |
-| 2 | 00 | release 115 implied | every executed command is 114 | 115, by decision | settled: everything will be re-run at 115 |
+| 2 | 00 | release 115 implied | every executed command is 114 | **116**, by decision | settled: everything is re-run at 116. 114, 115 and 116 are all GRCr8 and all selectable |
 | 3 | 00 | `GRCr8.dna.primary_assembly` | agrees (`:46` marks toplevel `NO USAR`) | primary assembly, `1..20 X Y MT` | **the Methods were right**; this repository was wrong and is fixed |
 | 4 | 06 | guided assembly, no parameters | `--conservative`, sometimes `-f 0.05 -m 200 -t -s 3.0` (rn7-era only) | plain guided; `STRINGTIE_EXTRA` to add | the GRCr8 invocation was never recorded |
 | 5 | 09 | `--window=200 --maxwindow=100000` | `--window=1000 --maxwindow=100000` (`:300`) | 1 kb | the Methods are wrong; fix the text |

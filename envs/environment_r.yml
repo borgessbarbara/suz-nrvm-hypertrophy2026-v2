@@ -22,64 +22,59 @@ name: env_r
 channels:
   - conda-forge
   - bioconda
-  - nodefaults
 dependencies:
-  - r-base                # conda-forge current: 4.6.1
-  # --- CLI and IO ----------------------------------------------------------
-  - r-optparse
-  - r-r.utils
-  - r-readr
-  - r-readxl
-  - r-data.table
-  # --- tidyverse core ------------------------------------------------------
-  - r-tidyverse
-  - r-dplyr
-  - r-tidyr
-  - r-stringr
-  - r-tibble
-  - r-purrr
-  - r-forcats
-  - r-magrittr
-  - r-rlang
-  # --- plotting ------------------------------------------------------------
-  - r-ggplot2
-  - r-ggrepel
-  - r-scales
-  - r-rcolorbrewer
-  - r-viridislite
-  - r-pheatmap
-  - r-cowplot
-  - r-gridextra
-  - r-patchwork
-  - r-ggnewscale
-  - r-upsetr
-  - r-ggvenn
-  - r-circlize
-  - r-cairo               # save_figure() prefers cairo_pdf, with a fallback
-  - r-mass
-  - r-hmisc
-  - r-reshape2
-  # --- Bioconductor --------------------------------------------------------
-  - bioconductor-deseq2
-  - bioconductor-apeglm
-  - bioconductor-tximport
-  - bioconductor-biomart
-  - bioconductor-rtracklayer
-  - bioconductor-genomicranges
-  - bioconductor-biostrings
-  - bioconductor-biobase
-  - bioconductor-annotationdbi
-  - bioconductor-org.rn.eg.db
-  - bioconductor-clusterprofiler
-  - bioconductor-enrichplot
-  - bioconductor-dose
-  - bioconductor-complexheatmap
-  - bioconductor-enhancedvolcano
-  - bioconductor-mfuzz
-  - bioconductor-genefilter
-  - bioconductor-vsn
+  - conda-forge::r-base=4.6.1
+  - conda-forge::r-optparse=1.8.2
+  - conda-forge::r-r.utils=2.13.0
+  - conda-forge::r-readr=2.2.0
+  - conda-forge::r-readxl=1.6.0
+  - conda-forge::r-data.table=1.18.6.1
+  - conda-forge::r-tidyverse=2.0.0
+  - conda-forge::r-dplyr=1.2.1
+  - conda-forge::r-tidyr=1.3.2
+  - conda-forge::r-stringr=1.6.0
+  - conda-forge::r-tibble=3.3.1
+  - conda-forge::r-purrr=1.2.2
+  - conda-forge::r-forcats=1.0.1
+  - conda-forge::r-magrittr=2.0.5
+  - conda-forge::r-rlang=1.3.0
+  - conda-forge::r-ggplot2=4.0.3
+  - conda-forge::r-ggrepel=0.9.8
+  - conda-forge::r-scales=1.4.0
+  - conda-forge::r-rcolorbrewer=1.1_3
+  - conda-forge::r-viridislite=0.4.3
+  - conda-forge::r-pheatmap=1.0.13
+  - conda-forge::r-cowplot=1.2.0
+  - conda-forge::r-gridextra=2.3.1
+  - conda-forge::r-patchwork=1.3.2
+  - conda-forge::r-ggnewscale=0.5.2
+  - conda-forge::r-upsetr=1.4.1
+  - conda-forge::r-ggvenn=0.1.19
+  - conda-forge::r-circlize=0.4.18
+  - conda-forge::r-cairo=1.7_0
+  - conda-forge::r-mass=7.3_66
+  - conda-forge::r-hmisc=5.3_0
+  - conda-forge::r-reshape2=1.4.5
+  - bioconda::bioconductor-deseq2=1.50.2
+  - bioconda::bioconductor-apeglm=1.32.0
+  - bioconda::bioconductor-tximport=1.38.2
+  - bioconda::bioconductor-biomart=2.68.0
+  - bioconda::bioconductor-rtracklayer=1.72.0
+  - bioconda::bioconductor-genomicranges=1.64.0
+  - bioconda::bioconductor-biostrings=2.80.2
+  - bioconda::bioconductor-biobase=2.72.0
+  - bioconda::bioconductor-annotationdbi=1.74.0
+  - bioconda::bioconductor-org.rn.eg.db=3.22.0
+  - bioconda::bioconductor-clusterprofiler=4.18.4
+  - bioconda::bioconductor-enrichplot=1.30.5
+  - bioconda::bioconductor-dose=4.4.0
+  - bioconda::bioconductor-complexheatmap=2.26.1
+  - bioconda::bioconductor-enhancedvolcano=1.28.2
+  - bioconda::bioconductor-mfuzz=2.70.0
+  - bioconda::bioconductor-genefilter=1.92.0
+  - bioconda::bioconductor-vsn=3.78.1
+  - bioconda::bioconductor-sva=3.58.0
   # sva/ComBat_seq is used ONLY by the historical circRNA notebooks under
   # archive/, and by R04b --use-combat. Whether it belongs in the final circRNA
   # DE branch is unresolved (docs/OPEN_ISSUES.md section 7.2); it is installed
   # so that route can be reproduced for comparison.
-  - bioconductor-sva

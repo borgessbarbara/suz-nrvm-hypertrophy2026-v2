@@ -18,8 +18,8 @@ name: env_intarna
 channels:
   - conda-forge
   - bioconda
-  - nodefaults
 dependencies:
-  - intarna               # Methods: 3.4.1
-  - viennarna
-  - coreutils
+  - bioconda::intarna=3.4.1
+  - bioconda::viennarna=2.7.2
+  - conda-forge::coreutils=9.12
+

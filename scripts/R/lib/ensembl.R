@@ -11,13 +11,15 @@
 #
 #   release 114 -> https://may2025.archive.ensembl.org
 #   release 115 -> https://sep2025.archive.ensembl.org
+#   release 116 -> https://jun2026.archive.ensembl.org   (active)
 #
 # Exports: connect_ensembl(), check_ensembl_connection(), suz_getBM(),
 #          suz_ensembl_release(), suz_ensembl_host().
 # ---------------------------------------------------------------------------
 
 SUZ_ENSEMBL_ARCHIVES <- c("114" = "https://may2025.archive.ensembl.org",
-                          "115" = "https://sep2025.archive.ensembl.org")
+                          "115" = "https://sep2025.archive.ensembl.org",
+                          "116" = "https://jun2026.archive.ensembl.org")
 
 #' Read the active Ensembl release from metadata/reference_release.tsv.
 suz_ensembl_release <- function(repo_root = NULL) {
@@ -32,16 +34,19 @@ suz_ensembl_release <- function(repo_root = NULL) {
       if (length(hit)) return(trimws(as.character(hit[1])))
     }
   }
-  "115"   # fall back to the release the project was instructed to lock to
+  "116"   # fall back to the active lock if the table is missing or unreadable
 }
 
 SUZ_ENSEMBL_HOST_DEFAULT <- NULL   # resolved at call time from the release
 SUZ_ENSEMBL_DATASET      <- "rnorvegicus_gene_ensembl"
 
-# Confirmed live during the rebuild:
-#   curl https://sep2025.archive.ensembl.org/biomart/martservice?type=registry
-#   -> <MartURLLocation database="ensembl_mart_115" displayName="Ensembl Genes 115" ...>
-# so this host is unambiguously release 115.
+# Each archive was confirmed live against its own registry, so no host is
+# mapped to a release on the strength of its name:
+#   curl <host>/biomart/martservice?type=registry
+#   may2025 -> database="ensembl_mart_114"  displayName="Ensembl Genes 114"
+#   sep2025 -> database="ensembl_mart_115"  displayName="Ensembl Genes 115"
+#   jun2026 -> database="ensembl_mart_116"  displayName="Ensembl Genes 116"
+# All three serve GRCr8, so switching release changes the annotation only.
 
 #' Strip a trailing slash from a host URL.
 #'
@@ -75,7 +80,7 @@ suz_ensembl_host <- function(host = NULL) {
 
 #' Connect to the pinned Ensembl archive.
 #'
-#' @param host    Archive URL. Defaults to the release-115 archive.
+#' @param host    Archive URL. Defaults to the active release's archive.
 #' @param dataset biomaRt dataset; defaults to rat.
 #' @param retries Number of attempts; archive mirrors occasionally time out.
 #' @return A biomaRt Mart object.

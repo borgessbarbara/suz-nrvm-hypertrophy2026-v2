@@ -37,34 +37,25 @@ name: env_circrna
 channels:
   - conda-forge
   - bioconda
-  - nodefaults
 dependencies:
-  - python
-  # --- alignment used by the circRNA branches ------------------------------
-  - hisat2                # Methods: 2.2.1   (CLEAR needs >=2.0.5)
-  - star                  # Methods: 2.7.11b
-  - bwa                   # run with -T 19 -t 20; version never recorded
-  - samtools              # Methods: 1.21
-  - fastp                 # Methods: 0.22.0
-  # --- CIRCexplorer2, and the CLEAR build requirements --------------------
-  - circexplorer2         # noarch, no python constraint (CLEAR needs >=2.3.6)
-  - stringtie             # required by CLEAR (>1.3.6), not just by stage 06
-  - pysam                 # CLEAR build requirement (>=0.8.4)
-  - pybedtools            # CLEAR build requirement
-  # --- CIRIquant ------------------------------------------------------------
-  - ciriquant             # Methods: 1.1  (1.1.3 is current and needs python>=3)
-  # --- CIRI2 and CIRI-AS ----------------------------------------------------
-  # bioconda ships both standalone, at exactly the versions the Methods state,
-  # so nothing has to be downloaded by hand. ciri-full also bundles them, but
-  # at its own versions and with a Java dependency, and CIRI-full itself is
-  # commented out in the original script - so the two standalone packages are
-  # both more faithful and smaller.
-  - ciri2                 # Methods: 2.0.6, which is also the current release
-  - ciri-as               # Methods: 1.2,   which is also the current release
-  - perl
-  - perl-bioperl
-  # --- shared utilities -----------------------------------------------------
-  - bedtools
-  - ucsc-gtftogenepred    # GTF -> refFlat for CIRCexplorer2 annotate (stage 12b)
-  - gawk
-  - coreutils
+  - conda-forge::python=3.15.0rc3
+  - bioconda::hisat2=2.2.3
+  - bioconda::star=2.7.11b
+  - bioconda::bwa=0.7.19
+  - bioconda::samtools=1.24
+  - bioconda::fastp=1.4.0
+  - bioconda::circexplorer2=2.3.8
+  - bioconda::stringtie=3.0.3
+  - bioconda::pysam=0.24.1
+  - bioconda::pybedtools=0.12.1
+  - bioconda::ciriquant=1.1.3
+  - bioconda::ciri2=2.0.6
+  - bioconda::ciri-as=1.2
+  - conda-forge::perl=5.44.0
+  - bioconda::perl-bioperl=1.7.8
+  - bioconda::bedtools=2.31.1
+  - bioconda::ucsc-gtftogenepred=482
+  - conda-forge::gawk=5.4.1
+  - bioconda::coreutils=8.25
+
+

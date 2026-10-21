@@ -23,7 +23,7 @@ REL_FILE="$REPO_ROOT/metadata/reference_release.tsv"
 RELEASE="${ENSEMBL_RELEASE:-}"
 [ -z "$RELEASE" ] && [ -f "$REL_FILE" ] && \
   RELEASE="$(awk -F'\t' 'NR>1 && tolower($2) ~ /^(yes|true|1)$/ {print $1; exit}' "$REL_FILE")"
-RELEASE="${RELEASE:-115}"
+RELEASE="${RELEASE:-116}"
 GTF_FILE="${GTF_FILE:-$REPO_ROOT/references/Rattus_norvegicus.GRCr8.${RELEASE}.gtf}"
 STRINGTIE_MERGED="${STRINGTIE_MERGED:-results/06_stringtie_assembly/merged.gtf}"
 GFFCOMPARE_OUTPUT="${GFFCOMPARE_OUTPUT:-results/07_gffcompare}"
